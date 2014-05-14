@@ -69,6 +69,9 @@ class NewsletterCampaign {
 		// Activate plugin when new blog is added
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
 
+        // Include required files
+        $this->includes();
+
 		// Load public-facing style sheet and JavaScript.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -304,5 +307,15 @@ class NewsletterCampaign {
 	public function filter_method_name() {
 		// @TODO: Define your filter hook callback here
 	}
+
+
+    /**
+     * Include required core files used in admin and on the frontend.
+     *
+     * @since    0.0.0
+     */
+    private static function includes() {
+        include_once( 'includes/class-nc-post-types.php' );     // Register taxonomies and post types
+    }
 
 }
