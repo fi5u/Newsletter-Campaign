@@ -74,14 +74,13 @@ class Newsletter_campaign_post_types {
                     'description'           => __( 'Stores subscriber details.', 'newsletter-campaign' ),
                     'public'                => true,
                     'show_ui'               => true,
-                    'capability_type'       => 'subscriber',
                     'map_meta_cap'          => true,
                     'publicly_queryable'    => true,
                     'exclude_from_search'   => false,
                     'hierarchical'          => false,
                     'query_var'             => true,
                     'supports'              => array( 'title', 'editor', 'excerpt', 'thumbnail', 'comments', 'custom-fields', 'page-attributes' ),
-                    'has_archive'           => false,
+                    'has_archive'           => true,
                     'show_in_nav_menus'     => true
                 )
             )

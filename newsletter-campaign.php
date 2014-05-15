@@ -9,7 +9,7 @@
  * @author    Fisu <tommybfisher@gmail.com>
  * @license   GPL-2.0+
  * @link      http://example.com
- * @copyright 2014 
+ * @copyright 2014
  *
  * @wordpress-plugin
  * Plugin Name:       Newsletter Campaign
