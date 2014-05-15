@@ -64,7 +64,7 @@ class NewsletterCampaignAdmin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Add the options page and menu item.
-		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ) );
+		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 9 );
 
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
@@ -176,6 +176,15 @@ class NewsletterCampaignAdmin {
 			array( $this, 'display_plugin_admin_page' ), // Function
             'dashicons-email-alt' // Icon url
 		);
+
+        $this->plugin_screen_dashboard = add_submenu_page(
+            $this->plugin_slug, // Parent slug
+            __( 'Dashboard', $this->plugin_slug ), // Page title
+            __( 'Dashboard', $this->plugin_slug ), // Menu title
+            'manage_options', // Capability
+            $this->plugin_slug, // Menu slug
+            array( $this, 'display_plugin_admin_page' ) // Function
+        );
 
 	}
 
