@@ -10,7 +10,9 @@ class Newsletter_campaign_post_types {
      */
     public function __construct() {
         add_action( 'init', array( __CLASS__, 'register_taxonomies' ), 5 );
-        add_action( 'init', array( __CLASS__, 'register_post_types' ), 5 );
+        add_action( 'init', array( __CLASS__, 'register_post_type_campaign' ), 5 );
+        add_action( 'init', array( __CLASS__, 'register_post_type_template' ), 10 );
+        add_action( 'init', array( __CLASS__, 'register_post_type_subscriber' ), 15 );
     }
 
     /**
@@ -45,18 +47,14 @@ class Newsletter_campaign_post_types {
     }
 
     /**
-     * Register Newsletter Campaign post types
+     * Register Newsletter Campaign campaign post type
      */
-    public static function register_post_types() {
-        if ( post_type_exists('subscriber') )
+    public static function register_post_type_campaign() {
+        if ( post_type_exists('campaign') )
             return;
 
-        do_action( 'newsletter_campaign_register_post_type' );
+        do_action( 'newsletter_campaign_register_post_type_campaign' );
 
-
-        /**
-         * Campaigns
-         */
         register_post_type( 'campaign',
             apply_filters( 'newsletter_campaign_register_post_type_campaign',
                 array(
@@ -91,11 +89,18 @@ class Newsletter_campaign_post_types {
                 )
             )
         );
+    }
 
 
-        /**
-         * Templates
-         */
+    /**
+     * Register Newsletter Campaign template post type
+     */
+    public static function register_post_type_template() {
+        if ( post_type_exists('template') )
+            return;
+
+        do_action( 'newsletter_campaign_register_post_type_template' );
+
         register_post_type( 'template',
             apply_filters( 'newsletter_campaign_register_post_type_template',
                 array(
@@ -130,7 +135,17 @@ class Newsletter_campaign_post_types {
                 )
             )
         );
+    }
 
+
+    /**
+     * Register Newsletter Campaign subscriber post type
+     */
+    public static function register_post_type_subscriber() {
+        if ( post_type_exists('subscriber') )
+            return;
+
+        do_action( 'newsletter_campaign_register_post_type_subscriber' );
 
         /**
          * Subscribers

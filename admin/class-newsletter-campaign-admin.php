@@ -66,6 +66,9 @@ class NewsletterCampaignAdmin {
 		// Add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 9 );
 
+        // Include required files
+        $this->includes();
+
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
@@ -154,20 +157,6 @@ class NewsletterCampaignAdmin {
 	 */
 	public function add_plugin_admin_menu() {
 
-		/*
-		 * Add a settings page for this plugin to the Settings menu.
-		 *
-		 * NOTE:  Alternative menu locations are available via WordPress administration menu functions.
-		 *
-		 *        Administration Menus: http://codex.wordpress.org/Administration_Menus
-		 *
-		 * @TODO:
-		 *
-		 * - Change 'Page Title' to the title of your plugin admin page
-		 * - Change 'Menu Text' to the text for menu item for the plugin settings page
-		 * - Change 'manage_options' to the capability you see fit
-		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
-		 */
 		$this->plugin_screen_hook_suffix = add_menu_page(
 			__( 'Newsletter Campaign', $this->plugin_slug ), // Page title
 			__( 'Newsletter', $this->plugin_slug ), // Menu title
@@ -238,5 +227,15 @@ class NewsletterCampaignAdmin {
 	public function filter_method_name() {
 		// @TODO: Define your filter hook callback here
 	}
+
+    /**
+     * Include required core files used in admin
+     *
+     * @since    0.0.0
+     */
+    private static function includes() {
+        include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
+        include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
+    }
 
 }
