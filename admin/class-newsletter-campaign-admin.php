@@ -6,7 +6,7 @@
  * @author    Fisu <tommybfisher@gmail.com>
  * @license   GPL-2.0+
  * @link      http://example.com
- * @copyright 2014 
+ * @copyright 2014
  */
 
 /**
@@ -168,12 +168,13 @@ class NewsletterCampaignAdmin {
 		 * - Change 'manage_options' to the capability you see fit
 		 *   For reference: http://codex.wordpress.org/Roles_and_Capabilities
 		 */
-		$this->plugin_screen_hook_suffix = add_options_page(
-			__( 'Page Title', $this->plugin_slug ),
-			__( 'Menu Text', $this->plugin_slug ),
-			'manage_options',
-			$this->plugin_slug,
-			array( $this, 'display_plugin_admin_page' )
+		$this->plugin_screen_hook_suffix = add_menu_page(
+			__( 'Newsletter Campaign', $this->plugin_slug ), // Page title
+			__( 'Newsletter', $this->plugin_slug ), // Menu title
+			'manage_options', // Capability
+			$this->plugin_slug, // Menu slug
+			array( $this, 'display_plugin_admin_page' ), // Function
+            'dashicons-email-alt' // Icon url
 		);
 
 	}
