@@ -178,7 +178,7 @@ class Newsletter_campaign_post_types {
                     'exclude_from_search'   => false,
                     'hierarchical'          => false,
                     'query_var'             => true,
-                    'supports'              => array( 'title', 'editor', 'excerpt', 'thumbnail', 'comments', 'custom-fields', 'page-attributes' ),
+                    'supports'              => array( 'title', 'editor' ),
                     'has_archive'           => true,
                     'show_in_nav_menus'     => true
                 )

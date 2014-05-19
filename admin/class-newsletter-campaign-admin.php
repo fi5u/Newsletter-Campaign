@@ -69,6 +69,12 @@ class NewsletterCampaignAdmin {
         // Include required files
         $this->includes();
 
+        // Create meta boxes
+        $this->create_meta_boxes();
+
+        // Remove add media button
+        add_action( 'admin_head', array($this,'removeAddMediaButton') );
+
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
@@ -183,7 +189,9 @@ class NewsletterCampaignAdmin {
 	 * @since    0.0.0
 	 */
 	public function display_plugin_admin_page() {
+
 		include_once( 'views/admin.php' );
+
 	}
 
 	/**
@@ -234,8 +242,48 @@ class NewsletterCampaignAdmin {
      * @since    0.0.0
      */
     private static function includes() {
+
         include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
+
+    }
+
+
+    /**
+     * Create new meta boxes from the class
+     *
+     * @since    0.0.0
+     */
+    private static function create_meta_boxes() {
+
+        function newsletter_campaign_add_meta_boxes() {
+            $add_class = new Newsletter_campaign_meta_box_generator();
+            $add_class->nc_add_meta_box('nc-subscriber-name-add', 'Name', 'nc_render_meta_box', 'subscriber', 'normal', 'high', array('post_type' => 'subscriber', 'field' => 'name', 'title' => 'Name'));
+        }
+
+        function newsletter_campaign_save_meta_boxes($post) {
+            $save_class = new Newsletter_campaign_meta_box_generator();
+            $save_class->nc_save_meta_box($post, 'subscriber', 'name' );
+        }
+
+        add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );
+        add_action( 'save_post', 'newsletter_campaign_save_meta_boxes', 10, 2 );
+
+    }
+
+    /**
+     * Remove add media button from post types
+     *
+     * @since    0.0.0
+     */
+    public static function removeAddMediaButton() {
+        global $post;
+        $post_type = $post->post_type;
+
+        if( $post_type === 'subscriber' ) {
+            remove_action( 'media_buttons', 'media_buttons' );
+        }
+
     }
 
 }
