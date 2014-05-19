@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Add, generate and save meta boxes
+ */
 class Newsletter_campaign_meta_box_generator {
     public function nc_add_meta_box( $id, $title, $cb, $post_type, $context, $priority, $callback_args ) {
         add_meta_box(
@@ -61,16 +64,3 @@ class Newsletter_campaign_meta_box_generator {
                 echo ' value="' . esc_attr( $value ) . '">';
     }
 }
-
-function newsletter_campaign_add_meta_boxes() {
-    $add_class = new Newsletter_campaign_meta_box_generator();
-    $add_class->nc_add_meta_box('nc-subscriber-name-add', 'Name', 'nc_render_meta_box', 'subscriber', 'normal', 'high', array('post_type' => 'subscriber', 'field' => 'name', 'title' => 'Name'));
-}
-
-function newsletter_campaign_save_meta_boxes($post) {
-    $save_class = new Newsletter_campaign_meta_box_generator();
-    $save_class->nc_save_meta_box($post, 'subscriber', 'name' );
-}
-
-add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );
-add_action( 'save_post', 'newsletter_campaign_save_meta_boxes', 10, 2 );
