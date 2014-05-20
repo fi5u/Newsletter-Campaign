@@ -10,6 +10,8 @@ class Newsletter_campaign_post_types {
      */
     public function __construct() {
         add_action( 'init', array( __CLASS__, 'register_taxonomies' ), 5 );
+        register_taxonomy_for_object_type( 'subscriber_list', 'subscriber' );
+
         add_action( 'init', array( __CLASS__, 'register_post_type_campaign' ), 5 );
         add_action( 'init', array( __CLASS__, 'register_post_type_template' ), 10 );
         add_action( 'init', array( __CLASS__, 'register_post_type_subscriber' ), 15 );
@@ -38,10 +40,17 @@ class Newsletter_campaign_post_types {
                         'edit_item'         => __( 'Edit Subscriber List', 'newsletter-campaign' ),
                         'update_item'       => __( 'Update Subscriber List', 'newsletter-campaign' ),
                         'add_new_item'      => __( 'Add New Subscriber List', 'newsletter-campaign' ),
-                        'new_item_name'     => __( 'New Subscriber List Name', 'newsletter-campaign' )
+                        'new_item_name'     => __( 'New Subscriber List Name', 'newsletter-campaign' ),
+                        'popular_items'     => __( 'Popular Subscriber Lists', 'newsletter-campaign' ),
+                        'separate_items_with_commas'
+                                            => __( 'Separate subscriber lists with commas', 'newsletter-campaign' ),
+                        'choose_from_most_used'
+                                            => __( 'Choose from the most used subscriber lists' ),
+                        'not_found'         => __( 'No subscriber lists found' )
                     ),
                 'show_ui'               => true,
-                'query_var'             => true
+                'query_var'             => true,
+                'show_in_nav_menus'     => true
             ) )
         );
     }
