@@ -53,6 +53,12 @@ class Newsletter_campaign_meta_box_generator {
         $field = $metabox['args']['field'];
         $title = $metabox['args']['title'];
 
+        if (isset($metabox['args']['type'])) {
+            $type = $metabox['args']['type'];
+        } else {
+            $type = 'text';
+        }
+
         wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field .'_box_nonce' );
 
         $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
