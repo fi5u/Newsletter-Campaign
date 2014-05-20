@@ -63,10 +63,13 @@ class Newsletter_campaign_meta_box_generator {
 
         $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
 
-        echo '<label for="newsletter_campaign_' . $post_type . '_' . $field .'">';
-        _e( $title, 'newsletter-campaign' );
-        echo '</label> ';
-        echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'"';
-                echo ' value="' . esc_attr( $value ) . '">';
+        if ($type === 'textarea') {
+            echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'" placeholder="'. $title .'">';
+            echo esc_attr( $value );
+            echo '</textarea>';
+        } else {
+            echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'"';
+            echo ' value="' . esc_attr( $value ) . '" placeholder="'. $title .'">';
+        }
     }
 }
