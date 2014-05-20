@@ -256,7 +256,7 @@ class NewsletterCampaignAdmin {
         function newsletter_campaign_add_meta_boxes() {
             $add_class = new Newsletter_campaign_meta_box_generator();
             $add_class->nc_add_meta_box('nc-subscriber-name-add', 'Name', 'nc_render_meta_box', 'subscriber', 'normal', 'high', array('post_type' => 'subscriber', 'field' => 'name', 'title' => 'Name'));
-            $add_class->nc_add_meta_box('nc-subscriber-notes-add', 'Notes', 'nc_render_meta_box', 'subscriber', 'normal', 'high', array('post_type' => 'subscriber', 'field' => 'notes', 'title' => 'Notes'));
+            $add_class->nc_add_meta_box('nc-subscriber-notes-add', 'Notes', 'nc_render_meta_box', 'subscriber', 'normal', 'high', array('post_type' => 'subscriber', 'field' => 'notes', 'title' => 'Notes', 'type' => 'textarea'));
         }
 
         function newsletter_campaign_save_meta_boxes($post) {
