@@ -63,8 +63,11 @@ class NewsletterCampaignAdmin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-		// Add the options page and menu item.
+		// Add the options page and menu item
 		add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu' ), 9 );
+        // Add the options page and menu items for after custom post types
+        add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
+
 
         // Include required files
         $this->includes();
@@ -154,7 +157,7 @@ class NewsletterCampaignAdmin {
 	}
 
 	/**
-	 * Register the administration menu for this plugin into the WordPress Dashboard menu.
+	 * Register the administration menus for this plugin into the WordPress Dashboard menu
 	 *
 	 * @since    0.0.0
 	 */
@@ -180,6 +183,25 @@ class NewsletterCampaignAdmin {
 
 	}
 
+
+    /**
+     * Register admin menus for after the custom post type edit screens
+     *
+     * @since    0.0.0
+     */
+    public function add_plugin_admin_menu_after() {
+
+        $this->plugin_screen_dashboard = add_submenu_page(
+            'newsletter-campaign', // Parent slug
+            __( 'Subscriber Groups', $this->plugin_slug ), // Page title
+            __( 'Subscriber Groups', $this->plugin_slug ), // Menu title
+            'manage_options', // Capability
+            'edit-tags.php?taxonomy=subscriber_list&post_type=subscriber' // Menu slug
+        );
+
+    }
+
+
 	/**
 	 * Render the settings page for this plugin.
 	 *
@@ -190,6 +212,7 @@ class NewsletterCampaignAdmin {
 		include_once( 'views/admin.php' );
 
 	}
+
 
 	/**
 	 * Add settings action link to the plugins page.
