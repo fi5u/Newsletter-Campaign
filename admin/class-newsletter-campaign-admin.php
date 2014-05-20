@@ -72,9 +72,6 @@ class NewsletterCampaignAdmin {
         // Create meta boxes
         $this->create_meta_boxes();
 
-        // Remove add media button
-        add_action( 'admin_head', array($this,'removeAddMediaButton') );
-
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
@@ -270,21 +267,6 @@ class NewsletterCampaignAdmin {
 
         add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );
         add_action( 'save_post', 'newsletter_campaign_save_meta_boxes', 10, 2 );
-
-    }
-
-    /**
-     * Remove add media button from post types
-     *
-     * @since    0.0.0
-     */
-    public static function removeAddMediaButton() {
-        global $post;
-        $post_type = $post->post_type;
-
-        if( $post_type === 'subscriber' ) {
-            remove_action( 'media_buttons', 'media_buttons' );
-        }
 
     }
 
