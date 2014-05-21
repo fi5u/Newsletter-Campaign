@@ -67,6 +67,8 @@ class Newsletter_campaign_meta_box_generator {
             echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'" placeholder="'. $title .'">';
             echo esc_attr( $value );
             echo '</textarea>';
+        } else if ($type === 'multi') {
+
         } else {
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'"';
             echo ' value="' . esc_attr( $value ) . '" placeholder="'. $title .'">';
