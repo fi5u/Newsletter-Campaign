@@ -92,11 +92,12 @@ class Newsletter_campaign_meta_box_generator {
         } else if ($type === 'multi') {
             $subfields = $metabox['args']['subfields'];
 
+            // Set up an incrementor so we know when to add a line break
             $i = 0;
             foreach ($subfields as $subfield) {
                 wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'_box_nonce' );
                 $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
-
+                // If not the first iteration, add a line break
                 if ($i !== 0) {
                     echo '<br>';
                 }
