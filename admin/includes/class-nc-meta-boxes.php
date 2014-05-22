@@ -93,7 +93,6 @@ class Newsletter_campaign_meta_box_generator {
             $subfields = $metabox['args']['subfields'];
 
             $i = 0;
-            echo '<div id="metabox_multiple" style="display: block;">';
             foreach ($subfields as $subfield) {
                 wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'_box_nonce' );
                 $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
@@ -111,7 +110,7 @@ class Newsletter_campaign_meta_box_generator {
                 }
                 $i++;
             }
-            echo '</div>';
+
         } else {
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'"';
             echo ' value="' . esc_attr( $value ) . '" placeholder="'. $title .'">';
