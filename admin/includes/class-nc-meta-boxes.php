@@ -33,23 +33,28 @@ class Newsletter_campaign_meta_box_generator {
 
         if (is_array($field)) {
             // Subfields have been passed
+
+            // Set up an incrementor to number the inputs
+            $i = 1;
+
             foreach ($field as $field_item) {
-                if ( ! isset( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item .'_box_nonce'] ) ) {
+                if ( ! isset( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item . '_' . $i .'_box_nonce'] ) ) {
                     return $post_id;
                 }
 
-                $nonce = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item .'_box_nonce'];
+                $nonce = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item . '_' . $i .'_box_nonce'];
 
-                if ( ! wp_verify_nonce( $nonce, 'newsletter_campaign_' . $post_type . '_' . $field_item . '_box' ) ) {
+                if ( ! wp_verify_nonce( $nonce, 'newsletter_campaign_' . $post_type . '_' . $field_item . '_' . $i . '_box' ) ) {
                     return $post_id;
                 }
 
                 // Sanitize the user input.
-                $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] );
+                $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item . '_' . $i] );
 
                 // Update the meta field.
-                update_post_meta( $post_id, '_' . $post_type . '_' . $field_item, $data );
+                update_post_meta( $post_id, '_' . $post_type . '_' . $field_item . '_' . $i, $data );
             }
+            $i++;
         } else {
             // A single field has been passed to save
             if ( ! isset( $_POST['newsletter_campaign_' . $post_type . '_' . $field .'_box_nonce'] ) ) {
@@ -92,21 +97,21 @@ class Newsletter_campaign_meta_box_generator {
         } else if ($type === 'multi') {
             $subfields = $metabox['args']['subfields'];
 
-            // Set up an incrementor so we know when to add a line break
-            $i = 0;
+            // Set up an incrementor to number the inputs and so we know when to add a line break
+            $i = 1;
             foreach ($subfields as $subfield) {
-                wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'_box_nonce' );
-                $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
+                wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i .'_box_nonce' );
+                $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'] . '_' . $i, true );
                 // If not the first iteration, add a line break
-                if ($i !== 0) {
+                if ($i > 1) {
                     echo '<br>';
                 }
                 if ($subfield['type'] === 'textarea') {
-                    echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" placeholder="'. $subfield['title'] .'">';
+                    echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i .'" placeholder="'. $subfield['title'] .'">';
                     echo esc_attr( $value );
                     echo '</textarea>';
                 } else {
-                    echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'"';
+                    echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i .'" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_' . $i .'"';
                     echo ' value="' . esc_attr( $value ) . '" placeholder="'. $subfield['title'] .'">';
                 }
                 $i++;
