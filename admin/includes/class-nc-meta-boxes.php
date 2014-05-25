@@ -81,12 +81,12 @@ class Newsletter_campaign_meta_box_generator {
             $type = 'text';
         }
 
-        wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
+        wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field .'_box_nonce' );
 
         $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
 
         if ($type === 'textarea') {
-            echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '" placeholder="' . esc_attr( $title ) . '">';
+            echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'" placeholder="'. $title .'">';
             echo esc_attr( $value );
             echo '</textarea>';
         } else if ($type === 'multi') {
@@ -95,26 +95,26 @@ class Newsletter_campaign_meta_box_generator {
             // Set up an incrementor so we know when to add a line break
             $i = 0;
             foreach ($subfields as $subfield) {
-                wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box_nonce' );
+                wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'_box_nonce' );
                 $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
                 // If not the first iteration, add a line break
                 if ($i !== 0) {
                     echo '<br>';
                 }
                 if ($subfield['type'] === 'textarea') {
-                    echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                    echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" placeholder="'. $subfield['title'] .'">';
                     echo esc_attr( $value );
                     echo '</textarea>';
                 } else {
-                    echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '"';
-                    echo ' value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                    echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] .'"';
+                    echo ' value="' . esc_attr( $value ) . '" placeholder="'. $subfield['title'] .'">';
                 }
                 $i++;
             }
 
         } else {
-            echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';
-            echo ' value="' . esc_attr( $value ) . '" placeholder="'. esc_attr( $title ) . '">';
+            echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field .'"';
+            echo ' value="' . esc_attr( $value ) . '" placeholder="'. $title .'">';
         }
     }
 }
