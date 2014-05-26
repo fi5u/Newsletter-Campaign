@@ -130,7 +130,7 @@ class Newsletter_campaign_meta_box_generator {
                     $subfield_i = 0;
 
                     // Build the container HTML
-                    echo '<div class="nc-repeater__item">';
+                    echo '<div class="nc-repeater__item" draggable="true">';
 
                     // For each field get the array of values stored for it
                     foreach ($subfields as $subfield) {
@@ -151,7 +151,7 @@ class Newsletter_campaign_meta_box_generator {
                     }
 
                     // End div.nc-repeater__item
-                    echo "</div>";
+                    echo '</div>';
                 }
 
             } else { // Nothing saved in the repeater field yet
@@ -162,7 +162,7 @@ class Newsletter_campaign_meta_box_generator {
                 $subfield_i = 0;
 
                 // Build the container HTML
-                echo '<div class="nc-repeater__item">';
+                echo '<div class="nc-repeater__item" draggable="true">';
 
                 // For each field get the array of values stored for it
                 foreach ($subfields as $subfield) {
