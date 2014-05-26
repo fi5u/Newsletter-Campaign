@@ -124,6 +124,7 @@ class Newsletter_campaign_meta_box_generator {
             // Fetch the multi field array data from post meta
             $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
 
+            echo '<div class="nc-repeater__item">';
             // For each field get the array of values stored for it
             foreach ($subfields as $subfield) {
 
@@ -165,6 +166,13 @@ class Newsletter_campaign_meta_box_generator {
 
                 }
             }
+            echo "</div>";
+            ?>
+            <div class="nc-repeater__btn-row">
+                <button type="button" id="nc_repeater_btn_add">Add row</button>
+            </div>
+
+            <?php
 
         } else {
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';
