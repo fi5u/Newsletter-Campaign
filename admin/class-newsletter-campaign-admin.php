@@ -150,6 +150,8 @@ class NewsletterCampaignAdmin {
 		}
 
 		$screen = get_current_screen();
+
+        //TODO: The conditional doesn't work, needs fixing
 		//if ( $this->plugin_screen_hook_suffix == $screen->id ) {
 			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), NewsletterCampaign::VERSION );
 		//}

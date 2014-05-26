@@ -60,7 +60,9 @@ class Newsletter_campaign_meta_box_generator {
                 $count = count($_POST['newsletter_campaign_' . $post_type . '_' . $field_item]);
                 // Loop through each of the repeatable items, adding its data to the array
                 for ( $i = 0; $i < $count; $i++ ) {
-                    if ( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] != '' ) {
+
+                    // Don't save if empty
+                    if ( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] != '' ) {
                         // Sanitize the user input.
                         $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] );
                         $repeatable_arr[$i]['newsletter_campaign_' . $post_type . '_' . $field_item] = $data;
@@ -116,65 +118,80 @@ class Newsletter_campaign_meta_box_generator {
 
         } else if ($type === 'multi') {
 
-            $subfields = $metabox['args']['subfields'];
-
-            // Set an incrementor to count each subfield we iterate over
-            $subfield_i = 0;
-
             // Fetch the multi field array data from post meta
             $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
 
-            echo '<div class="nc-repeater__item">';
-            // For each field get the array of values stored for it
-            foreach ($subfields as $subfield) {
+            if ( $meta_vals ) {
 
-                // Only output if some data has been saved
-                if( $meta_vals && is_array($meta_vals) ) {
-                    foreach ($meta_vals as $meta_val) {
+                foreach ($meta_vals as $meta_val) {
+                    $subfields = $metabox['args']['subfields'];
 
-                        if ( $meta_val ) {
+                    // Set an incrementor to count each subfield we iterate over
+                    $subfield_i = 0;
 
-                            // If not the first iteration, add a line break
-                            if ($subfield_i !== 0) {
-                                echo '<br>';
-                            }
-                            if ($subfield['type'] === 'textarea') {
-                                echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                                echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
-                                echo '</textarea>';
-                            } else {
-                                echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-                                echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                            }
-                            $subfield_i++;
+                    // Build the container HTML
+                    echo '<div class="nc-repeater__item">';
 
+                    // For each field get the array of values stored for it
+                    foreach ($subfields as $subfield) {
+
+                        // If not the first iteration, add a line break
+                        if ($subfield_i !== 0) {
+                            echo '<br>';
                         }
+                        if ($subfield['type'] === 'textarea') {
+                            echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                            echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
+                            echo '</textarea>';
+                        } else {
+                            echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                            echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                        }
+                        $subfield_i++;
                     }
-                } else { // Nothing saved in the repeater field yet
 
+                    // End div.nc-repeater__item
+                    echo "</div>";
+                }
+
+            } else { // Nothing saved in the repeater field yet
+
+                $subfields = $metabox['args']['subfields'];
+
+                // Set an incrementor to count each subfield we iterate over
+                $subfield_i = 0;
+
+                // Build the container HTML
+                echo '<div class="nc-repeater__item">';
+
+                // For each field get the array of values stored for it
+                foreach ($subfields as $subfield) {
                     // If not the first iteration, add a line break
                     if ($subfield_i !== 0) {
                         echo '<br>';
                     }
                     if ($subfield['type'] === 'textarea') {
-                        echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '"></textarea>';
+                        echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '"></textarea>';
                     } else {
-                        echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                        echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
                         echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
                     }
                     $subfield_i++;
-
                 }
+
+                // End div.nc-repeater__item
+                echo "</div>";
+
             }
-            echo "</div>";
+
+            // Print out the button row
             ?>
             <div class="nc-repeater__btn-row">
                 <button type="button" id="nc_repeater_btn_add">Add row</button>
             </div>
-
             <?php
 
-        } else {
+        } else { // Use default type of text
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';
             echo ' value="' . esc_attr( $value ) . '" placeholder="'. esc_attr( $title ) . '">';
         }

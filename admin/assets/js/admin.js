@@ -8,9 +8,9 @@
          */
 
         $('#nc_repeater_btn_add').click(function(e) {
-            var repeaterClone = $('.nc-repeater__item').clone();
+            var repeaterClone = $('.nc-repeater__item').first().clone();
             repeaterClone.find('input, textarea').val('');
-            repeaterClone.appendTo('.nc-repeater__item');
+            repeaterClone.insertBefore('.nc-repeater__btn-row');
             e.preventDefault();
         })
 
