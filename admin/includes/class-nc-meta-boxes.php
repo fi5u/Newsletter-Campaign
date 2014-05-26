@@ -76,8 +76,10 @@ class Newsletter_campaign_meta_box_generator {
                 // Sanitize the user input.
                 //$data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] );
                 $data = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item];
+
                 // Update the meta field.
                 update_post_meta( $post_id, '_' . $post_type . '_' . $field_item, $data );
+                /*print_r(get_post_meta( $post_id, '_' . $post_type . '_' . $field_item, true ));*/
             }
         } else {
             // A single field has been passed to save
@@ -124,25 +126,43 @@ class Newsletter_campaign_meta_box_generator {
         } else if ($type === 'multi') {
             // temp: needs to be in the format of: '_' . $post_type . '_' . $field_item
 
-            // Store all the multiple values
-            $i = 0;
-            $value = [];
-
             $subfields = $metabox['args']['subfields'];
+            $repeater_field = array();
+            $subfield_i = 0;
+
             foreach ($subfields as $subfield) {
-                if (get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true )) {
-                    $value[$i] = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
-                    $i++;
+                // For each field get the array of values stored for it
+                $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
+
+                // Only output if some data has been saved
+                if( $meta_vals ) {
+                    foreach ($meta_vals as $meta_val) {
+                        if ( $meta_val && $meta_val !== '' ) {
+
+                            // If not the first iteration, add a line break
+                            if ($subfield_i !== 0) {
+                                echo '<br>';
+                            }
+                            if ($subfield['type'] === 'textarea') {
+                                echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                                echo esc_attr( $meta_val );
+                                echo '</textarea>';
+                            } else {
+                                echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                                echo ' value="' . esc_attr( $meta_val ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                            }
+                            $subfield_i++;
+
+                        }
+                    }
                 }
             }
 
-            if($value) {
-                print_r($value);
+            /*if($value) {
                 // Set up an incrementor to loop through repeatable items
                 $repeatable_i = 0;
 
                 foreach ($value as $repeatable_item) {
-
                     // Set up an incrementor so we know when to add a line break
                     $i = 0;
                     foreach ($subfields as $subfield) {
@@ -152,11 +172,11 @@ class Newsletter_campaign_meta_box_generator {
                         }
                         if ($subfield['type'] === 'textarea') {
                             echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                            echo esc_attr( $repeatable_item[$repeatable_i] );
+                            echo esc_attr( $repeatable_item[$i] );
                             echo '</textarea>';
                         } else {
                             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-                            echo ' value="' . esc_attr( $repeatable_item[$repeatable_i] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                            echo ' value="' . esc_attr( $repeatable_item[$i] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
                         }
                         $i++;
                     }
@@ -183,7 +203,7 @@ class Newsletter_campaign_meta_box_generator {
                     }
                     $i++;
                 }
-            }
+            }*/
 
         } else {
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';
