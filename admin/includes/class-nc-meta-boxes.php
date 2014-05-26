@@ -130,13 +130,14 @@ class Newsletter_campaign_meta_box_generator {
 
             $subfields = $metabox['args']['subfields'];
             foreach ($subfields as $subfield) {
-                //if (get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true )) {
+                if (get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true )) {
                     $value[$i] = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
                     $i++;
-                //}
+                }
             }
 
             if($value) {
+                print_r($value);
                 // Set up an incrementor to loop through repeatable items
                 $repeatable_i = 0;
 
