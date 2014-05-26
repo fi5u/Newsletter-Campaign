@@ -17,6 +17,11 @@ class Newsletter_campaign_meta_box_generator {
     }
 
     public function nc_save_meta_box( $post_id, $post_type, $field ) {
+        $screen = get_current_screen();
+        if ( $post_type !== $screen->post_type ) {
+            return $post_id;
+        }
+
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return $post_id;
         }
@@ -31,22 +36,44 @@ class Newsletter_campaign_meta_box_generator {
             }
         }
 
+
+/*?><table>
+<?php
+
+    foreach ($_POST as $key => $value) {
+        echo "<tr>";
+        echo "<td>";
+        echo $key;
+        echo "</td>";
+        echo "<td>";
+        if(is_array($value)) {
+            print_r($value);
+        } else {
+            echo $value;
+        }
+        echo "</td>";
+        echo "</tr>";
+    }
+
+?>
+</table><?php*/
+
         if (is_array($field)) {
             // Subfields have been passed
             foreach ($field as $field_item) {
-                if ( ! isset( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item .'_box_nonce'] ) ) {
+                if ( ! isset( $_POST['newsletter_campaign_' . $post_type . '_multi_box_nonce'] ) ) {
                     return $post_id;
                 }
 
-                $nonce = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item .'_box_nonce'];
+                $nonce = $_POST['newsletter_campaign_' . $post_type . '_multi_box_nonce'];
 
-                if ( ! wp_verify_nonce( $nonce, 'newsletter_campaign_' . $post_type . '_' . $field_item . '_box' ) ) {
+                if ( ! wp_verify_nonce( $nonce, 'newsletter_campaign_' . $post_type . '_multi_box' ) ) {
                     return $post_id;
                 }
 
                 // Sanitize the user input.
-                $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] );
-
+                //$data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] );
+                $data = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item];
                 // Update the meta field.
                 update_post_meta( $post_id, '_' . $post_type . '_' . $field_item, $data );
             }
@@ -81,35 +108,78 @@ class Newsletter_campaign_meta_box_generator {
             $type = 'text';
         }
 
-        wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
-
-        $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
+        if ($type !== 'multi') {
+            wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
+            $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
+        } else {
+            wp_nonce_field( 'newsletter_campaign_' . $post_type . '_multi_box', 'newsletter_campaign_' . $post_type . '_multi_box_nonce' );
+        }
 
         if ($type === 'textarea') {
             echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '" placeholder="' . esc_attr( $title ) . '">';
             echo esc_attr( $value );
             echo '</textarea>';
         } else if ($type === 'multi') {
-            $subfields = $metabox['args']['subfields'];
+            // temp: needs to be in the format of: '_' . $post_type . '_' . $field_item
 
-            // Set up an incrementor so we know when to add a line break
+            // Store all the multiple values
             $i = 0;
+            $value = [];
+
+            $subfields = $metabox['args']['subfields'];
             foreach ($subfields as $subfield) {
-                wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box', 'newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '_box_nonce' );
-                $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
-                // If not the first iteration, add a line break
-                if ($i !== 0) {
-                    echo '<br>';
+                //if (get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true )) {
+                    $value[$i] = get_post_meta( $post->ID, '_' . $post_type . '_' . $subfield['field'], true );
+                    $i++;
+                //}
+            }
+
+            if($value) {
+                // Set up an incrementor to loop through repeatable items
+                $repeatable_i = 0;
+
+                foreach ($value as $repeatable_item) {
+
+                    // Set up an incrementor so we know when to add a line break
+                    $i = 0;
+                    foreach ($subfields as $subfield) {
+                        // If not the first iteration, add a line break
+                        if ($i !== 0) {
+                            echo '<br>';
+                        }
+                        if ($subfield['type'] === 'textarea') {
+                            echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                            echo esc_attr( $repeatable_item[$repeatable_i] );
+                            echo '</textarea>';
+                        } else {
+                            echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                            echo ' value="' . esc_attr( $repeatable_item[$repeatable_i] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                        }
+                        $i++;
+                    }
+                    $repeatable_i++;
                 }
-                if ($subfield['type'] === 'textarea') {
-                    echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                    echo esc_attr( $value );
-                    echo '</textarea>';
-                } else {
-                    echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '"';
-                    echo ' value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+            } else {
+
+                // Nothing yet saved in multi
+                // Set up an incrementor so we know when to add a line break
+                $i = 0;
+
+                $subfields = $metabox['args']['subfields'];
+                foreach ($subfields as $subfield) {
+                    // If not the first iteration, add a line break
+                    if ($i !== 0) {
+                        echo '<br>';
+                    }
+                    if ($subfield['type'] === 'textarea') {
+                        echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                        echo '</textarea>';
+                    } else {
+                        echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                        echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                    }
+                    $i++;
                 }
-                $i++;
             }
 
         } else {
