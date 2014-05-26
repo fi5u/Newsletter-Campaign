@@ -75,7 +75,7 @@ class Newsletter_campaign_meta_box_generator {
 
                 // Sanitize the user input.
                 //$data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item] );
-                $data = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item];
+                $data = $_POST['newsletter_campaign_' . $post_type . '_' . $field_item . '[]'];
 
                 // Update the meta field.
                 update_post_meta( $post_id, '_' . $post_type . '_' . $field_item, $data );
@@ -155,6 +155,18 @@ class Newsletter_campaign_meta_box_generator {
 
                         }
                     }
+                } else {
+                    // If not the first iteration, add a line break
+                    if ($subfield_i !== 0) {
+                        echo '<br>';
+                    }
+                    if ($subfield['type'] === 'textarea') {
+                        echo '<textarea id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '"></textarea>';
+                    } else {
+                        echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                        echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
+                    }
+                    $subfield_i++;
                 }
             }
 
