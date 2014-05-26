@@ -26,14 +26,16 @@ class Newsletter_campaign_meta_box_generator {
             return $post_id;
         }
 
-        if ( $post_type == $_POST['post_type'] ) {
-            if ( ! current_user_can( 'edit_page', $post_id ) ) {
-                return $post_id;
-            }
-        } else {
-            if ( ! current_user_can( 'edit_post', $post_id ) ) {
-                return $post_id;
-            }
+        if ( !isset($_POST['post_type']) ) {
+            return $post_id;
+        }
+
+        if ( $post_type !== $_POST['post_type'] ) {
+            return $post_id;
+        }
+
+        if ( ! current_user_can( 'edit_page', $post_id ) ) {
+            return $post_id;
         }
 
 
