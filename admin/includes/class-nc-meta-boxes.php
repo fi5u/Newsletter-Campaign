@@ -121,17 +121,22 @@ class Newsletter_campaign_meta_box_generator {
             // Build the container div
             echo '<div class="nc-repeater">';
 
+            // Add an empty drop area at the start
+            echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;border:1px solid darkgray;margin:10px 0;"></div>';
+
             // Fetch the multi field array data from post meta
             $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
 
             if ( $meta_vals ) {
 
                 foreach ($meta_vals as $meta_val) {
-                    echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;">';
 
                     $subfields = $metabox['args']['subfields'];
                     // Set an incrementor to count each subfield we iterate over
                     $subfield_i = 0;
+
+                    // Add the drop area that surrounds each repeater item
+                    echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;border:1px solid darkgray;margin:10px 0;">';
 
                     // Build the container HTML
                     echo '<div class="nc-repeater__item">';
@@ -159,6 +164,9 @@ class Newsletter_campaign_meta_box_generator {
 
                     // End div.nc-repeater__droparea
                     echo '</div>';
+
+                    // Add an empty drop area after the repeater
+                    echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;border:1px solid darkgray;margin:10px 0;"></div>';
                 }
 
             } else { // Nothing saved in the repeater field yet
@@ -167,6 +175,9 @@ class Newsletter_campaign_meta_box_generator {
 
                 // Set an incrementor to count each subfield we iterate over
                 $subfield_i = 0;
+
+                // Add the drop area that surrounds each repeater item
+                echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;border:1px solid darkgray;margin:10px 0;">';
 
                 // Build the container HTML
                 echo '<div class="nc-repeater__item">';
@@ -189,10 +200,13 @@ class Newsletter_campaign_meta_box_generator {
                 // End div.nc-repeater__item
                 echo '</div>';
 
-            }
+                // End div.nc-repeater__droparea
+                echo '</div>';
 
-            // Add an empty drop area
-            echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;"></div>';
+                // Add an empty drop area after the repeater
+                echo '<div class="nc-repeater__droparea" style="min-height:50px;background:#eee;border:1px solid darkgray;margin:10px 0;"></div>';
+
+            }
 
             // End div.nc-repeater
             echo '</div>';
