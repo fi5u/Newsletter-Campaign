@@ -162,7 +162,7 @@ class NewsletterCampaignAdmin {
                           'jquery-ui-droppable',
                           'jquery-ui-sortable');
 
-        	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), $deps, NewsletterCampaign::VERSION );
+        	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), $deps, NewsletterCampaign::VERSION, true );
 
         //}
 
