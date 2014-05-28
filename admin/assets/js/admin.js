@@ -66,6 +66,15 @@
             repeaterItem.css({top:newTop,left:newLeft}).animate({top:0,left:0});
         }
 
+        function removeExcessDropAreas() {
+            $('.nc-repeater__droparea').each(function() {
+                // If there is two empty dropareas together, remove the second one
+                if($(this).is(':empty') && $(this).next('.nc-repeater__droparea').is(':empty')) {
+                    $(this).next('.nc-repeater__droparea').remove();
+                }
+            });
+        }
+
         $('#nc_repeater_btn_add').click(function(e) {
 
             var repeaterClone = $('.nc-repeater__item').first().closest('.nc-repeater__droparea').clone();
@@ -81,6 +90,7 @@
                 accept: ".nc-repeater__item",
                 drop: function( event, ui ) {
                     repeaterDrop($(this), event, ui);
+                    removeExcessDropAreas();
                 }
             });
 
@@ -112,6 +122,7 @@
             accept: ".nc-repeater__item",
             drop: function( event, ui ) {
                 repeaterDrop($(this), event, ui);
+                removeExcessDropAreas();
             }
         }).sortable({
             items: '.nc-repeater__item:not(.placeholder)',
