@@ -154,15 +154,15 @@ class NewsletterCampaignAdmin {
         //TODO: The conditional doesn't work, needs fixing
 		//if ( $this->plugin_screen_hook_suffix == $screen->id ) {
 
-            $deps = array('jquery',
-                          'jquery-ui-core',
-                          'jquery-ui-widget',
-                          'jquery-ui-mouse',
-                          'jquery-ui-draggable',
-                          'jquery-ui-droppable',
-                          'jquery-ui-sortable');
+            $repeater_deps = array( 'jquery',
+                                    'jquery-ui-core',
+                                    'jquery-ui-widget',
+                                    'jquery-ui-mouse',
+                                    'jquery-ui-draggable',
+                                    'jquery-ui-droppable');
 
-        	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), $deps, NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-repeater-script', plugins_url( 'assets/js/repeater.js', __FILE__ ), $repeater_deps, NewsletterCampaign::VERSION, true );
+        	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
 
         //}
 

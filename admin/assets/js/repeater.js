@@ -1,7 +1,7 @@
 (function ( $ ) {
-	"use strict";
+    "use strict";
 
-	$(function () {
+    $(function () {
 
         /*
          * REPEATER FIELD
@@ -276,6 +276,6 @@
 
         $('.nc-repeater__droparea:not(:has(.nc-repeater__item))').droppable(droppableAttr)/*.sortable(sortableAttr)*/;
 
-	});
+    });
 
 }(jQuery));
