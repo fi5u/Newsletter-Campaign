@@ -12,11 +12,13 @@
 
         /* SCOPED VARIABLES */
 
+            // List the input types used in the repeater
         var inputTypes = [
             'input[type="text"]',
             'textarea'
             ],
 
+            // Store offsets for dragging
             dragAreaOffset = $('.nc-repeater').offset(),
             dropMarginTop = parseInt($('.nc-repeater__droparea').css('marginTop')),
             dropMarginLeft = parseInt($('.nc-repeater__droparea').css('marginLeft')),
@@ -31,7 +33,15 @@
             droppableAttr = {
                 activeClass: 'ui-state-default',
                 hoverClass: 'ui-state-hover',
-                accept: '.nc-repeater__item',
+                accept: function() {
+                    // If the drop area already has a repeater item, do not drop
+                    var $this = $(this);
+                    if ($this.has('.nc-repeater__item').length) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
                 drop: function( event, ui ) {
                     repeaterDrop($(this), event, ui);
                     removeExcessDropAreas();
@@ -39,11 +49,11 @@
             },
 
             sortableAttr = {
-                items: '.nc-repeater__item:not(.placeholder)',
+                items: '.nc-repeater__item',
                 sort: function() {
                     // gets added unintentionally by droppable interacting with sortable
                     // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
-                    $( this ).removeClass('ui-state-default');
+                    $(this).removeClass('ui-state-default');
                 }
             };
 
@@ -131,7 +141,7 @@
             }
 
             // Bind it to droppable
-            repeaterClone.droppable(droppableAttr).sortable(sortableAttr);;
+            repeaterClone.droppable(droppableAttr)/*.sortable(sortableAttr)*/;
 
             // Bind it to draggable
             repeaterClone.find('.nc-repeater__item').draggable(draggableAttr);
@@ -203,8 +213,8 @@
             $('.nc-repeater__droparea').first().clone().empty().appendTo('.nc-repeater');
             repeaterToggleAddRow(true);
 
-            // Bind it to droppable
-            repeaterClone.droppable(droppableAttr).sortable(sortableAttr);;
+            // Bind it to sortable
+            //repeaterClone.sortable(sortableAttr);
 
             // Bind it to draggable
             repeaterClone.find('.nc-repeater__item').draggable(draggableAttr);
@@ -261,10 +271,10 @@
 
 
         /*
-         * Bind all repeater items to jquery ui droppable and sortable
+         * Bind all empty repeater drop areas to jquery ui droppable and sortable
          */
 
-        $('.nc-repeater__droparea').droppable(droppableAttr).sortable(sortableAttr);
+        $('.nc-repeater__droparea:not(:has(.nc-repeater__item))').droppable(droppableAttr)/*.sortable(sortableAttr)*/;
 
 	});
 
