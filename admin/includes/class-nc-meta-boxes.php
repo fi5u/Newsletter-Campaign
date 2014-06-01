@@ -143,21 +143,15 @@ class Newsletter_campaign_meta_box_generator {
 
                     // For each field get the array of values stored for it
                     foreach ($subfields as $subfield) {
+                        // Output the repeater item html
+                        $this->output_repeater_item($subfield_i, $subfield, $post_type, $meta_val);
 
-                        // If not the first iteration, add a line break
-                        if ($subfield_i !== 0) {
-                            echo '<br>';
-                        }
-                        if ($subfield['type'] === 'textarea') {
-                            echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                            echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
-                            echo '</textarea>';
-                        } else {
-                            echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-                            echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                        }
+                        // Increment the incrementor
                         $subfield_i++;
                     }
+
+                    // Outputs the delete button
+                    $this->output_delete_button();
 
                     // End div.nc-repeater__item
                     echo '</div>';
@@ -184,18 +178,15 @@ class Newsletter_campaign_meta_box_generator {
 
                 // For each field get the array of values stored for it
                 foreach ($subfields as $subfield) {
-                    // If not the first iteration, add a line break
-                    if ($subfield_i !== 0) {
-                        echo '<br>';
-                    }
-                    if ($subfield['type'] === 'textarea') {
-                        echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '"></textarea>';
-                    } else {
-                        echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-                        echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
-                    }
+                    // Output the repeater item html
+                    $this->output_repeater_item($subfield_i, $subfield, $post_type);
+
+                    // Increment the incrementor
                     $subfield_i++;
                 }
+
+                // Outputs the delete button
+                $this->output_delete_button();
 
                 // End div.nc-repeater__item
                 echo '</div>';
@@ -237,5 +228,46 @@ class Newsletter_campaign_meta_box_generator {
             $returnStr .= '</div>';
         }
         return $returnStr;
+    }
+
+
+    /*
+     * Outputs the html for the repeater item
+     * Param:   incrementor(int)
+     *          subfield(str)
+     *          post_type(str)
+     *          meta_val(str)
+     */
+
+    private function output_repeater_item($subfield_i, $subfield, $post_type, $meta_val = null) {
+
+        // If not the first iteration, add a line break
+        if ($subfield_i !== 0) {
+            echo '<br>';
+        }
+        if ($subfield['type'] === 'textarea') {
+            echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
+            if($meta_val) {
+                echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
+            }
+            echo '</textarea>';
+        } else {
+            echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+            if($meta_val) {
+                echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '"';
+            }
+            echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
+        }
+    }
+
+
+    /*
+     * Outputs the delete button html
+     */
+
+    private function output_delete_button() {
+
+        echo '<button type="button" class="button nc-repeater__droparea-delete">' . __('delete', 'newsletter-campaign') . '</button>';
+
     }
 }

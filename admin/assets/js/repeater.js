@@ -196,6 +196,8 @@
             // Proceed to add in extra drop areas
             addDropAreas();
 
+            // Check repeater quantity to disable delete button if needed
+            checkRepeaterQty();
         }
 
 
@@ -219,6 +221,40 @@
             // Bind it to draggable
             repeaterClone.find('.nc-repeater__item').draggable(draggableAttr);
 
+            // Check repeater quantity to undisable delete button if needed
+            checkRepeaterQty();
+
+        }
+
+
+        function checkRepeaterQty() {
+            var repeaterQty = $('.nc-repeater__item').length;
+
+            if (repeaterQty <= 1) {
+                $('.nc-repeater__droparea-delete').attr('disabled','true');
+            }
+            if (repeaterQty > 1) {
+                $('.nc-repeater__droparea-delete').removeAttr('disabled');
+            }
+
+            if (repeaterIsEmpty() === false) {
+
+                repeaterToggleAddRow(false);
+
+            }
+        }
+
+
+        /*
+         * Delete repeater item
+         * Param    jquery object
+         */
+
+        function deleteRepeater($repeaterBtn, cb) {
+
+            $repeaterBtn.closest('.nc-repeater__droparea').remove();
+            if (cb) cb();
+
         }
 
 
@@ -233,6 +269,12 @@
             repeaterToggleAddRow(false);
 
         }
+
+
+        /*
+         * Check set repeater delete button to disabled
+         */
+        checkRepeaterQty();
 
 
         /* EVENTS */
@@ -267,6 +309,7 @@
         /*
          * Bind all repeater items to jquery ui draggable
          */
+
         $('.nc-repeater__item').draggable(draggableAttr);
 
 
@@ -276,6 +319,16 @@
 
         $('.nc-repeater__droparea:not(:has(.nc-repeater__item))').droppable(droppableAttr)/*.sortable(sortableAttr)*/;
 
+
+        /*
+         * Delete drop area when delete button pressed
+         */
+
+        $('body').on('click', '.nc-repeater__droparea-delete', function() {
+
+            deleteRepeater($(this), removeExcessDropAreas);
+
+        });
     });
 
 }(jQuery));
