@@ -345,6 +345,12 @@ class NewsletterCampaignAdmin {
                                         'title' => __('Description', 'newsletter-campaign'),
                                         'type' => 'textarea')
             );
+            $add_class->nc_add_meta_box( 'nc-campaign-template-select-add', __('Template', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+                                        'post_type' => 'campaign',
+                                        'field' => 'template-select',
+                                        'title' => __('Template', 'newsletter-campaign'),
+                                        'type' => 'select')
+            );
 
         }
 
@@ -366,6 +372,7 @@ class NewsletterCampaignAdmin {
 
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
 
         }
 
