@@ -116,6 +116,57 @@ class Newsletter_campaign_meta_box_generator {
             echo esc_attr( $value );
             echo '</textarea>';
 
+        } else if ($type === 'select') {
+
+            // Get the array of options available keys should be ID and post_title
+            $select_options = $metabox['args']['select_options'];
+
+            // The key or value are not set issue error and do not render select
+            if (!isset($metabox['args']['key']) || !isset($metabox['args']['value'])) {
+                echo 'Error: key and value not set';
+            } else { // Key and value are set
+
+                $select_key = $metabox['args']['key'];
+                $select_value = $metabox['args']['value'];
+
+                if ($select_options) {
+                    echo '<select name="newsletter_campaign_' . $post_type . '_' . $field . '">';
+
+                    // Add a blank option
+                    $title_lower = strtolower($metabox['args']['title']);
+                    echo '<option>' . sprintf( __('Select %s', 'newsletter-campaign'), $title_lower ) . '</option>';
+
+                    // Loop through and output options
+                    foreach ($select_options as $option) {
+                        echo '<option value="' . $option->$select_key . '"';
+                        if ($value == $option->$select_key) {
+                            echo ' selected';
+                        }
+                        echo '>' . $option->$select_value . '</option>';
+                    }
+                    echo '</select>';
+                } else { // No options found
+                    if ($metabox['args']['not_found']) {
+                        echo '<p>';
+                        $i = 0;
+                        $not_found_qty = count($metabox['args']['not_found']);
+                        foreach ($metabox['args']['not_found'] as $not_found_line) {
+                            echo $not_found_line;
+
+                            // Add a line break to every line except last line
+                            if ($i !== $not_found_qty-1) {
+                                echo '<br>';
+                            }
+                            $i++;
+                        }
+                        echo '</p>';
+                    } else { // If no not found lines passed
+                        echo __('Not found', 'newsletter-campaign');
+                    }
+                }
+
+            }
+
         } else if ($type === 'multi') {
 
             // Build the container div

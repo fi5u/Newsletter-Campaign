@@ -296,60 +296,74 @@ class NewsletterCampaignAdmin {
 
             // Subscribers
             $add_class->nc_add_meta_box( 'nc-subscriber-name-add', __('Name', 'newsletter-campaign'), 'nc_render_meta_box', 'subscriber', 'normal', 'high', array(
-                                        'post_type' => 'subscriber',
-                                        'field' => 'name',
-                                        'title' => __('Name', 'newsletter-campaign')
-                                        )
+                'post_type' => 'subscriber',
+                'field' => 'name',
+                'title' => __('Name', 'newsletter-campaign')
+                )
             );
             $add_class->nc_add_meta_box( 'nc-subscriber-notes-add', __('Notes', 'newsletter-campaign'), 'nc_render_meta_box', 'subscriber', 'normal', 'high', array(
-                                        'post_type' => 'subscriber',
-                                        'field' => 'notes',
-                                        'title' => __('Notes','newsletter-campaign'),
-                                        'type' => 'textarea'
-                                        )
+                'post_type' => 'subscriber',
+                'field' => 'notes',
+                'title' => __('Notes','newsletter-campaign'),
+                'type' => 'textarea'
+                )
             );
 
             // Templates
             $add_class->nc_add_meta_box( 'nc-template-base-html-add', __('Base HTML', 'newsletter-campaign'), 'nc_render_meta_box', 'template', 'normal', 'high', array(
-                                        'post_type' => 'template',
-                                        'field' => 'base-html',
-                                        'title' => __('Base HTML', 'newsletter-campaign'),
-                                        'type' => 'textarea')
+                'post_type' => 'template',
+                'field' => 'base-html',
+                'title' => __('Base HTML', 'newsletter-campaign'),
+                'type' => 'textarea')
             );
             $add_class->nc_add_meta_box( 'nc-template-post-html-add', __('Post HTML', 'newsletter-campaign'), 'nc_render_meta_box', 'template', 'normal', 'high', array(
-                                        'post_type' => 'template',
-                                        'field' => 'post-html',
-                                        'title' => __('Post HTML', 'newsletter-campaign'),
-                                        'type' => 'textarea')
+                'post_type' => 'template',
+                'field' => 'post-html',
+                'title' => __('Post HTML', 'newsletter-campaign'),
+                'type' => 'textarea')
             );
             $add_class->nc_add_meta_box( 'nc-template-special-posts-add', __('Special Posts', 'newsletter-campaign'), 'nc_render_meta_box', 'template', 'normal', 'high', array(
-                                        'post_type' => 'template',
-                                        'field' => 'special-posts',
-                                        'title' => __('Special Posts','newsletter-campaign'),
-                                        'type' => 'multi',
-                                        'subfields' => array(
-                                                             array('field' => 'special-name',
-                                                                   'title' => __('Name', 'newsletter-campaign'),
-                                                                   'type' => 'text'),
-                                                             array('field' => 'special-body',
-                                                                   'title' => __('Special Post HTML', 'newsletter-campaign'),
-                                                                   'type' => 'textarea')
-                                                             )
-                                        )
+                'post_type' => 'template',
+                'field' => 'special-posts',
+                'title' => __('Special Posts','newsletter-campaign'),
+                'type' => 'multi',
+                'subfields' => array(
+                    array('field' => 'special-name',
+                        'title' => __('Name', 'newsletter-campaign'),
+                        'type' => 'text'),
+                    array('field' => 'special-body',
+                        'title' => __('Special Post HTML', 'newsletter-campaign'),
+                        'type' => 'textarea')
+                    )
+                )
             );
 
             // Campaigns
             $add_class->nc_add_meta_box( 'nc-campaign-description-add', __('Description', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'normal', 'high', array(
-                                        'post_type' => 'campaign',
-                                        'field' => 'description',
-                                        'title' => __('Description', 'newsletter-campaign'),
-                                        'type' => 'textarea')
+                'post_type' => 'campaign',
+                'field' => 'description',
+                'title' => __('Description', 'newsletter-campaign'),
+                'type' => 'textarea')
             );
+
+            $campaign_template_args = array(
+            'posts_per_page'   => -1,
+            'orderby'          => 'title',
+            'order'            => 'DESC',
+            'post_type'        => 'template',
+            'post_status'      => 'publish');
+
             $add_class->nc_add_meta_box( 'nc-campaign-template-select-add', __('Template', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
-                                        'post_type' => 'campaign',
-                                        'field' => 'template-select',
-                                        'title' => __('Template', 'newsletter-campaign'),
-                                        'type' => 'select')
+                'post_type' => 'campaign',
+                'field' => 'template-select',
+                'title' => __('Template', 'newsletter-campaign'),
+                'type' => 'select',
+                'select_options' => get_posts($campaign_template_args),
+                'key' => 'ID',
+                'value' => 'post_title',
+                'not_found' => array(
+                    __('No templates found', 'newsletter-campaign'), '<a href="' . home_url() . '/wp-admin/post-new.php?post_type=template">' . __('Create a template', 'newsletter-campaign') . '</a>')
+                )
             );
 
         }
@@ -366,8 +380,8 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'template', 'base-html' );
             $save_class->nc_save_meta_box( $post, 'template', 'post-html' );
             $save_class->nc_save_meta_box( $post, 'template', array(
-                                          'special-name', 'special-body'
-                                          )
+                'special-name', 'special-body'
+                )
             );
 
             // Campaigns
