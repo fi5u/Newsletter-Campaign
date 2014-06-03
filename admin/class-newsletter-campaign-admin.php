@@ -346,23 +346,47 @@ class NewsletterCampaignAdmin {
                 'type' => 'textarea')
             );
 
-            $campaign_template_args = array(
-            'posts_per_page'   => -1,
-            'orderby'          => 'title',
-            'order'            => 'DESC',
-            'post_type'        => 'template',
-            'post_status'      => 'publish');
+            $campaign_template_args = apply_filters(
+                'newsletter_campaign_campaign_template_args', array(
+                    'posts_per_page'   => -1,
+                    'orderby'          => 'title',
+                    'order'            => 'DESC',
+                    'post_type'        => 'template',
+                    'post_status'      => 'publish'
+                )
+            );
 
             $add_class->nc_add_meta_box( 'nc-campaign-template-select-add', __('Template', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
                 'post_type' => 'campaign',
                 'field' => 'template-select',
                 'title' => __('Template', 'newsletter-campaign'),
                 'type' => 'select',
-                'select_options' => get_posts($campaign_template_args),
+                'select_options' => get_posts( $campaign_template_args ),
                 'key' => 'ID',
                 'value' => 'post_title',
                 'not_found' => array(
                     __('No templates found', 'newsletter-campaign'), '<a href="' . home_url() . '/wp-admin/post-new.php?post_type=template">' . __('Create a template', 'newsletter-campaign') . '</a>')
+                )
+            );
+
+            $campaign_subscriber_group_args = apply_filters(
+                'newsletter_campaign_campaign_subscriber_group_args', array(
+                    'orderby'       => 'name',
+                    'order'         => 'ASC',
+                    'hide_empty'    => false
+                )
+            );
+
+            $add_class->nc_add_meta_box('nc-campaign-subscriber-group-select-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+                'post_type' => 'campaign',
+                'field' => 'subscriber-group-select',
+                'title' => __('Subscriber Group', 'newsletter-campaign'),
+                'type' => 'select',
+                'select_options' => get_terms( 'subscriber_list', $campaign_subscriber_group_args ),
+                'key' => 'term_id',
+                'value' => 'name',
+                'not_found' => array(
+                    __('No subscriber groups found', 'newsletter-campaign'), '<a href="' . home_url() . '/wp-admin/edit-tags.php?taxonomy=subscriber_list&post_type=subscriber">' . __('Create a subscriber list', 'newsletter-campaign') . '</a>')
                 )
             );
 
@@ -387,6 +411,7 @@ class NewsletterCampaignAdmin {
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-select' );
 
         }
 
