@@ -149,18 +149,24 @@ class NewsletterCampaignAdmin {
 			return;
 		}
 
+        $drag_drop_deps = array(
+            'jquery',
+            'jquery-ui-core',
+            'jquery-ui-widget',
+            'jquery-ui-mouse',
+            'jquery-ui-draggable',
+            'jquery-ui-droppable');
+
 		$screen = get_current_screen();
 
 		if ( 'template' === $screen->post_type ) {
 
-            $repeater_deps = array( 'jquery',
-                                    'jquery-ui-core',
-                                    'jquery-ui-widget',
-                                    'jquery-ui-mouse',
-                                    'jquery-ui-draggable',
-                                    'jquery-ui-droppable');
+            wp_enqueue_script( $this->plugin_slug . '-repeater-script', plugins_url( 'assets/js/repeater.js', __FILE__ ), $drag_drop_deps, NewsletterCampaign::VERSION, true );
+        }
 
-            wp_enqueue_script( $this->plugin_slug . '-repeater-script', plugins_url( 'assets/js/repeater.js', __FILE__ ), $repeater_deps, NewsletterCampaign::VERSION, true );
+        if ( 'campaign' === $screen->post_type ) {
+
+            wp_enqueue_script( $this->plugin_slug . '-builder-script', plugins_url( 'assets/js/builder.js', __FILE__ ), $drag_drop_deps, NewsletterCampaign::VERSION, true );
         }
 
         if( $this->plugin_screen_hook_suffix === $screen->id ) {
@@ -390,6 +396,14 @@ class NewsletterCampaignAdmin {
                 )
             );
 
+            $add_class->nc_add_meta_box('nc-campaign-builder-add', __('Newsletter Builder', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'normal', 'high', array(
+                'post_type' => 'campaign',
+                'field' => 'builder',
+                'title' => __('Newsletter Builder', 'newsletter-campaign'),
+                'type' => 'custom',
+                'custom_type' => 'builder')
+            );
+
         }
 
         function newsletter_campaign_save_meta_boxes($post) {
@@ -412,6 +426,10 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-select' );
+            $save_class->nc_save_meta_box( $post, 'campaign', array(
+                'builder'
+                )
+            );
 
         }
 

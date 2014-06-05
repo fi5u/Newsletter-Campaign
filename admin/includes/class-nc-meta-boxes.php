@@ -58,6 +58,7 @@ class Newsletter_campaign_meta_box_generator {
             foreach ($field as $field_item) {
 
                 $count = count($_POST['newsletter_campaign_' . $post_type . '_' . $field_item]);
+
                 // Loop through each of the repeatable items, adding its data to the array
                 for ( $i = 0; $i < $count; $i++ ) {
 
@@ -101,7 +102,7 @@ class Newsletter_campaign_meta_box_generator {
         $title = $metabox['args']['title'];
         $type = isset($metabox['args']['type']) ? $metabox['args']['type'] : 'text'; // Defaults to text
 
-        if ($type !== 'multi') {
+        if ($type !== 'multi' && $type !== 'custom') {
             // Set nonce and value for all types except multi
             wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
             $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
@@ -259,6 +260,12 @@ class Newsletter_campaign_meta_box_generator {
                 <button type="button" class="button" id="nc_repeater_btn_add" disabled="false"><?php _e('Add row', 'newsletter_campaign'); ?></button>
             </div>
             <?php
+
+        } else if ($type === 'custom') {
+
+            if ($metabox['args']['custom_type'] === 'builder') {
+                include_once('custom-meta/custom-meta-builder.php');
+            }
 
         } else { // Use default type of text
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';

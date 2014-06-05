@@ -46,15 +46,6 @@
                     repeaterDrop($(this), event, ui);
                     removeExcessDropAreas();
                 }
-            },
-
-            sortableAttr = {
-                items: '.nc-repeater__item',
-                sort: function() {
-                    // gets added unintentionally by droppable interacting with sortable
-                    // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
-                    $(this).removeClass('ui-state-default');
-                }
             };
 
         /* FUNCTIONS */
@@ -141,7 +132,7 @@
             }
 
             // Bind it to droppable
-            repeaterClone.droppable(droppableAttr)/*.sortable(sortableAttr)*/;
+            repeaterClone.droppable(droppableAttr);
 
             // Bind it to draggable
             repeaterClone.find('.nc-repeater__item').draggable(draggableAttr);
@@ -215,9 +206,6 @@
             $('.nc-repeater__droparea').first().clone().empty().appendTo('.nc-repeater');
             repeaterToggleAddRow(true);
 
-            // Bind it to sortable
-            //repeaterClone.sortable(sortableAttr);
-
             // Bind it to draggable
             repeaterClone.find('.nc-repeater__item').draggable(draggableAttr);
 
@@ -259,6 +247,20 @@
 
 
         /* ON LOAD FUNCTION CALLS */
+
+        /*
+         * Bind all repeater items to jquery ui draggable
+         */
+
+        $('.nc-repeater__item').draggable(draggableAttr);
+
+
+        /*
+         * Bind all empty repeater drop areas to jquery ui droppable
+         */
+
+        $('.nc-repeater__droparea:not(:has(.nc-repeater__item))').droppable(droppableAttr);
+
 
         /*
          * Check to see if any field in a repeater block is empty
@@ -304,20 +306,6 @@
             e.preventDefault();
 
         });
-
-
-        /*
-         * Bind all repeater items to jquery ui draggable
-         */
-
-        $('.nc-repeater__item').draggable(draggableAttr);
-
-
-        /*
-         * Bind all empty repeater drop areas to jquery ui droppable and sortable
-         */
-
-        $('.nc-repeater__droparea:not(:has(.nc-repeater__item))').droppable(droppableAttr)/*.sortable(sortableAttr)*/;
 
 
         /*
