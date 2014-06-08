@@ -8,29 +8,34 @@
         // We going to get all the posts but we don't want to output posts here that
         // will be output later in the builder output boxes
 
-        // Get array of special post hidden ids
-        $campaign_template_id = get_post_meta( $post->ID, '_campaign_template-select', true );
-        $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
-
-        // Put the special template ids in an array so we can match them with what's saved
-        $special_ids = [];
-        foreach ($special_posts as $special_post) {
-            $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
-        }
-
-        // Setup the exclude array
+        // Setup the exclude array to be used later
         $exclude_arr = [];
 
-        foreach ($meta_vals as $meta_val_key => $value) {
+        // Get array of special post hidden ids
+        $campaign_template_id = get_post_meta( $post->ID, '_campaign_template-select', true );
 
-            // Find the last part of the key (the hash)
-            $this_key = explode('_', $meta_val_key);
-            $this_key_val = end($this_key);
+        // If this is not a new campaign with anything saved
+        if (isset($campaign_template_id) && $campaign_template_id !== '') {
 
-            // If the hash appears in $special_ids, exclude it
-            if ($this_key_val === 'post' || in_array($this_key_val, $special_ids)) {
-                foreach ($value as $val) {
-                    $exclude_arr[] = $val;
+            $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
+
+            // Put the special template ids in an array so we can match them with what's saved
+            $special_ids = [];
+            foreach ($special_posts as $special_post) {
+                $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
+            }
+
+            foreach ($meta_vals as $meta_val_key => $value) {
+
+                // Find the last part of the key (the hash)
+                $this_key = explode('_', $meta_val_key);
+                $this_key_val = end($this_key);
+
+                // If the hash appears in $special_ids, exclude it
+                if ($this_key_val === 'post' || in_array($this_key_val, $special_ids)) {
+                    foreach ($value as $val) {
+                        $exclude_arr[] = $val;
+                    }
                 }
             }
         }
@@ -63,11 +68,14 @@
     <?php // The area for regular posts to be dropped into ?>
     <h4>Posts</h4>
     <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="post">
-        <?php foreach ($meta_vals as $meta_val => $value) {
-            if ($meta_val === 'newsletter_campaign_post_post') {
-                foreach ($value as $this_post) {
-                    $selected_post = get_post($this_post);
-                    echo outputBuilderPost($selected_post, 'post');
+        <?php
+        if ($meta_vals) {
+            foreach ($meta_vals as $meta_val => $value) {
+                if ($meta_val === 'newsletter_campaign_post_post') {
+                    foreach ($value as $this_post) {
+                        $selected_post = get_post($this_post);
+                        echo outputBuilderPost($selected_post, 'post');
+                    }
                 }
             }
         }?>
