@@ -58,7 +58,11 @@
             dropItem.css({top:newTop,left:newLeft}).animate({top:0,left:0});
 
             // Set the name of the post from the drop area data-name value
-            dropItem.find('.nc-builder__post-id').attr('name', 'newsletter_campaign_post_' + dropItem.closest('.nc-builder__output').attr('data-name') + '[]');
+            if (dropItem.closest('.nc-builder__output').length) {
+                dropItem.find('.nc-builder__post-id').attr('name', 'newsletter_campaign_post_' + dropItem.closest('.nc-builder__output').attr('data-name') + '[]');
+            } else {
+                dropItem.find('.nc-builder__post-id').removeAttr('name');
+            }
 
         }
 
@@ -77,6 +81,8 @@
          */
 
         $('.nc-builder__output').droppable(droppableAttr);
+        $('.nc-builder__posts').droppable(droppableAttr);
+
 
         /* EVENTS */
 
