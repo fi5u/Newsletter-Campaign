@@ -1,6 +1,20 @@
 <div class="nc-builder">
     <div class="nc-builder__posts">
         <?php
+
+        // Store the vals for builder in a var
+        $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
+
+        // We going to get all the posts but we don't want to output posts here that
+        // will be output later in the builder output boxes
+        $exclude_arr = [];
+        foreach ($meta_vals as $meta_val) {
+            foreach ($meta_val as $val) {
+                $exclude_arr[] = $val;
+            }
+        }
+
+        // Fetch the list of posts
         $builder_posts_args = apply_filters(
             'newsletter_campaign_campaign_builder_posts_args', array(
                 'posts_per_page'   => -1,
@@ -8,32 +22,95 @@
                 'orderby'          => 'post_date',
                 'order'            => 'DESC',
                 'post_type'        => 'post',
-                'post_status'      => 'publish'
+                'post_status'      => 'publish',
+                'exclude'          => $exclude_arr
             )
         );
         $builder_posts = get_posts( $builder_posts_args );
 
-        $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
-
+        // Output the list of posts
         if ($builder_posts) {
-            foreach ($builder_posts as $builder_post) { ?>
-                <div class="nc-builder__post">
-                    <input type="text" class="nc-builder__post-id" value="<?php echo $builder_post->ID; ?>" name="newsletter_campaign_campaign_builder[]">
-                    <div class="nc-builder__post-title"><?php echo $builder_post->post_title ?></div>
-                    <div class="nc-builder__post-excerpt">
-                        <?php echo $builder_post->post_excerpt ? $builder_post->post_excerpt : $builder_post->post_content; ?>
-                    </div>
-                </div>
-            <?php
+            foreach ($builder_posts as $builder_post) {
+                echo outputBuilderPost($builder_post);
             }
         } else {
-            _e('No posts', 'newsletter-campaign');
+            echo '<p>' . __('No posts', 'newsletter-campaign') . '</p>';
         }
         ?>
     </div>
-    <div class="nc-builder__output">
-        <div class="nc-builder__output-text" style="background:lightgray;min-height:50px;">
 
-        </div>
+    <?php // The area for regular posts to be dropped into ?>
+    <h4>Posts</h4>
+    <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="post">
+        <?php foreach ($meta_vals as $meta_val => $value) {
+            if ($meta_val === 'newsletter_campaign_post_post') {
+                foreach ($value as $this_post) {
+                    $selected_post = get_post($this_post);
+                    echo outputBuilderPost($selected_post, 'post');
+                }
+            }
+        }?>
     </div>
+
+    <?php // Get details for template associated with this campaign
+    $campaign_template_id = get_post_meta( $post->ID, '_campaign_template-select', true );
+    $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
+    if (isset($special_posts) && !empty($special_posts)) {
+        foreach ($special_posts as $special_post) {
+            // One or more special posts have been saved, output the special posts container ?>
+            <h4><?php echo $special_post['newsletter_campaign_template_special-name']; ?></h4>
+            <?php // Store the special post hash id as data-name to be used for consistent saving ?>
+            <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="<?php echo $special_post['newsletter_campaign_template_hidden']; ?>">
+                <?php
+                foreach ($meta_vals as $meta_val => $value) {
+                    if ($meta_val === 'newsletter_campaign_post_' . $special_post['newsletter_campaign_template_hidden']) {
+                        foreach ($value as $this_post) {
+                            $selected_post = get_post($this_post);
+                            echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+                        }
+                    }
+                }?>
+
+            </div>
+            <?php
+        }
+    }
+    ?>
 </div>
+
+<?php
+
+    /*
+     * Output the html for the draggable post element
+     */
+
+    function outputBuilderPost($post, $name_suffix = null) {
+        $return_str = '<div class="nc-builder__post">
+            <input type="text" class="nc-builder__post-id" value="' . $post->ID . '"';
+        $return_str .= $name_suffix ? 'name="newsletter_campaign_post_' . $name_suffix . '[]"': '';
+        $return_str .= '>
+            <div class="nc-builder__post-title">' . $post->post_title . '</div>
+            <div class="nc-builder__post-excerpt">';
+        $return_str .= $post->post_excerpt ? $post->post_excerpt : $post->post_content;
+
+        $return_str .= '</div>
+        </div>';
+
+        return $return_str;
+    }
+
+
+    /*
+     * Check multidimensional array for a needle
+     */
+
+    /*function in_array_r($needle, $haystack, $strict = false) {
+        foreach ($haystack as $item) {
+            if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
+                return true;
+            }
+        }
+
+        return false;
+    }*/
+?>

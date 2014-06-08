@@ -13,8 +13,8 @@
 
         // Store offsets for dragging
         var dragAreaOffset = $('.nc-builder__posts').offset(),
-            dropMarginTop = parseInt($('.nc-builder__output-text').css('marginTop')),
-            dropMarginLeft = parseInt($('.nc-builder__output-text').css('marginLeft')),
+            dropMarginTop = parseInt($('.nc-builder__output').css('marginTop')),
+            dropMarginLeft = parseInt($('.nc-builder__output').css('marginLeft')),
 
             draggableAttr = {
                 start: function(event, ui) {
@@ -57,6 +57,9 @@
 
             dropItem.css({top:newTop,left:newLeft}).animate({top:0,left:0});
 
+            // Set the name of the post from the drop area data-name value
+            dropItem.find('.nc-builder__post-id').attr('name', 'newsletter_campaign_post_' + dropItem.closest('.nc-builder__output').attr('data-name') + '[]');
+
         }
 
 
@@ -73,7 +76,7 @@
          * Bind all empty repeater drop areas to jquery ui droppable
          */
 
-        $('.nc-builder__output-text').droppable(droppableAttr);
+        $('.nc-builder__output').droppable(droppableAttr);
 
         /* EVENTS */
 

@@ -199,8 +199,14 @@
         function addRepeaterBlock() {
 
             var repeaterClone = $('.nc-repeater__item').first().closest('.nc-repeater__droparea').clone();
+
+            // Empty all values
             repeaterClone.find(inputTypes.join()).val('');
+
             repeaterClone.appendTo('.nc-repeater');
+
+            // Fill the hidden input with a random hash for id
+            repeaterClone.find('.nc-repeater__hidden-id').val(Math.random().toString(36).replace(/[^a-zA-Z0-9]+/g, '').substr(0,8));
 
             // Get an empty drop area to put after the new repeater
             $('.nc-repeater__droparea').first().clone().empty().appendTo('.nc-repeater');

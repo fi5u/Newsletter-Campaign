@@ -339,7 +339,10 @@ class NewsletterCampaignAdmin {
                         'type' => 'text'),
                     array('field' => 'special-body',
                         'title' => __('Special Post HTML', 'newsletter-campaign'),
-                        'type' => 'textarea')
+                        'type' => 'textarea'),
+                    array('field' => 'hidden',
+                        'title' => 'hidden',
+                        'type' => 'hidden')
                     )
                 )
             );
@@ -418,7 +421,7 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'template', 'base-html' );
             $save_class->nc_save_meta_box( $post, 'template', 'post-html' );
             $save_class->nc_save_meta_box( $post, 'template', array(
-                'special-name', 'special-body'
+                'special-name', 'special-body', 'hidden'
                 )
             );
 
@@ -426,10 +429,7 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-select' );
-            $save_class->nc_save_meta_box( $post, 'campaign', array(
-                'builder'
-                )
-            );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'custom-builder' );
 
         }
 

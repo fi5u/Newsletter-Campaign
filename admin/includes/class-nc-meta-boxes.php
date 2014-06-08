@@ -38,7 +38,7 @@ class Newsletter_campaign_meta_box_generator {
             return $post_id;
         }
 
-        if (is_array($field)) {
+        if (is_array($field) || $field == 'custom-builder') {
             // Subfields have been passed
 
             // Check the nonce for the repeatable fields
@@ -55,18 +55,36 @@ class Newsletter_campaign_meta_box_generator {
             // Set an array to hold the repeatable data
             $repeatable_arr = array();
 
-            foreach ($field as $field_item) {
+            if ($field == 'custom-builder') {
+                // Get the list of regular posts
+                // Check all the post and custom post values
+                foreach($_POST as $key => $value) {
+                    if (strpos($key, 'newsletter_campaign_post_') === 0) {
+                        $count = count($_POST[$key]);
 
-                $count = count($_POST['newsletter_campaign_' . $post_type . '_' . $field_item]);
+                        // Loop through each of the items, adding its data to the array
+                        // TODO: CAN CHANGE TO FOREACH??
+                        for ( $i = 0; $i < $count; $i++ ) {
+                            $repeatable_arr[$key] = isset($_POST[$key]) ? $_POST[$key] : '';
+                        }
+                    }
+                }
 
-                // Loop through each of the repeatable items, adding its data to the array
-                for ( $i = 0; $i < $count; $i++ ) {
+            } else {
 
-                    // Don't save if empty
-                    if ( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] != '' ) {
-                        // Sanitize the user input.
-                        $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] );
-                        $repeatable_arr[$i]['newsletter_campaign_' . $post_type . '_' . $field_item] = $data;
+                foreach ($field as $field_item) {
+
+                    $count = count($_POST['newsletter_campaign_' . $post_type . '_' . $field_item]);
+
+                    // Loop through each of the repeatable items, adding its data to the array
+                    for ( $i = 0; $i < $count; $i++ ) {
+
+                        // Don't save if empty
+                        if ( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] != '' ) {
+                            // Sanitize the user input.
+                            $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] );
+                            $repeatable_arr[$i]['newsletter_campaign_' . $post_type . '_' . $field_item] = $data;
+                        }
                     }
                 }
             }
@@ -195,6 +213,7 @@ class Newsletter_campaign_meta_box_generator {
 
                     // For each field get the array of values stored for it
                     foreach ($subfields as $subfield) {
+
                         // Output the repeater item html
                         $this->output_repeater_item($subfield_i, $subfield, $post_type, $meta_val);
 
@@ -303,7 +322,21 @@ class Newsletter_campaign_meta_box_generator {
         if ($subfield_i !== 0) {
             echo '<br>';
         }
-        if ($subfield['type'] === 'textarea') {
+
+        if ($subfield['type'] === 'hidden') {
+            echo '<input type="text" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
+            if($meta_val) {
+                echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
+            } else {
+                // Generate a new random string
+                $num = 4;
+                $strong = true;
+                $bytes = openssl_random_pseudo_bytes($num, $strong);
+                $hex = bin2hex($bytes);
+                echo $hex;
+            }
+            echo '">';
+        } else if ($subfield['type'] === 'textarea') {
             echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
             if($meta_val) {
                 echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
