@@ -7,10 +7,31 @@
 
         // We going to get all the posts but we don't want to output posts here that
         // will be output later in the builder output boxes
+
+        // Get array of special post hidden ids
+        $campaign_template_id = get_post_meta( $post->ID, '_campaign_template-select', true );
+        $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
+
+        // Put the special template ids in an array so we can match them with what's saved
+        $special_ids = [];
+        foreach ($special_posts as $special_post) {
+            $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
+        }
+
+        // Setup the exclude array
         $exclude_arr = [];
-        foreach ($meta_vals as $meta_val) {
-            foreach ($meta_val as $val) {
-                $exclude_arr[] = $val;
+
+        foreach ($meta_vals as $meta_val_key => $value) {
+
+            // Find the last part of the key (the hash)
+            $this_key = explode('_', $meta_val_key);
+            $this_key_val = end($this_key);
+
+            // If the hash appears in $special_ids, exclude it
+            if ($this_key_val === 'post' || in_array($this_key_val, $special_ids)) {
+                foreach ($value as $val) {
+                    $exclude_arr[] = $val;
+                }
             }
         }
 
@@ -85,6 +106,7 @@
      */
 
     function outputBuilderPost($post, $name_suffix = null) {
+
         $return_str = '<div class="nc-builder__post">
             <input type="text" class="nc-builder__post-id" value="' . $post->ID . '"';
         $return_str .= $name_suffix ? 'name="newsletter_campaign_post_' . $name_suffix . '[]"': '';
@@ -97,20 +119,6 @@
         </div>';
 
         return $return_str;
+
     }
-
-
-    /*
-     * Check multidimensional array for a needle
-     */
-
-    /*function in_array_r($needle, $haystack, $strict = false) {
-        foreach ($haystack as $item) {
-            if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
-                return true;
-            }
-        }
-
-        return false;
-    }*/
 ?>
