@@ -1,7 +1,6 @@
 <div class="nc-builder">
     <div class="nc-builder__posts">
         <?php
-
         // Store the vals for builder in a var
         $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
 
@@ -116,7 +115,7 @@
     function outputBuilderPost($post, $name_suffix = null) {
 
         $return_str = '<div class="nc-builder__post">
-            <input type="text" class="nc-builder__post-id" value="' . $post->ID . '"';
+            <input type="hidden" class="nc-builder__post-id" value="' . $post->ID . '"';
         $return_str .= $name_suffix ? 'name="newsletter_campaign_post_' . $name_suffix . '[]"': '';
         $return_str .= '>
             <div class="nc-builder__post-title">' . $post->post_title . '</div>

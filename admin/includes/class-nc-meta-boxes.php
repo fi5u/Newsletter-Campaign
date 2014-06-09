@@ -3,8 +3,9 @@
 /**
  * Add, generate and save meta boxes
  */
+
 class Newsletter_campaign_meta_box_generator {
-    public function nc_add_meta_box( $id, $title, $cb, $post_type, $context, $priority, $callback_args ) {
+    public function nc_add_meta_box( $id, $title, $cb, $post_type, $context, $priority, $callback_args = null ) {
         add_meta_box(
             $id,
             __($title, 'newsletter-campaign'),
@@ -349,6 +350,29 @@ class Newsletter_campaign_meta_box_generator {
             }
             echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
         }
+    }
+
+
+    /*
+     * Output the send campaign meta box
+     */
+
+    public function nc_render_campaign_send_campaign() {
+        global $post;
+
+        $subscriber_group_id = get_post_meta( $post->ID, '_campaign_subscriber-group-select', true );
+        $subscriber_group = get_term( $subscriber_group_id, 'subscriber_list' );
+
+        echo '<div class="nc-campaign__confirmation" style="display:none;">';
+        echo '<p>';
+        // TODO: internationalize the following line (with pluralization)
+        echo 'You are about to send <strong>' . $post->post_title . '</strong> to <strong>' . $subscriber_group->name . '</strong> subscriber group (which contains <strong>' . $subscriber_group->count . '</strong> email address).<br>';
+        echo __('Are you sure you want to send it?', 'newsletter-campaign');
+        echo '<p>';
+        echo '<button type="button" class="button button-secondary" id="nc_campaign_send_campaign_cancel">' . __('Cancel send');
+        echo '</div>';
+        // Set the name of the button so that we can check on page save if we want to send campaign
+        echo '<button class="button button-primary" id="nc_campaign_send_campaign" name="nc-campaign__confirmation-true">' . __('Send Campaign') . '</button>';
     }
 
 

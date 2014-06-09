@@ -68,7 +68,6 @@ class NewsletterCampaignAdmin {
         // Add the options page and menu items for after custom post types
         add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
 
-
         // Include required files
         $this->includes();
 
@@ -89,6 +88,7 @@ class NewsletterCampaignAdmin {
 		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
 
 	}
+
 
 	/**
 	 * Return an instance of this class.
@@ -167,12 +167,15 @@ class NewsletterCampaignAdmin {
         if ( 'campaign' === $screen->post_type ) {
 
             wp_enqueue_script( $this->plugin_slug . '-builder-script', plugins_url( 'assets/js/builder.js', __FILE__ ), $drag_drop_deps, NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-campaign-script', plugins_url( 'assets/js/campaign.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
+            // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+            wp_localize_script( $this->plugin_slug . '-campaign-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
+
         }
 
         if( $this->plugin_screen_hook_suffix === $screen->id ) {
         	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
         }
-
 
 	}
 
@@ -285,6 +288,7 @@ class NewsletterCampaignAdmin {
 
         include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
+        include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
 
     }
 
@@ -406,6 +410,8 @@ class NewsletterCampaignAdmin {
                 'type' => 'custom',
                 'custom_type' => 'builder')
             );
+
+            $add_class->nc_add_meta_box('nc-campaign-send-add', __('Send Campaign', 'newsletter-campaign'), 'nc_render_campaign_send_campaign', 'campaign', 'normal', 'low');
 
         }
 
