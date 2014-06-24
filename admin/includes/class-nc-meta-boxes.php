@@ -17,7 +17,119 @@ class Newsletter_campaign_meta_box_generator {
         );
     }
 
-    public function nc_save_meta_box( $post_id, $post_type, $field ) {
+
+    /*
+     * $meta_name = string: used for multiple fields
+     */
+
+    public function nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '') {
+
+        $meta_root = 'newsletter_campaign_' . $post_type . '_';
+        if (is_array($field)) {
+            // Provide a default of 'multi' only if meta name hasn't been passed but it HAS multiple fields
+            $meta_name = $meta_name == '' ? 'multi' : $meta_name;
+            $meta = $meta_root . $meta_name;
+            $post_meta = '_' . $post_type . '_' . $meta_name;
+        } else {
+            $meta = $meta_root . $field;
+            $post_meta = '_' . $post_type . '_' . $field;
+        }
+
+        $nonce_name = $meta . '_box';
+        $nonce = $nonce_name . '_nonce';
+        $screen = get_current_screen();
+
+        if ( $post_type !== $screen->post_type ) {
+            return $post_id;
+        }
+
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return $post_id;
+        }
+
+        if ( !isset($_POST['post_type']) ) {
+            return $post_id;
+        }
+
+        if ( $post_type !== $_POST['post_type'] ) {
+            return $post_id;
+        }
+
+        if ( ! current_user_can( 'edit_page', $post_id ) ) {
+            return $post_id;
+        }
+
+        // Check the nonce field
+        if ( ! isset( $_POST[$nonce] ) ) {
+            return $post_id;
+        }
+
+        if ( ! wp_verify_nonce( $_POST[$nonce], $nonce_name ) ) {
+            return $post_id;
+        }
+
+        if (is_array($field)) {
+            // TODO: also add in multival support for passed arrays
+            $return_val = array();
+
+            foreach ($field as $field_item) {
+                $count = count($_POST[$meta_root . $field_item]);
+
+                // Loop through each of the repeatable items, adding its data to the array
+                for ( $i = 0; $i < $count; $i++ ) {
+
+                    // Don't save if empty
+                    if ( $_POST[$meta_root . $field_item][$i] != '' ) {
+                        // Sanitize the user input.
+
+                        $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] ) : '';
+                        // TODO: perform sanitation on $data
+                        $return_val[$i][$meta_root . $field_item] = $data;
+                    }
+                }
+            }
+
+            // Update the meta field.
+            update_post_meta( $post_id, '_' . $post_type . '_' . $meta_name, $return_val );
+
+        } else {
+
+            // Check all the post and custom post values
+            if (isset($_POST[$meta])) {
+                $count = count($_POST[$meta]);
+
+                if ($count > 1) {
+                    for ( $i = 0; $i < $count; $i++ ) {
+                        $return_val[$i][$meta] = isset($_POST[$meta]) ? $_POST[$meta] : '';
+                    }
+                } else { // only holds a single value
+                    // TODO: sanitize!
+                    $return_val = isset($_POST[$meta]) ? $_POST[$meta] : '';
+                }
+
+            } else {
+                foreach($_POST as $key => $value) {
+                    if (strpos($key, 'newsletter_campaign_' . $field . '_') === 0) {
+                        $count = count($_POST[$key]);
+
+                        // Loop through each of the items, adding its data to the array
+                        for ( $i = 0; $i < $count; $i++ ) {
+                            $return_val[$key] = isset($_POST[$key]) ? $_POST[$key] : '';
+                        }
+                    }
+                }
+            }
+
+            // Update the meta field.
+            if (isset($return_val)) {
+                update_post_meta( $post_id, '_' . $post_type . '_' . $field, $return_val );
+            }
+        }
+
+
+    }
+
+/*    public function nc_save_meta_box( $post_id, $post_type, $field ) {
         $screen = get_current_screen();
         if ( $post_type !== $screen->post_type ) {
             return $post_id;
@@ -56,7 +168,7 @@ class Newsletter_campaign_meta_box_generator {
             // Set an array to hold the repeatable data
             $repeatable_arr = array();
 
-            if ($field == 'custom-builder') {
+            if ($field == 'custom-builder' || $field == 'template-select') {
                 // Get the list of regular posts
                 // Check all the post and custom post values
                 foreach($_POST as $key => $value) {
@@ -107,21 +219,44 @@ class Newsletter_campaign_meta_box_generator {
                 return $post_id;
             }
 
-            // Sanitize the user input.
-            $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field] );
+            if ($field == 'subscriber-group-check') {
+                // Set an array to hold the repeatable data
+                $repeatable_arr = array();
 
-            // Update the meta field.
-            update_post_meta( $post_id, '_' . $post_type . '_' . $field, $data );
+                $count = count($_POST['newsletter_campaign_campaign_subscriber-group-check']);
+
+                // Loop through each of the repeatable items, adding its data to the array
+                for ( $i = 0; $i < $count; $i++ ) {
+
+                    // Don't save if empty
+                    if ( $_POST['newsletter_campaign_campaign_subscriber-group-check'][$i] != '' ) {
+                        // Sanitize the user input.
+                        $data = sanitize_text_field( $_POST['newsletter_campaign_campaign_subscriber-group-check'][$i] );
+                        $repeatable_arr[$i]['newsletter_campaign_campaign_subscriber-group-check'] = $data;
+                    }
+                }
+
+                update_post_meta( $post_id, '_' . $post_type . '_' . $field, $repeatable_arr );
+
+            } else {
+                // Sanitize the user input.
+                $data = sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field] );
+
+                // Update the meta field.
+                update_post_meta( $post_id, '_' . $post_type . '_' . $field, $data );
+            }
+
+
         }
     }
-
+*/
     public function nc_render_meta_box( $post, $metabox ) {
         $post_type = $metabox['args']['post_type'];
         $field = $metabox['args']['field'];
         $title = $metabox['args']['title'];
         $type = isset($metabox['args']['type']) ? $metabox['args']['type'] : 'text'; // Defaults to text
 
-        if ($type !== 'multi' && $type !== 'custom') {
+        if ($type !== 'multi'/* && $type !== 'custom'*/) {
             // Set nonce and value for all types except multi
             wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
             $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
@@ -185,6 +320,57 @@ class Newsletter_campaign_meta_box_generator {
                     }
                 }
 
+            }
+        } else if ($type === 'checkbox') {
+            // Get the array of options available keys should be ID and post_title
+            $select_options = $metabox['args']['select_options'];
+
+            // The key or value are not set issue error and do not render select
+            if (!isset($metabox['args']['key']) || !isset($metabox['args']['value'])) {
+                echo 'Error: key and value not set';
+            } else { // Key and value are set
+
+                $select_key = $metabox['args']['key'];
+                $select_value = $metabox['args']['value'];
+
+                if ($select_options) {
+                    //echo '<select name="newsletter_campaign_' . $post_type . '_' . $field . '">';
+
+                    // Add a blank option
+                    //$title_lower = strtolower($metabox['args']['title']);
+                    //echo '<option>' . sprintf( __('Select %s', 'newsletter-campaign'), $title_lower ) . '</option>';
+
+                    // Loop through and output options
+                    print_r($value);
+                    $i = 0;
+                    foreach ($select_options as $option) {
+                        echo '<input type="checkbox" name="newsletter_campaign_' . $post_type . '_' . $field . '[]" value="' . $option->$select_key . '"';
+                        if ($value[$i] == $option->$select_key) {
+                            echo ' checked';
+                        }
+                        echo '><label>' . $option->$select_value . '</label><br>';
+                        ++$i;
+                    }
+                    //echo '</select>';
+                } else { // No options found
+                    if ($metabox['args']['not_found']) {
+                        echo '<p>';
+                        $i = 0;
+                        $not_found_qty = count($metabox['args']['not_found']);
+                        foreach ($metabox['args']['not_found'] as $not_found_line) {
+                            echo $not_found_line;
+
+                            // Add a line break to every line except last line
+                            if ($i !== $not_found_qty-1) {
+                                echo '<br>';
+                            }
+                            $i++;
+                        }
+                        echo '</p>';
+                    } else { // If no not found lines passed
+                        echo __('Not found', 'newsletter-campaign');
+                    }
+                }
             }
 
         } else if ($type === 'multi') {

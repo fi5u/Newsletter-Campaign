@@ -2,7 +2,9 @@
     <div class="nc-builder__posts">
         <?php
         // Store the vals for builder in a var
-        $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
+        /*$meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );*/
+        $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_builder', true );
+
 
         // We going to get all the posts but we don't want to output posts here that
         // will be output later in the builder output boxes
@@ -70,7 +72,7 @@
         <?php
         if ($meta_vals) {
             foreach ($meta_vals as $meta_val => $value) {
-                if ($meta_val === 'newsletter_campaign_post_post') {
+                if ($meta_val === 'newsletter_campaign_builder_post') {
                     foreach ($value as $this_post) {
                         $selected_post = get_post($this_post);
                         echo outputBuilderPost($selected_post, 'post');
@@ -91,7 +93,7 @@
             <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="<?php echo $special_post['newsletter_campaign_template_hidden']; ?>">
                 <?php
                 foreach ($meta_vals as $meta_val => $value) {
-                    if ($meta_val === 'newsletter_campaign_post_' . $special_post['newsletter_campaign_template_hidden']) {
+                    if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
                         foreach ($value as $this_post) {
                             $selected_post = get_post($this_post);
                             echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
@@ -116,7 +118,7 @@
 
         $return_str = '<div class="nc-builder__post">
             <input type="hidden" class="nc-builder__post-id" value="' . $post->ID . '"';
-        $return_str .= $name_suffix ? 'name="newsletter_campaign_post_' . $name_suffix . '[]"': '';
+        $return_str .= $name_suffix ? 'name="newsletter_campaign_builder_' . $name_suffix . '[]"': '';
         $return_str .= '>
             <div class="nc-builder__post-title">' . $post->post_title . '</div>
             <div class="nc-builder__post-excerpt">';

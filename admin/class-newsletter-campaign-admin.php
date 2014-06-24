@@ -390,11 +390,11 @@ class NewsletterCampaignAdmin {
                 )
             );
 
-            $add_class->nc_add_meta_box('nc-campaign-subscriber-group-select-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+            $add_class->nc_add_meta_box('nc-campaign-subscriber-group-check-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
                 'post_type' => 'campaign',
-                'field' => 'subscriber-group-select',
+                'field' => 'subscriber-group-check',
                 'title' => __('Subscriber Group', 'newsletter-campaign'),
-                'type' => 'select',
+                'type' => 'checkbox',
                 'select_options' => get_terms( 'subscriber_list', $campaign_subscriber_group_args ),
                 'key' => 'term_id',
                 'value' => 'name',
@@ -434,8 +434,8 @@ class NewsletterCampaignAdmin {
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-select' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'custom-builder' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-check' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
 
         }
 

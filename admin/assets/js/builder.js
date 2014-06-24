@@ -59,7 +59,7 @@
 
             // Set the name of the post from the drop area data-name value
             if (dropItem.closest('.nc-builder__output').length) {
-                dropItem.find('.nc-builder__post-id').attr('name', 'newsletter_campaign_post_' + dropItem.closest('.nc-builder__output').attr('data-name') + '[]');
+                dropItem.find('.nc-builder__post-id').attr('name', 'newsletter_campaign_builder_' + dropItem.closest('.nc-builder__output').attr('data-name') + '[]');
             } else {
                 dropItem.find('.nc-builder__post-id').removeAttr('name');
             }
