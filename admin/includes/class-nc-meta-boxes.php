@@ -100,7 +100,7 @@ class Newsletter_campaign_meta_box_generator {
 
                 if ($count > 1) {
                     for ( $i = 0; $i < $count; $i++ ) {
-                        $return_val[$i][$meta] = isset($_POST[$meta]) ? $_POST[$meta] : '';
+                        $return_val[$i][$meta] = isset($_POST[$meta]) ? $_POST[$meta][$i] : '';
                     }
                 } else { // only holds a single value
                     // TODO: sanitize!
@@ -334,24 +334,20 @@ class Newsletter_campaign_meta_box_generator {
                 $select_value = $metabox['args']['value'];
 
                 if ($select_options) {
-                    //echo '<select name="newsletter_campaign_' . $post_type . '_' . $field . '">';
-
-                    // Add a blank option
-                    //$title_lower = strtolower($metabox['args']['title']);
-                    //echo '<option>' . sprintf( __('Select %s', 'newsletter-campaign'), $title_lower ) . '</option>';
 
                     // Loop through and output options
-                    print_r($value);
                     $i = 0;
                     foreach ($select_options as $option) {
-                        echo '<input type="checkbox" name="newsletter_campaign_' . $post_type . '_' . $field . '[]" value="' . $option->$select_key . '"';
-                        if ($value[$i] == $option->$select_key) {
+                        echo '<input type="checkbox" name="newsletter_campaign_' . $post_type . '_' . $field . '[]" value="' . $option->$select_key . '" id="newsletter_campaign_' . $post_type . '_' . $field . '_' . $option->$select_key . '"';
+
+                        if ($this->in_array_r($option->$select_key, $value)) {
                             echo ' checked';
                         }
-                        echo '><label>' . $option->$select_value . '</label><br>';
+
+                        echo '><label for="newsletter_campaign_' . $post_type . '_' . $field . '_' . $option->$select_key . '">' . $option->$select_value . '</label><br>';
                         ++$i;
                     }
-                    //echo '</select>';
+
                 } else { // No options found
                     if ($metabox['args']['not_found']) {
                         echo '<p>';
@@ -570,5 +566,20 @@ class Newsletter_campaign_meta_box_generator {
 
         echo '<button type="button" class="button nc-repeater__droparea-delete">' . __('delete', 'newsletter-campaign') . '</button>';
 
+    }
+
+
+    /*
+     * Check if value is in a multidimensional array
+     */
+
+    function in_array_r($needle, $haystack, $strict = false) {
+        foreach ($haystack as $item) {
+            if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && $this->in_array_r($needle, $item, $strict))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
