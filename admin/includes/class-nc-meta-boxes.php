@@ -390,7 +390,7 @@ class Newsletter_campaign_meta_box_generator {
         }
 
         if ($subfield['type'] === 'hidden') {
-            echo '<input type="text" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
+            echo '<input type="hidden" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
             if($meta_val) {
                 echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
             } else {
