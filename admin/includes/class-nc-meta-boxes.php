@@ -108,6 +108,7 @@ class Newsletter_campaign_meta_box_generator {
                 }
 
             } else {
+
                 foreach($_POST as $key => $value) {
                     if (strpos($key, 'newsletter_campaign_' . $field . '_') === 0) {
                         $count = count($_POST[$key]);
@@ -117,6 +118,10 @@ class Newsletter_campaign_meta_box_generator {
                             $return_val[$key] = isset($_POST[$key]) ? $_POST[$key] : '';
                         }
                     }
+                }
+
+                if (!isset($return_val)) {
+                    $return_val = 0;
                 }
             }
 
@@ -334,13 +339,12 @@ class Newsletter_campaign_meta_box_generator {
                 $select_value = $metabox['args']['value'];
 
                 if ($select_options) {
-
                     // Loop through and output options
                     $i = 0;
                     foreach ($select_options as $option) {
                         echo '<input type="checkbox" name="newsletter_campaign_' . $post_type . '_' . $field . '[]" value="' . $option->$select_key . '" id="newsletter_campaign_' . $post_type . '_' . $field . '_' . $option->$select_key . '"';
 
-                        if ($this->in_array_r($option->$select_key, $value)) {
+                        if (is_array($value) && $this->in_array_r($option->$select_key, $value)) {
                             echo ' checked';
                         }
 
