@@ -69,7 +69,8 @@ class NewsletterCampaignAdmin {
         add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
 
         // Include required files
-        $this->includes();
+        //$this->includes();
+        add_action( 'init', array( $this, 'includes' ), 25 );
 
         // Create meta boxes
         $this->create_meta_boxes();
@@ -284,7 +285,7 @@ class NewsletterCampaignAdmin {
      *
      * @since    0.0.0
      */
-    private static function includes() {
+    public function includes() {
 
         include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
