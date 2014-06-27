@@ -69,11 +69,13 @@ class NewsletterCampaignAdmin {
         add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
 
         // Include required files
-        //$this->includes();
-        add_action( 'init', array( $this, 'includes' ), 25 );
+        $this->includes();
 
         // Create meta boxes
         $this->create_meta_boxes();
+
+        // Replace submit meta boxes
+        $this->replace_submit_meta_boxes();
 
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
@@ -131,9 +133,10 @@ class NewsletterCampaignAdmin {
 		}
 
 		$screen = get_current_screen();
-		if ( $this->plugin_screen_hook_suffix == $screen->id ) {
+        // TODO: find a working way conditionally load the css
+		/*if ( $this->plugin_screen_hook_suffix == $screen->id ) {*/
 			wp_enqueue_style( $this->plugin_slug .'-admin-styles', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), NewsletterCampaign::VERSION );
-		}
+		/*}*/
 
 	}
 
@@ -174,9 +177,9 @@ class NewsletterCampaignAdmin {
 
         }
 
-        if( $this->plugin_screen_hook_suffix === $screen->id ) {
+        //if( $this->plugin_screen_hook_suffix === $screen->id ) {
         	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
-        }
+        //}
 
 	}
 
@@ -254,6 +257,7 @@ class NewsletterCampaignAdmin {
 
 	}
 
+
 	/**
 	 * NOTE:     Actions are points in the execution of a page or process
 	 *           lifecycle that WordPress fires.
@@ -266,6 +270,7 @@ class NewsletterCampaignAdmin {
 	public function action_method_name() {
 		// @TODO: Define your action hook callback here
 	}
+
 
 	/**
 	 * NOTE:     Filters are points of execution in which WordPress modifies data
@@ -280,6 +285,7 @@ class NewsletterCampaignAdmin {
 		// @TODO: Define your filter hook callback here
 	}
 
+
     /**
      * Include required core files used in admin
      *
@@ -288,11 +294,21 @@ class NewsletterCampaignAdmin {
     public function includes() {
 
         include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
+        include_once( 'includes/class-nc-meta-submit.php' );    // Replace the submit metabox
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
+        include_once( 'includes/class-nc-campaign.php' );       // Format the campaign admin
         include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
 
     }
 
+    /**
+     * Create new meta boxes from the class
+     *
+     * @since    0.0.0
+     */
+    private static function replace_submit_meta_boxes() {
+        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('campaign', 'Overview', 'Save campaign');
+    }
 
     /**
      * Create new meta boxes from the class

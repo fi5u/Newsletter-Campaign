@@ -7,12 +7,9 @@
 class Newsletter_campaign_send_campaign {
     public function __construct() {
         add_action( 'wp_ajax_my_action', array( $this, 'my_action_callback' ) );
-
-        // If confirm send mail
-        if (isset($_POST['nc-campaign__confirmation-true'])) {
-            $this->send_campaign();
-        }
+        add_action('init', array($this, 'send_campaign'), 30 );
     }
+
 
     public function my_action_callback() {
         global $wpdb;
@@ -38,18 +35,6 @@ class Newsletter_campaign_send_campaign {
         array_walk_recursive($subscriber_groups_meta, function ($current) use (&$subscriber_groups_ids) {
             $subscriber_groups_ids[] = $current;
         });
-
-        /*  NOT NEEDED
-        $send_campaign_subscriber_group_args = apply_filters( 'newsletter_campaign_send_campaign_subscriber_group_args',
-            array(
-                'orderby'       => 'name',
-                'order'         => 'DESC',
-                'hide_empty'    => false,
-                'include'       => $subscriber_groups_ids
-            )
-        );
-
-        $subscribers_arr = get_terms( 'subscriber_list', $send_campaign_subscriber_group_args );*/
 
         // Fetch all the posts that belong to the selected subscriber group(s)
         $send_campaign_subscriber_posts_args = apply_filters( 'newsletter_campaign_send_campaign_subscriber_posts_args',
@@ -120,6 +105,18 @@ class Newsletter_campaign_send_campaign {
 
 
     /*
+     * Show admin message
+     */
+    public function show_admin_notice() {
+        ?>
+        <div class="updated">
+            <p><?php _e( 'Messages sent!', 'newsletter-campaign' ); ?></p>
+        </div>
+        <?php
+    }
+
+
+    /*
      * Send email
      * $addresses: array of email addresses
      */
@@ -138,13 +135,9 @@ class Newsletter_campaign_send_campaign {
             if (!$mail_sent) {
                 $mail_failed[] = $address;
             }
-
-            if (isset($mail_failed)) {
-                echo 'mail failed is set';
-            }
         }
 
-
+        return $mail_failed;
     }
 
 
@@ -152,14 +145,20 @@ class Newsletter_campaign_send_campaign {
      * The functionality of the send
      */
 
-    private function send_campaign() {
+    public function send_campaign() {
+        if (!isset($_POST['nc-campaign__confirmation-true'])) {
+            return;
+        }
+
         $addresses = $this->get_addresses($_POST['post_ID']);
 
         if (isset($addresses['valid']) && !empty($addresses['valid'])) {
-            $this->send_email($addresses['valid']);
+            //$mail_sent = $this->send_email($addresses['valid']);
         }
+        add_action('admin_notices', array($this, 'show_admin_notice') );
 
     }
+
 }
 
 new Newsletter_campaign_send_campaign;

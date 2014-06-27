@@ -37,6 +37,7 @@
             $('.nc-campaign__confirmation').slideUp();
         })
 
+
     });
 
 }(jQuery));
