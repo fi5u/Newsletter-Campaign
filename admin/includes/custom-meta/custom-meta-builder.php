@@ -2,11 +2,10 @@
     <div class="nc-builder__posts">
         <?php
         // Store the vals for builder in a var
-        /*$meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );*/
         $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_builder', true );
 
 
-        // We going to get all the posts but we don't want to output posts here that
+        // We're going to get all the posts but we don't want to output posts here that
         // will be output later in the builder output boxes
 
         // Setup the exclude array to be used later
@@ -87,22 +86,25 @@
     $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
     if (isset($special_posts) && !empty($special_posts)) {
         foreach ($special_posts as $special_post) {
-            // One or more special posts have been saved, output the special posts container ?>
-            <h4><?php echo $special_post['newsletter_campaign_template_special-name']; ?></h4>
-            <?php // Store the special post hash id as data-name to be used for consistent saving ?>
-            <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="<?php echo $special_post['newsletter_campaign_template_hidden']; ?>">
-                <?php
-                foreach ($meta_vals as $meta_val => $value) {
-                    if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
-                        foreach ($value as $this_post) {
-                            $selected_post = get_post($this_post);
-                            echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+            // Only output the special template block if the name field is there (hidden field will be there even for an empty template)
+            if (isset($special_post['newsletter_campaign_template_special-name'])) {
+                // One or more special posts have been saved, output the special posts container ?>
+                <h4><?php echo $special_post['newsletter_campaign_template_special-name']; ?></h4>
+                <?php // Store the special post hash id as data-name to be used for consistent saving ?>
+                <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="<?php echo $special_post['newsletter_campaign_template_hidden']; ?>">
+                    <?php
+                    foreach ($meta_vals as $meta_val => $value) {
+                        if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
+                            foreach ($value as $this_post) {
+                                $selected_post = get_post($this_post);
+                                echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+                            }
                         }
-                    }
-                }?>
+                    }?>
 
-            </div>
-            <?php
+                </div>
+                <?php
+            }
         }
     }
     ?>

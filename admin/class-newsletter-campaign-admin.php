@@ -361,6 +361,9 @@ class NewsletterCampaignAdmin {
                     array('field' => 'special-body',
                         'title' => __('Special Post HTML', 'newsletter-campaign'),
                         'type' => 'textarea'),
+                    array('field' => 'special-code',
+                        'title' => __('Special Template Code'),
+                        'type' => 'text'),
                     array('field' => 'hidden',
                         'title' => 'hidden',
                         'type' => 'hidden')
@@ -444,7 +447,7 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'template', 'base-html' );
             $save_class->nc_save_meta_box( $post, 'template', 'post-html' );
             $save_class->nc_save_meta_box( $post, 'template', array(
-                'special-name', 'special-body', 'hidden'
+                'special-name', 'special-body', 'special-code', 'hidden'
                 )
             );
 

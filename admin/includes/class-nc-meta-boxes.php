@@ -391,7 +391,7 @@ class Newsletter_campaign_meta_box_generator {
 
         if ($subfield['type'] === 'hidden') {
             echo '<input type="hidden" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
-            if($meta_val) {
+            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
                 echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
             } else {
                 // Generate a new random string
@@ -404,13 +404,13 @@ class Newsletter_campaign_meta_box_generator {
             echo '">';
         } else if ($subfield['type'] === 'textarea') {
             echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-            if($meta_val) {
+            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
                 echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
             }
             echo '</textarea>';
         } else {
             echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-            if($meta_val) {
+            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
                 echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '"';
             }
             echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';

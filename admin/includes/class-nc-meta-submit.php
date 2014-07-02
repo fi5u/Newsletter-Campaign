@@ -118,7 +118,7 @@ class Newsletter_campaign_submit_meta {
                         <?php submit_button( __( 'Schedule' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   else : ?>
                         <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
-                        <?php submit_button( __( 'Xxx' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
+                        <?php submit_button( printf( __( '%s' ), $this->save_text), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   endif;
                     else : ?>
                         <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Submit for Review') ?>" />
