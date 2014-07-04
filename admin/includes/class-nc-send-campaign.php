@@ -293,17 +293,27 @@ class Newsletter_campaign_send_campaign {
         global $post;
 
         $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
-        ?>
-        <div class="updated">
-            <p><?php
-                if($mail_sent == 'yes') {
-                    _e( 'Campaign sent!', 'newsletter-campaign' );
-                } else {
-                    _e( 'Messages not sent!', 'newsletter-campaign' );
-                } ?>
-            </p>
-        </div>
-        <?php
+        $is_mail_sent = $mail_sent[0];
+        $messages = $mail_sent[1];
+
+        if (!empty($messages)) {
+            foreach ($messages as $message) {
+                ?>
+                <div class="<?php echo ($is_mail_sent === 'yes' ? 'updated' : 'error'); ?>">
+                    <p><?php
+
+                            echo $message;
+
+                        /*if($mail_sent == 'yes') {
+                            _e( 'Campaign sent!', 'newsletter-campaign' );
+                        } else {
+                            _e( 'Messages not sent!', 'newsletter-campaign' );
+                        }*/ ?>
+                    </p>
+                </div>
+                <?php
+            }
+        }
         delete_post_meta($post->ID, 'mail_sent');
     }
 
@@ -322,7 +332,7 @@ class Newsletter_campaign_send_campaign {
 
         $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
 
-        if($mail_sent) {
+        if($mail_sent !== '') {
             add_action('admin_notices', array($this, 'show_admin_notice') );
         }
     }
@@ -348,9 +358,11 @@ class Newsletter_campaign_send_campaign {
 
     private function send_email($addresses) {
         // TODO: set to html email then back to text after
+        $addresses = ['tommybfisher@gmail.com', 'def'];
 
-        // Set up an array to store any failed sends
-        $mail_failed = array();
+        // Set up an array to store whether it was successful
+        $mail_success = array();
+        $mail_success[0] = 'yes';
 
         // Have to send individually as we don't want the recipients seeing other addresses
         foreach ($addresses as $address) {
@@ -358,11 +370,12 @@ class Newsletter_campaign_send_campaign {
 
             // Add any failed sends to the mail_failed array
             if (!$mail_sent) {
-                $mail_failed[] = $address;
+                $mail_success[0] = 'no';
+                $mail_success[1][] = $address;
             }
         }
 
-        return $mail_failed;
+        return $mail_success;
     }
 
 
@@ -385,32 +398,51 @@ class Newsletter_campaign_send_campaign {
         // Get the list of email addresses
         $addresses = $this->get_addresses($campaign_id);
         if (empty($addresses) || empty($addresses['valid'])) {
-            $campaign_message['error'][] = __('Couldn\'t find any valid addresses to send the campaign to, campaign not sent.', 'newsletter-campaign');
+            $campaign_message[] = __('Couldn\'t find any valid addresses to send the campaign to, campaign not sent.', 'newsletter-campaign');
         }
 
         // Get the data from the template
         $template = $this->get_template($campaign_id);
         if (empty($template['base']) || empty($template['post'])) {
-            $campaign_message['error'][] = __('Couldn\'t find valid data in the selected template, campaign not sent.', 'newsletter-campaign');
+            $campaign_message[] = __('Couldn\'t find valid data in the selected template, campaign not sent.', 'newsletter-campaign');
         }
 
-        if(!empty($campaign_message['error'])) { // there are some error messages to display
-            // TODO: dislay admin notice with messages
-        } else {
+        // Proceed only if no errors have been logged
+        if(empty($campaign_message)) {
             // Build email
             $email_content = $this->build_email($campaign_id, $template);
 
-            if (!empty($email_content)) {
-                // Send the email
-                //$mail_sent = $this->send_email($addresses['valid']);
+            if (empty($email_content)) {
+                $campaign_message[] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
+                update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
+            } else {
+                // The email has content - send the email
+                $mail_success = $this->send_email($addresses['valid']);
+
                 //echo $email_content;
 
-                // Set the mail_sent meta
-                update_post_meta($campaign_id, 'mail_sent', 'yes');
-            } else {
-                update_post_meta($campaign_id, 'mail_sent', 'no');
-                $campaign_message['error'][] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
+                if ($mail_success[0] === 'yes') { // all messages sent successfully
+                    $campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
+                    // Set the mail_sent meta
+                    update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
+                } else {
+                    //print_r($mail_success);
+                    $count_tried = count($addresses['valid']);
+                    $count_failed = count($mail_success[1]);
+                    $count_success = $count_tried - $count_failed;
+
+                    if($count_tried === $count_failed) {
+                        $campaign_message[] = __('Campaign sending failed - all of the messages failed to send.', 'newsletter-campaign');
+                        update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
+                    } else { // Some messages failed to send
+                        $campaign_message[] = sprintf( _n('Out of %d message', 'Out of %d messages', $count_tried, 'newsletter-campaign'), $count_tried) . ', ' . sprintf( _n('%d message was sent successfully', '%d messages were sent successfully', $count_success, 'newsletter-campaign'), $count_success) . ' ' . sprintf( _n('and %d message failed to send.', '%d messages failed to send.', $count_failed, 'newsletter-campaign'), $count_failed);
+                        update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
+                    }
+                }
+
             }
+        } else {
+            update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
         }
     }
 
