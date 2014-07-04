@@ -114,19 +114,19 @@ class Newsletter_campaign_submit_meta {
                 if ( !in_array( $post->post_status, array('publish', 'future', 'private') ) || 0 == $post->ID ) {
                     if ( $can_publish ) :
                         if ( !empty($post->post_date_gmt) && time() < strtotime( $post->post_date_gmt . ' +0000' ) ) : ?>
-                        <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Schedule') ?>" />
+                        <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Schedule'); ?>" />
                         <?php submit_button( __( 'Schedule' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   else : ?>
                         <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
                         <?php submit_button( printf( __( '%s' ), $this->save_text), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   endif;
                     else : ?>
-                        <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Submit for Review') ?>" />
+                        <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Submit for Review'); ?>" />
                         <?php submit_button( __( 'Submit for Review' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php
                     endif;
                 } else { ?>
-                        <input name="original_publish" type="hidden" id="original_publish" value="<?php echo $save_text ?>" />
+                        <input name="original_publish" type="hidden" id="original_publish" value="<?php echo $this->save_text; ?>" />
                         <input name="save" type="submit" class="button button-primary button-large" id="publish" accesskey="p" value="<?php printf( __( '%s' ), $this->save_text); ?>" />
                 <?php
                 } ?>

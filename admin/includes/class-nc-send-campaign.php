@@ -10,10 +10,12 @@ class Newsletter_campaign_send_campaign {
     private $placeholder_title = '%TITLE%';
     private $placeholder_body = '%BODY%';
 
-
     public function __construct() {
         add_action( 'wp_ajax_my_action', array( $this, 'my_action_callback' ) );
         add_action('init', array($this, 'send_campaign'), 30 );
+        add_action( 'admin_head', array($this,'check_mail_sent') );
+
+        add_action( 'current_screen', array($this, 'check_screen') );
     }
 
 
@@ -24,6 +26,22 @@ class Newsletter_campaign_send_campaign {
         $whatever += 10;
             echo $whatever;
         die();
+    }
+
+
+    /*
+     * Check that we are on the correct screen
+     */
+
+    public function check_screen() {
+        // If not in campaign screen, exit
+        $screen = get_current_screen();
+        if ( 'campaign' !== $screen->post_type ) {
+            return false;
+        } else {
+            add_filter('post_updated_messages', array($this,'set_messages'));
+            return true;
+        }
     }
 
 
@@ -148,7 +166,7 @@ class Newsletter_campaign_send_campaign {
             }
         }
 
-        return $posts_content;
+        return $email_content;
     }
 
 
@@ -272,12 +290,54 @@ class Newsletter_campaign_send_campaign {
      * Show admin message
      */
     public function show_admin_notice() {
-        // TODO: not working!
+        global $post;
+
+        $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
         ?>
         <div class="updated">
-            <p><?php _e( 'Messages sent!', 'newsletter-campaign' ); ?></p>
+            <p><?php
+                if($mail_sent == 'yes') {
+                    _e( 'Campaign sent!', 'newsletter-campaign' );
+                } else {
+                    _e( 'Messages not sent!', 'newsletter-campaign' );
+                } ?>
+            </p>
         </div>
         <?php
+        delete_post_meta($post->ID, 'mail_sent');
+    }
+
+
+    /*
+     * Checks if the mail has been sent, if so, displays the admin notice
+     */
+
+    public function check_mail_sent() {
+        // If not in campaign screen, exit
+        if ( $this->check_screen() !== true ) {
+            return;
+        }
+
+        global $post;
+
+        $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
+
+        if($mail_sent) {
+            add_action('admin_notices', array($this, 'show_admin_notice') );
+        }
+    }
+
+
+    /*
+     * Set output messages for Campaign
+     */
+
+    public function set_messages($messages) {
+        // Do not display 'view post' link
+        $messages['post'][1] = __('Campaign updated.', 'newsletter-campaign');
+        // Remove 'Post saved' message when mail sent
+        $messages['post'][4] = '';
+        return $messages;
     }
 
 
@@ -311,6 +371,7 @@ class Newsletter_campaign_send_campaign {
      */
 
     public function send_campaign() {
+
         if (!isset($_POST['nc-campaign__confirmation-true'])) {
             return;
         }
@@ -343,15 +404,14 @@ class Newsletter_campaign_send_campaign {
                 // Send the email
                 //$mail_sent = $this->send_email($addresses['valid']);
                 //echo $email_content;
+
+                // Set the mail_sent meta
+                update_post_meta($campaign_id, 'mail_sent', 'yes');
             } else {
+                update_post_meta($campaign_id, 'mail_sent', 'no');
                 $campaign_message['error'][] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
             }
         }
-
-
-
-        add_action('admin_notices', array($this, 'show_admin_notice') );
-
     }
 
 }

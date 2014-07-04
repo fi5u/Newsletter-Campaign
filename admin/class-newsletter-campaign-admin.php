@@ -46,7 +46,6 @@ class NewsletterCampaignAdmin {
 	 * @since     0.0.0
 	 */
 	private function __construct() {
-
 		/*
 		 * @TODO :
 		 *

@@ -437,7 +437,7 @@ class Newsletter_campaign_meta_box_generator {
         echo '<button type="button" class="button button-secondary" id="nc_campaign_send_campaign_cancel">' . __('Cancel send');
         echo '</div>';
         // Set the name of the button so that we can check on page save if we want to send campaign
-        echo '<button class="button button-primary" id="nc_campaign_send_campaign" name="nc-campaign__confirmation-true">' . __('Send Campaign') . '</button>';
+        echo '<button class="button button-primary" id="nc_campaign_send_campaign" name="nc-campaign__confirmation-true" value="send_true">' . __('Send Campaign') . '</button>';
     }
 
 
