@@ -128,7 +128,7 @@ class Newsletter_campaign_submit_meta {
                         <?php submit_button( __( 'Schedule' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   else : ?>
                         <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
-                        <?php submit_button( printf( __( '%s' ), $this->save_text), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
+                        <?php submit_button( $this->save_text, 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
                 <?php   endif;
                     else : ?>
                         <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Submit for Review'); ?>" />
@@ -136,8 +136,8 @@ class Newsletter_campaign_submit_meta {
                 <?php
                     endif;
                 } else { ?>
-                        <input name="original_publish" type="hidden" id="original_publish" value="<?php echo $this->save_text; ?>" />
-                        <input name="save" type="submit" class="button button-primary button-large" id="publish" accesskey="p" value="<?php printf( __( '%s' ), $this->save_text); ?>" />
+                        <input name="original_publish" type="hidden" id="original_publish" value="<?php echo esc_attr($this->save_text); ?>" />
+                        <input name="save" type="submit" class="button button-primary button-large" id="publish" accesskey="p" value="<?php echo esc_attr($this->save_text); ?>" />
                 <?php
                 } ?>
                 </div>

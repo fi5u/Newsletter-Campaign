@@ -306,7 +306,7 @@ class NewsletterCampaignAdmin {
      * @since    0.0.0
      */
     private static function replace_submit_meta_boxes() {
-        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('campaign', 'Overview', 'Save campaign');
+        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('campaign', __('Overview', 'newsletter-campaign'), __('Save campaign', 'newsletter-campaign'));
     }
 
     /**
