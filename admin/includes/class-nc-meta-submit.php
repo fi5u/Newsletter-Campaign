@@ -42,7 +42,7 @@ class Newsletter_campaign_submit_meta {
                 <div class="misc-pub-section">
                     <label for="nc_message_subject">Message subject</label>
                     <?php wp_nonce_field( 'newsletter_campaign_campaign_message-subject_box', 'newsletter_campaign_campaign_message-subject_box_nonce' ); ?>
-                    <?php $subject = get_post_meta($post->ID, '_campaign_message-subject', true) !== null ? sanitize_text_field(get_post_meta($post->ID, '_campaign_message-subject', true)) : ''; ?>
+                    <?php $subject = get_post_meta($post->ID, '_campaign_message-subject', true) != '' ? sanitize_text_field(get_post_meta($post->ID, '_campaign_message-subject', true)) : get_the_title(); ?>
 
                     <input type="text" name="newsletter_campaign_campaign_message-subject" id="nc_message_subject"<?php echo($subject ? ' value="' . esc_attr($subject) . '"' : ''); ?>>
                 </div>
