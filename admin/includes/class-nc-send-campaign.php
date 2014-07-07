@@ -52,7 +52,7 @@ class Newsletter_campaign_send_campaign {
 
     private function get_posts($campaign_id) {
         $posts = get_post_meta($campaign_id, '_campaign_builder', true);
-        return $posts;
+        return apply_filters( 'nc_get_posts', $posts );
     }
 
 
@@ -103,7 +103,7 @@ class Newsletter_campaign_send_campaign {
         // Set the main email content
         $primary_content = str_replace($options['primary_search'], $primary_replace, $options['primary_subject']);
 
-        return $primary_content;
+        return apply_filters( 'nc_content_to_template', $primary_content );
     }
 
 
@@ -166,7 +166,7 @@ class Newsletter_campaign_send_campaign {
             }
         }
 
-        return $email_content;
+        return apply_filters('nc_build_email', $email_content);
     }
 
 
@@ -200,7 +200,7 @@ class Newsletter_campaign_send_campaign {
             $template_return['special'] = get_post_meta( $template_id, '_template_multi', true);
         }
 
-        return $template_return;
+        return apply_filters('nc_get_template', $template_return);
     }
 
 
@@ -282,7 +282,7 @@ class Newsletter_campaign_send_campaign {
             $subcriber_emails_return['duplicate'] = $subscriber_emails_duplicate;
         }
 
-        return $subcriber_emails_return;
+        return apply_filters('nc_get_addresses', $subcriber_emails_return);
     }
 
 
@@ -352,13 +352,24 @@ class Newsletter_campaign_send_campaign {
     }
 
 
+
+    /*
+     * Get the subject of the email
+     */
+
+    private function get_email_subject($campaign_id) {
+        $subject = get_post_meta( $campaign_id, '_campaign_message-subject', true );
+        return apply_filters( 'nc_get_email_subject', $subject );
+    }
+
+
+
     /*
      * Send email
      * $addresses: array of email addresses
      */
 
-    private function send_email($addresses, $message) {
-        // TODO: set to html email then back to text after
+    private function send_email($addresses, $subject, $message) {
 
         // Set up an array to store whether it was successful
         $mail_success = array();
@@ -367,9 +378,9 @@ class Newsletter_campaign_send_campaign {
         // Set email content type to html
         add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 
-        // Have to send individually as we don't want the recipients seeing other addresses
+        // Send mail individually
         foreach ($addresses as $address) {
-            $mail_sent = wp_mail( $address, $subject = 'Test subject', $message = $message, $headers = 'From: My Name <myname@example.com>' . "\r\n" );
+            $mail_sent = wp_mail( $address, $subject = $subject, $message = $message, $headers = 'From: My Name <myname@example.com>' . "\r\n" );
 
             // Add any failed sends to the mail_failed array
             if (!$mail_sent) {
@@ -416,6 +427,7 @@ class Newsletter_campaign_send_campaign {
         // Proceed only if no errors have been logged
         if(empty($campaign_message)) {
             // Build email
+            $email_subject = $this->get_email_subject($campaign_id);
             $email_content = $this->build_email($campaign_id, $template);
 
             if (empty($email_content)) {
@@ -423,7 +435,7 @@ class Newsletter_campaign_send_campaign {
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
                 // The email has content - send the email
-                $mail_success = $this->send_email($addresses['valid'], $email_content);
+                $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_content);
 
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
                     $campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
