@@ -38,6 +38,16 @@ class Newsletter_campaign_submit_meta {
         <div class="submitbox" id="submitpost">
             <div id="minor-publishing-actions"></div>
             <div id="misc-publishing-actions">
+                <?php if ($post_type === 'campaign') { ?>
+                <div class="misc-pub-section">
+                    <label for="nc_message_subject">Message subject</label>
+                    <?php wp_nonce_field( 'newsletter_campaign_campaign_message-subject_box', 'newsletter_campaign_campaign_message-subject_box_nonce' ); ?>
+                    <?php $subject = get_post_meta($post->ID, '_campaign_message-subject', true) !== null ? sanitize_text_field(get_post_meta($post->ID, '_campaign_message-subject', true)) : ''; ?>
+
+                    <input type="text" name="newsletter_campaign_campaign_message-subject" id="nc_message_subject"<?php echo($subject ? ' value="' . esc_attr($subject) . '"' : ''); ?>>
+                </div>
+                <?php } ?>
+
                 <?php
                 /* translators: Publish box date format, see http://php.net/date */
                 $datef = __( 'M j, Y @ G:i' );

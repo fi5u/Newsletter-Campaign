@@ -300,16 +300,7 @@ class Newsletter_campaign_send_campaign {
             foreach ($messages as $message) {
                 ?>
                 <div class="<?php echo ($is_mail_sent === 'yes' ? 'updated' : 'error'); ?>">
-                    <p><?php
-
-                            echo $message;
-
-                        /*if($mail_sent == 'yes') {
-                            _e( 'Campaign sent!', 'newsletter-campaign' );
-                        } else {
-                            _e( 'Messages not sent!', 'newsletter-campaign' );
-                        }*/ ?>
-                    </p>
+                    <p><?php echo $message; ?></p>
                 </div>
                 <?php
             }
@@ -351,22 +342,34 @@ class Newsletter_campaign_send_campaign {
     }
 
 
+
+    /*
+     * Set email content type to html
+     */
+
+    public function set_html_content_type() {
+        return 'text/html';
+    }
+
+
     /*
      * Send email
      * $addresses: array of email addresses
      */
 
-    private function send_email($addresses) {
+    private function send_email($addresses, $message) {
         // TODO: set to html email then back to text after
-        $addresses = ['tommybfisher@gmail.com', 'def'];
 
         // Set up an array to store whether it was successful
         $mail_success = array();
         $mail_success[0] = 'yes';
 
+        // Set email content type to html
+        add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
+
         // Have to send individually as we don't want the recipients seeing other addresses
         foreach ($addresses as $address) {
-            $mail_sent = wp_mail( $address, $subject = 'Test subject', $message = 'Test message', $headers = 'From: My Name <myname@example.com>' . "\r\n" );
+            $mail_sent = wp_mail( $address, $subject = 'Test subject', $message = $message, $headers = 'From: My Name <myname@example.com>' . "\r\n" );
 
             // Add any failed sends to the mail_failed array
             if (!$mail_sent) {
@@ -374,6 +377,9 @@ class Newsletter_campaign_send_campaign {
                 $mail_success[1][] = $address;
             }
         }
+
+        // Remove html email type
+        remove_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 
         return $mail_success;
     }
@@ -417,9 +423,7 @@ class Newsletter_campaign_send_campaign {
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
                 // The email has content - send the email
-                $mail_success = $this->send_email($addresses['valid']);
-
-                //echo $email_content;
+                $mail_success = $this->send_email($addresses['valid'], $email_content);
 
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
                     $campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
