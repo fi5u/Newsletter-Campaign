@@ -320,13 +320,14 @@ class Newsletter_campaign_send_campaign {
         if ( $this->check_screen() !== true ) {
             return;
         }
-
         global $post;
 
-        $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
+        if (isset($post->ID)) {
+            $mail_sent = get_post_meta( $post->ID, 'mail_sent', true );
 
-        if($mail_sent !== '') {
-            add_action('admin_notices', array($this, 'show_admin_notice') );
+            if(!empty($mail_sent)) {
+                add_action('admin_notices', array($this, 'show_admin_notice') );
+            }
         }
     }
 
