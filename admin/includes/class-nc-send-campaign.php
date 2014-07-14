@@ -375,6 +375,8 @@ class Newsletter_campaign_send_campaign {
         // Set up an array to store whether it was successful
         $mail_success = array();
         $mail_success[0] = 'yes';
+        // Store the successful send count
+        $mail_success[2] = 0;
 
         // Set email content type to html
         add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
@@ -383,8 +385,11 @@ class Newsletter_campaign_send_campaign {
         foreach ($addresses as $address) {
             $mail_sent = wp_mail( $address, $subject = $subject, $message = $message, $headers = 'From: My Name <myname@example.com>' . "\r\n" );
 
-            // Add any failed sends to the mail_failed array
-            if (!$mail_sent) {
+            if ($mail_sent) {
+                // Increment the successful send counter
+                $mail_success[2]++;
+            } else {
+                // Add any failed sends to the mail_failed array
                 $mail_success[0] = 'no';
                 $mail_success[1][] = $address;
             }
@@ -482,7 +487,8 @@ class Newsletter_campaign_send_campaign {
                 }
 
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
-                    $campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
+                    //$campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
+                    $campaign_message[] = sprintf( _n('Campaign has been successfully sent to %d address.', 'Campaign has been successfully sent to %d addresses.', $mail_success[2], 'newsletter-campaign'), $mail_success[2] );
                     // Set the mail_sent meta
                     update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
 
