@@ -93,11 +93,13 @@
                 <?php // Store the special post hash id as data-name to be used for consistent saving ?>
                 <div class="nc-builder__output" style="background:lightgray;min-height:50px;" data-name="<?php echo $special_post['newsletter_campaign_template_hidden']; ?>">
                     <?php
-                    foreach ($meta_vals as $meta_val => $value) {
-                        if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
-                            foreach ($value as $this_post) {
-                                $selected_post = get_post($this_post);
-                                echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+                    if ($meta_vals) {
+                        foreach ($meta_vals as $meta_val => $value) {
+                            if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
+                                foreach ($value as $this_post) {
+                                    $selected_post = get_post($this_post);
+                                    echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+                                }
                             }
                         }
                     }?>
