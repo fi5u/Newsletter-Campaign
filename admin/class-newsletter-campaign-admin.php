@@ -456,7 +456,6 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-check' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
-
         }
 
         add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );

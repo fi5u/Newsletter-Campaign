@@ -82,7 +82,7 @@ class Newsletter_campaign_meta_box_generator {
                     if ( $_POST[$meta_root . $field_item][$i] != '' ) {
                         // Sanitize the user input.
 
-                        $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? sanitize_text_field( $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] ) : '';
+                        $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] : '';
                         // TODO: perform sanitation on $data
                         $return_val[$i][$meta_root . $field_item] = $data;
                     }
@@ -405,7 +405,7 @@ class Newsletter_campaign_meta_box_generator {
         } else if ($subfield['type'] === 'textarea') {
             echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
             if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
-                echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
+                echo esc_attr($meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']]);
             }
             echo '</textarea>';
         } else {

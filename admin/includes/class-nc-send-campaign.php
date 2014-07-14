@@ -182,13 +182,15 @@ class Newsletter_campaign_send_campaign {
         $template_id = get_post_meta( $id, '_campaign_template-select', true );
 
         // Fetch the base html
-        if (!empty(get_post_meta( $template_id, '_template_base-html', true))) {
-            $template_return['base'] = get_post_meta( $template_id, '_template_base-html', true);
+        $base_html_meta = get_post_meta( $template_id, '_template_base-html', true);
+        if (!empty($base_html_meta)) {
+            $template_return['base'] = $base_html_meta;
         }
 
         // Fetch the post html
-        if (!empty(get_post_meta( $template_id, '_template_post-html', true))) {
-            $template_return['post'] = get_post_meta( $template_id, '_template_post-html', true);
+        $post_html_meta = get_post_meta( $template_id, '_template_post-html', true);
+        if (!empty($post_html_meta)) {
+            $template_return['post'] = $post_html_meta;
         }
 
         // Fetch any special htmls
