@@ -425,13 +425,39 @@ class Newsletter_campaign_meta_box_generator {
     public function nc_render_campaign_send_campaign() {
         global $post;
 
-        $subscriber_group_id = get_post_meta( $post->ID, '_campaign_subscriber-group-select', true );
-        $subscriber_group = get_term( $subscriber_group_id, 'subscriber_list' );
+        // Get the array of ids for all the subscriber groups
+        $subscriber_group_ids = get_post_meta( $post->ID, '_campaign_subscriber-group-check', true );
+
+        // Prepare the subscriber group output (list which subscriber lists are chosen)
+        $subscriber_group_output = '';
+        $subscriber_groups_count = count($subscriber_group_ids);
+        $i = 0;
+        $email_count = 0;
+        foreach ($subscriber_group_ids as $subscriber_group_id) {
+            // If $subscriber_group_id is an array, then more than one result is found
+            if (is_array($subscriber_group_id)) {
+                $subscriber_group = get_term( $subscriber_group_id['newsletter_campaign_campaign_subscriber-group-check'], 'subscriber_list' );
+            } else {
+                $subscriber_group = get_term( $subscriber_group_id, 'subscriber_list' );
+            }
+            $subscriber_group_output .= '<strong>' . $subscriber_group->name . '</strong>';
+            if ($subscriber_groups_count - 2 === $i) {
+                // If not the last iteration add a comma and space
+                $subscriber_group_output .= ' and ';
+            } else if ($subscriber_groups_count - 1 !== $i) {
+                // If not the last iteration add a comma and space
+                $subscriber_group_output .= ', ';
+            }
+
+            $email_count = $email_count + $subscriber_group->count;
+
+            $i++;
+        }
 
         echo '<div class="nc-campaign__confirmation" style="display:none;">';
         echo '<p>';
         // TODO: internationalize the following line (with pluralization)
-        echo 'You are about to send <strong>' . $post->post_title . '</strong> to <strong>' . $subscriber_group->name . '</strong> subscriber group (which contains <strong>' . $subscriber_group->count . '</strong> email address).<br>';
+        echo 'You are about to send <strong>' . $post->post_title . '</strong> to ' . $subscriber_group_output . ' ' . sprintf( _n('subscriber group', 'subscriber groups', $subscriber_groups_count, 'newsletter-campaign'), $subscriber_groups_count) . ' ' . sprintf( _n('(which contains <strong>%d</strong> email address)', '(which contain <strong>%d</strong> email addresses)', $email_count, 'newsletter-campaign'), $email_count) . '.<br>';
         echo __('Are you sure you want to send it?', 'newsletter-campaign');
         echo '<p>';
         echo '<button type="button" class="button button-secondary" id="nc_campaign_send_campaign_cancel">' . __('Cancel send');
