@@ -259,13 +259,11 @@ class Newsletter_campaign_send_campaign {
                     $subscriber_emails_valid[] = $subscriber->post_title;
 
                 } else { // Not valid
-                    $subscriber_emails_invalid[]['address'] = $subscriber->post_title;
-                    $subscriber_emails_invalid[]['id'] = $subscriber->ID;
+                    $subscriber_emails_invalid[] = array($subscriber->ID => $subscriber->post_title);
                 }
 
             } else { // A duplicate
-                $subscriber_emails_duplicate[]['address'] = $subscriber->post_title;
-                $subscriber_emails_duplicate[]['id'] = $subscriber->ID;
+                $subscriber_emails_duplicate[] = array($subscriber->ID => $subscriber->post_title);
             }
         }
 
@@ -399,6 +397,37 @@ class Newsletter_campaign_send_campaign {
     }
 
 
+    /**
+     * Get a comma separated list of subscriber addresses
+     * @param  array    $addresses      In the form of: Array([0]=>Array('id'=>'address'), [1]=>Array('id'=>'address'))
+     * @param  string   $type
+     * @param  boolean  $delete
+     * @return string
+     */
+    public function get_subscriber_list_text($addresses, $type, $delete = false) {
+        // Build the list of links to invalid addresses
+        $return_string = '';
+        $i = 0;
+        $count = count($addresses[$type]);
+        foreach ($addresses[$type] as $addressess) {
+            foreach ($addressess as $id => $address) {
+                $return_string .= '<a href="' . get_edit_post_link($id) . '" target="_blank">' . $address . '</a>';
+                if ($delete === true) {
+                    $return_string .= ' <a href="' . get_delete_post_link( $id ) . '" target="_blank">[' . __('delete', 'newsletter-campaign') . ']</a>';
+                }
+                if ($count - 2 === $i) {
+                    $return_string .= ' ' . __('and', 'newsletter-campaign') . ' ';
+                } else if ($count - 1 !== $i) {
+                    $return_string .= ', ';
+                }
+            }
+            $i++;
+        }
+
+        return $return_string;
+    }
+
+
     /*
      * The functionality of the send
      */
@@ -440,12 +469,24 @@ class Newsletter_campaign_send_campaign {
                 // The email has content - send the email
                 $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_content);
 
+                // If there were duplicate or invalid addresses display messages
+                if (!empty($addresses['invalid'])) {
+                    // Get a formatted list of links to invalid addresses
+                    $invalid_addresses = $this->get_subscriber_list_text($addresses, 'invalid', true);
+                    $campaign_message[] = __('Some email addresses were invalid and could not be sent: ') . $invalid_addresses . '.';
+                }
+                if (!empty($addresses['duplicate'])) {
+                    // Get a formatted list of links to duplicate addresses
+                    $duplicate_addresses = $this->get_subscriber_list_text($addresses, 'duplicate');
+                    $campaign_message[] = __('Some email addresses were duplicates and were not sent: ') . $duplicate_addresses . '.';
+                }
+
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
                     $campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
                     // Set the mail_sent meta
                     update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
+
                 } else {
-                    //print_r($mail_success);
                     $count_tried = count($addresses['valid']);
                     $count_failed = count($mail_success[1]);
                     $count_success = $count_tried - $count_failed;
@@ -458,7 +499,6 @@ class Newsletter_campaign_send_campaign {
                         update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
                     }
                 }
-
             }
         } else {
             update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
