@@ -25,16 +25,18 @@
                 $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
             }
 
-            foreach ($meta_vals as $meta_val_key => $value) {
+            if ($meta_vals) {
+                foreach ($meta_vals as $meta_val_key => $value) {
 
-                // Find the last part of the key (the hash)
-                $this_key = explode('_', $meta_val_key);
-                $this_key_val = end($this_key);
+                    // Find the last part of the key (the hash)
+                    $this_key = explode('_', $meta_val_key);
+                    $this_key_val = end($this_key);
 
-                // If the hash appears in $special_ids, exclude it
-                if ($this_key_val === 'post' || in_array($this_key_val, $special_ids)) {
-                    foreach ($value as $val) {
-                        $exclude_arr[] = $val;
+                    // If the hash appears in $special_ids, exclude it
+                    if ($this_key_val === 'post' || in_array($this_key_val, $special_ids)) {
+                        foreach ($value as $val) {
+                            $exclude_arr[] = $val;
+                        }
                     }
                 }
             }
