@@ -162,6 +162,8 @@ class Newsletter_campaign_post_types {
      * Register Newsletter Campaign taxonomies
      */
     public static function register_taxonomies() {
+
+
         if ( taxonomy_exists( 'subscriber_list' ) )
             return;
 
@@ -171,7 +173,7 @@ class Newsletter_campaign_post_types {
         register_taxonomy( 'subscriber_list',
             apply_filters( 'newsletter_campaign_taxonomy_objects_subscriber_list', array( 'subscriber' ) ),
             apply_filters( 'newsletter_campaign_taxonomy_args_subscriber_list', array(
-                'hierarchical'          => false,
+                'hierarchical'          => true,
                 'label'                 => __( 'Subscriber Lists', 'newsletter-campaign' ),
                 'labels' => array(
                         'name'              => __( 'Subscriber Lists', 'newsletter-campaign' ),
@@ -197,6 +199,8 @@ class Newsletter_campaign_post_types {
 
         register_taxonomy_for_object_type( 'subscriber_list', 'subscriber' );
     }
+
+
 
 
 }
