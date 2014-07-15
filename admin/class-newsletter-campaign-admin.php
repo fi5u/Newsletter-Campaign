@@ -217,13 +217,12 @@ class NewsletterCampaignAdmin {
     public function add_plugin_admin_menu_after() {
 
         $this->plugin_screen_dashboard = add_submenu_page(
-            'newsletter-campaign', // Parent slug
+            $this->plugin_slug, // Parent slug
             __( 'Subscriber Lists', $this->plugin_slug ), // Page title
             __( 'Subscriber Lists', $this->plugin_slug ), // Menu title
             'manage_options', // Capability
             'edit-tags.php?taxonomy=subscriber_list&post_type=subscriber' // Menu slug
         );
-
     }
 
 
@@ -410,10 +409,10 @@ class NewsletterCampaignAdmin {
                 )
             );
 
-            $add_class->nc_add_meta_box('nc-campaign-subscriber-list-check-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+            $add_class->nc_add_meta_box('nc-campaign-subscriber-list-check-add', __('Subscriber List', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
                 'post_type' => 'campaign',
                 'field' => 'subscriber-list-check',
-                'title' => __('Subscriber Group', 'newsletter-campaign'),
+                'title' => __('Subscriber List', 'newsletter-campaign'),
                 'type' => 'checkbox',
                 'select_options' => get_terms( 'subscriber_list', $campaign_subscriber_list_args ),
                 'key' => 'term_id',

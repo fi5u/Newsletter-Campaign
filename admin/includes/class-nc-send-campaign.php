@@ -212,7 +212,7 @@ class Newsletter_campaign_send_campaign {
      */
 
     private function get_addresses($id) {
-        // Get the ids of all selected subscriber groups
+        // Get the ids of all selected subscriber lists
         $subscriber_lists_meta = get_post_meta( $id, '_campaign_subscriber-list-check', true );
         $subscriber_lists_ids = array();
         // Flatten the array to create an array of the values
@@ -220,7 +220,7 @@ class Newsletter_campaign_send_campaign {
             $subscriber_lists_ids[] = $current;
         });
 
-        // Fetch all the posts that belong to the selected subscriber group(s)
+        // Fetch all the posts that belong to the selected subscriber list(s)
         $send_campaign_subscriber_posts_args = apply_filters( 'newsletter_campaign_send_campaign_subscriber_posts_args',
             array(
                 'posts_per_page'    =>  -1,

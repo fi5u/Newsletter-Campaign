@@ -516,10 +516,10 @@ class Newsletter_campaign_meta_box_generator {
     public function nc_render_campaign_send_campaign() {
         global $post;
 
-        // Get the array of ids for all the subscriber groups
+        // Get the array of ids for all the subscriber lists
         $subscriber_list_ids = get_post_meta( $post->ID, '_campaign_subscriber-list-check', true );
 
-        // Prepare the subscriber group output (list which subscriber lists are chosen)
+        // Prepare the subscriber list output (list which subscriber lists are chosen)
         $subscriber_list_output = '';
         $subscriber_lists_count = count($subscriber_list_ids);
         $i = 0;
