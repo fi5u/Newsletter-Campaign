@@ -517,44 +517,61 @@ class Newsletter_campaign_meta_box_generator {
         global $post;
 
         // Get the array of ids for all the subscriber groups
-        $subscriber_group_ids = get_post_meta( $post->ID, '_campaign_subscriber-group-check', true );
+        $subscriber_list_ids = get_post_meta( $post->ID, '_campaign_subscriber-list-check', true );
 
         // Prepare the subscriber group output (list which subscriber lists are chosen)
-        $subscriber_group_output = '';
-        $subscriber_groups_count = count($subscriber_group_ids);
+        $subscriber_list_output = '';
+        $subscriber_lists_count = count($subscriber_list_ids);
         $i = 0;
         $email_count = 0;
-        foreach ($subscriber_group_ids as $subscriber_group_id) {
-            // If $subscriber_group_id is an array, then more than one result is found
-            if (is_array($subscriber_group_id)) {
-                $subscriber_group = get_term( $subscriber_group_id['newsletter_campaign_campaign_subscriber-group-check'], 'subscriber_list' );
-            } else {
-                $subscriber_group = get_term( $subscriber_group_id, 'subscriber_list' );
-            }
-            $subscriber_group_output .= '<strong>' . $subscriber_group->name . '</strong>';
-            if ($subscriber_groups_count - 2 === $i) {
-                // If not the last iteration add a comma and space
-                $subscriber_group_output .= ' and ';
-            } else if ($subscriber_groups_count - 1 !== $i) {
-                // If not the last iteration add a comma and space
-                $subscriber_group_output .= ', ';
-            }
+        if ($subscriber_list_ids) {
+            foreach ($subscriber_list_ids as $subscriber_list_id) {
+                // If $subscriber_list_id is an array, then more than one result is found
+                if (is_array($subscriber_list_id)) {
+                    $subscriber_list = get_term( $subscriber_list_id['newsletter_campaign_campaign_subscriber-list-check'], 'subscriber_list' );
+                } else {
+                    $subscriber_list = get_term( $subscriber_list_id, 'subscriber_list' );
+                }
+                $subscriber_list_output .= '<strong>' . $subscriber_list->name . '</strong>';
+                if ($subscriber_lists_count - 2 === $i) {
+                    // If not the last iteration add a comma and space
+                    $subscriber_list_output .= ' and ';
+                } else if ($subscriber_lists_count - 1 !== $i) {
+                    // If not the last iteration add a comma and space
+                    $subscriber_list_output .= ', ';
+                }
 
-            $email_count = $email_count + $subscriber_group->count;
+                $email_count = $email_count + $subscriber_list->count;
 
-            $i++;
+                $i++;
+            }
         }
 
-        echo '<div class="nc-campaign__confirmation" style="display:none;">';
-        echo '<p>';
-        // TODO: internationalize the following line (with pluralization)
-        echo 'You are about to send <strong>' . $post->post_title . '</strong> to ' . $subscriber_group_output . ' ' . sprintf( _n('subscriber group', 'subscriber groups', $subscriber_groups_count, 'newsletter-campaign'), $subscriber_groups_count) . ' ' . sprintf( _n('(which contains <strong>%d</strong> email address)', '(which contain <strong>%d</strong> email addresses)', $email_count, 'newsletter-campaign'), $email_count) . '.<br>';
-        echo __('Are you sure you want to send it?', 'newsletter-campaign');
-        echo '<p>';
-        echo '<button type="button" class="button button-secondary" id="nc_campaign_send_campaign_cancel">' . __('Cancel send');
-        echo '</div>';
+
+        if ($subscriber_list_ids) {
+            echo '<div class="nc-campaign__confirmation" style="display:none;">';
+            echo '<p>';
+            echo 'You are about to send <strong>' . $post->post_title . '</strong> to ' . $subscriber_list_output . ' ' . sprintf( _n('subscriber list', 'subscriber lists', $subscriber_lists_count, 'newsletter-campaign'), $subscriber_lists_count) . ' ' . sprintf( _n('(which contains <strong>%d</strong> email address)', '(which contain <strong>%d</strong> email addresses)', $email_count, 'newsletter-campaign'), $email_count) . '.<br>';
+            echo __('Are you sure you want to send it?', 'newsletter-campaign');
+            echo '</p>';
+            echo '<button type="button" class="button button-secondary" id="nc_campaign_send_campaign_cancel">' . __('Cancel send');
+            echo '</div>';
+        } else {
+            // No subscriber lists selected or saved
+            echo '<div class="nc-campaign__confirmation">';
+            echo __('No subscriber lists selected, select one or more subscriber lists and save before sending the campaign.');
+            echo '</div>';
+        }
+
         // Set the name of the button so that we can check on page save if we want to send campaign
-        echo '<button class="button button-primary" id="nc_campaign_send_campaign" name="nc-campaign__confirmation-true" value="send_true">' . __('Send Campaign') . '</button>';
+        echo '<p>';
+        echo '<button class="button button-primary" id="nc_campaign_send_campaign" name="nc-campaign__confirmation-true" value="send_true"';
+        if (!$subscriber_list_ids) {
+            // Prevent send campaign from being clickable if no list selected
+            echo ' disabled="disabled"';
+        }
+        echo '>' . __('Send Campaign') . '</button>';
+        echo '</p>';
     }
 
 

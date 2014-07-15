@@ -218,8 +218,8 @@ class NewsletterCampaignAdmin {
 
         $this->plugin_screen_dashboard = add_submenu_page(
             'newsletter-campaign', // Parent slug
-            __( 'Subscriber Groups', $this->plugin_slug ), // Page title
-            __( 'Subscriber Groups', $this->plugin_slug ), // Menu title
+            __( 'Subscriber Lists', $this->plugin_slug ), // Page title
+            __( 'Subscriber Lists', $this->plugin_slug ), // Menu title
             'manage_options', // Capability
             'edit-tags.php?taxonomy=subscriber_list&post_type=subscriber' // Menu slug
         );
@@ -402,24 +402,24 @@ class NewsletterCampaignAdmin {
                 )
             );
 
-            $campaign_subscriber_group_args = apply_filters(
-                'newsletter_campaign_campaign_subscriber_group_args', array(
+            $campaign_subscriber_list_args = apply_filters(
+                'newsletter_campaign_campaign_subscriber_list_args', array(
                     'orderby'       => 'name',
                     'order'         => 'ASC',
                     'hide_empty'    => false
                 )
             );
 
-            $add_class->nc_add_meta_box('nc-campaign-subscriber-group-check-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+            $add_class->nc_add_meta_box('nc-campaign-subscriber-list-check-add', __('Subscriber Group', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
                 'post_type' => 'campaign',
-                'field' => 'subscriber-group-check',
+                'field' => 'subscriber-list-check',
                 'title' => __('Subscriber Group', 'newsletter-campaign'),
                 'type' => 'checkbox',
-                'select_options' => get_terms( 'subscriber_list', $campaign_subscriber_group_args ),
+                'select_options' => get_terms( 'subscriber_list', $campaign_subscriber_list_args ),
                 'key' => 'term_id',
                 'value' => 'name',
                 'not_found' => array(
-                    __('No subscriber groups found', 'newsletter-campaign'), '<a href="' . home_url() . '/wp-admin/edit-tags.php?taxonomy=subscriber_list&post_type=subscriber">' . __('Create a subscriber list', 'newsletter-campaign') . '</a>')
+                    __('No subscriber lists found', 'newsletter-campaign'), '<a href="' . home_url() . '/wp-admin/edit-tags.php?taxonomy=subscriber_list&post_type=subscriber">' . __('Create a subscriber list', 'newsletter-campaign') . '</a>')
                 )
             );
 
@@ -454,7 +454,7 @@ class NewsletterCampaignAdmin {
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-group-check' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-list-check' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
         }

@@ -213,11 +213,11 @@ class Newsletter_campaign_send_campaign {
 
     private function get_addresses($id) {
         // Get the ids of all selected subscriber groups
-        $subscriber_groups_meta = get_post_meta( $id, '_campaign_subscriber-group-check', true );
-        $subscriber_groups_ids = array();
+        $subscriber_lists_meta = get_post_meta( $id, '_campaign_subscriber-list-check', true );
+        $subscriber_lists_ids = array();
         // Flatten the array to create an array of the values
-        array_walk_recursive($subscriber_groups_meta, function ($current) use (&$subscriber_groups_ids) {
-            $subscriber_groups_ids[] = $current;
+        array_walk_recursive($subscriber_lists_meta, function ($current) use (&$subscriber_lists_ids) {
+            $subscriber_lists_ids[] = $current;
         });
 
         // Fetch all the posts that belong to the selected subscriber group(s)
@@ -229,7 +229,7 @@ class Newsletter_campaign_send_campaign {
                 'tax_query' => array(
                     array(
                         'taxonomy' => 'subscriber_list',
-                        'terms' => $subscriber_groups_ids
+                        'terms' => $subscriber_lists_ids
                     )
                 )
             )
