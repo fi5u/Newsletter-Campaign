@@ -56,7 +56,13 @@ class Newsletter_campaign_send_campaign {
     }
 
 
-    private function content_to_template1($posts_arr, $template) {
+    /**
+     * Used by build_email() to feed content into the template
+     * @param  arr $posts_arr   An array from get_posts()
+     * @param  str $template    The template to feed content into
+     * @return str              The compiled template
+     */
+    private function content_to_template($posts_arr, $template) {
         // Set up an array to add posts content to
         $post_output_arr = array();
 
@@ -77,11 +83,17 @@ class Newsletter_campaign_send_campaign {
     }
 
 
-    private function build_email1($campaign_id, $template) {
+    /**
+     * Processes the templates and adds in the content
+     * @param  int  $campaign_id    The post id
+     * @param  arr  $template       An array of selected templates
+     * @return str                  The entire email content
+     */
+    private function build_email($campaign_id, $template) {
         $nc_posts_all = $this->get_posts($campaign_id);
 
         $nc_reg_posts = $nc_posts_all['newsletter_campaign_builder_post'];
-        $reg_posts_output = $this->content_to_template1($nc_reg_posts, $template['post']);
+        $reg_posts_output = $this->content_to_template($nc_reg_posts, $template['post']);
 
         // Loop through nc_posts_all to get the special posts
         foreach ($nc_posts_all as $nc_post_special => $post_ids) {
@@ -95,7 +107,7 @@ class Newsletter_campaign_send_campaign {
                     // Make sure the template is correct
                     if($special_template['newsletter_campaign_template_hidden'] === $template_key_code) {
                         $special_shortcode = $special_template['newsletter_campaign_template_special-code'];
-                        $special_posts_output[$special_shortcode] = $this->content_to_template1($post_ids, $special_template['newsletter_campaign_template_special-body']);
+                        $special_posts_output[$special_shortcode] = $this->content_to_template($post_ids, $special_template['newsletter_campaign_template_special-body']);
 
                         // Add shortcode for these special posts
                         $email_special_shortcode = new Newsletter_campaign_shortcodes(null, $special_template['newsletter_campaign_template_special-body']);
@@ -109,107 +121,7 @@ class Newsletter_campaign_send_campaign {
         $reg_posts_shortcode = new Newsletter_campaign_shortcodes(null, $reg_posts_output);
         $email_output = $reg_posts_shortcode->nc_do_shortcodes($template['base']);
 
-        echo $email_output;
-    }
-
-
-    /*
-     * Fill in the supplied template with post content and returns the primary subject completed
-     * Return string
-     */
-
-    private function content_to_template($options) {
-        // Set up an array to add posts content to
-        $subject_arr = array();
-
-        // Generate the output for each post
-        foreach ($options['posts_arr'] as $post_item) {
-            // Get the post object so we can get the content
-            $post_object = get_post($post_item);
-
-            // Perform replacement
-            $shortcodes = new Newsletter_campaign_shortcodes($post_object);
-            $subject_arr[] = $shortcodes->nc_do_shortcodes($options['subject']);
-        }
-
-        // Join together all the posts
-        $primary_replace = implode('', $subject_arr);
-
-        // Set the main email content
-        //$primary_content = str_replace($options['primary_search'], $primary_replace, $options['primary_subject']);
-        $primary_shortcode = new Newsletter_campaign_shortcodes(null, $primary_replace);
-        $primary_content = $primary_shortcode->nc_do_shortcodes($options['primary_subject']);
-
-        // Replace the shortcodes
-        //$primary_content = do_shortcode($primary_content);
-
-        return apply_filters( 'nc_content_to_template', $primary_content );
-    }
-
-
-    /*
-     * Build the email from the template and the campaign data
-     * Return string
-     */
-
-    private function build_email($campaign_id, $template) {
-        $base_template = $template['base'];
-        $post_template = $template['post'];
-
-        $special_templates = !empty($template['special']) ? $template['special'] : '';
-
-        $nc_posts_all = $this->get_posts($campaign_id);
-
-        $nc_posts = $nc_posts_all['newsletter_campaign_builder_post'];
-
-        // Fill in the template
-        // Set content_to_template args
-        // TODO: apply filters
-        $content_to_template_args = array(
-            'posts_arr' => $nc_posts,
-            'search' => array($this->placeholder_title, $this->placeholder_body, $this->placeholder_feat_img),
-            'replace' => array('title', 'body', 'feat-img'),
-            'subject' => $post_template,
-            'primary_search' => $this->placeholder_posts,
-            'primary_subject' => $base_template
-        );
-
-        $email_content = $this->content_to_template($content_to_template_args);
-
-        // Loop through nc_posts_all to get the special posts
-        foreach ($nc_posts_all as $nc_post_special => $post_ids) {
-            // Ignore regular posts
-            if($nc_post_special !== 'newsletter_campaign_builder_post') {
-
-                // Fetch the hashed code from the end of the key
-                $template_key_exploded = explode('_', $nc_post_special);
-                $template_key_code = array_pop($template_key_exploded);
-
-                foreach ($special_templates as $special_template) {
-                    // Make sure the template is correct
-                    if($special_template['newsletter_campaign_template_hidden'] === $template_key_code) {
-
-                        $special_template_shortcode = new Newsletter_campaign_shortcodes();
-                        $special_template_shortcode->add_shortcode($template_key_code, $special_template['newsletter_campaign_template_special-body']);
-
-                        $content_to_template_args = array(
-                            'posts_arr' => $post_ids,
-                            'search' => array($this->placeholder_title, $this->placeholder_body),
-                            'replace' => array('title', 'body'),
-                            'subject' => $special_template['newsletter_campaign_template_special-body'],
-                            'primary_search' => $special_template['newsletter_campaign_template_special-code'],
-                            'primary_subject' => $email_content
-                        );
-
-                        $email_content = $this->content_to_template($content_to_template_args);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return apply_filters('nc_build_email', $email_content);
+        return $email_output;
     }
 
 
@@ -508,7 +420,7 @@ class Newsletter_campaign_send_campaign {
         if(empty($campaign_message)) {
             // Build email
             $email_subject = $this->get_email_subject($campaign_id);
-            $email_content = $this->build_email1($campaign_id, $template);
+            $email_content = $this->build_email($campaign_id, $template);
 
             if (empty($email_content)) {
                 $campaign_message[] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
