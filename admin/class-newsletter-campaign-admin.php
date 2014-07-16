@@ -221,7 +221,7 @@ class NewsletterCampaignAdmin {
             __( 'Subscriber Lists', $this->plugin_slug ), // Page title
             __( 'Subscriber Lists', $this->plugin_slug ), // Menu title
             'manage_options', // Capability
-            'edit-tags.php?taxonomy=subscriber_list&post_type=subscriber' // Menu slug
+            'edit-tags.php?taxonomy=subscriber_list&post_type=subscriber'
         );
     }
 
@@ -294,9 +294,11 @@ class NewsletterCampaignAdmin {
         include_once( 'includes/class-nc-meta-submit.php' );    // Replace the submit metabox
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
         include_once( 'includes/class-nc-campaign.php' );       // Format the campaign admin
+        include_once( 'includes/class-nc-shortcodes.php' );     // Register the shortcodes
         include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
 
     }
+
 
     /**
      * Create new meta boxes from the class

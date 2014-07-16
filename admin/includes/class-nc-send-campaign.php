@@ -6,15 +6,15 @@
 
 class Newsletter_campaign_send_campaign {
     private $placeholder_posts = '%POSTS%';
-    private $placeholder_post = '%POST%';
-    private $placeholder_title = '%TITLE%';
-    private $placeholder_body = '%BODY%';
+    private $placeholder_post = '/\%POST\%/';
+    private $placeholder_title = '/\%TITLE\%/';
+    private $placeholder_body = '/\%BODY\%/';
+    private $placeholder_feat_img = '/\%FEAT_IMG(|\[.*\])\%/'; // match %FEAT_IMG% or %FEAT_IMG[anything here]%
 
     public function __construct() {
         add_action( 'wp_ajax_my_action', array( $this, 'my_action_callback' ) );
-        add_action('init', array($this, 'send_campaign'), 30 );
+        add_action( 'init', array($this, 'send_campaign'), 30 );
         add_action( 'admin_head', array($this,'check_mail_sent') );
-
         add_action( 'current_screen', array($this, 'check_screen') );
     }
 
@@ -56,6 +56,63 @@ class Newsletter_campaign_send_campaign {
     }
 
 
+    private function content_to_template1($posts_arr, $template) {
+        // Set up an array to add posts content to
+        $post_output_arr = array();
+
+        // Generate the output for each post
+        foreach ($posts_arr as $post_item) {
+            // Get the post object so we can get the content
+            $post_object = get_post($post_item);
+
+            // Perform replacement
+            $shortcodes = new Newsletter_campaign_shortcodes($post_object);
+            $post_output_arr[] = $shortcodes->nc_do_shortcodes($template);
+        }
+
+        // Join together all the posts
+        $post_output = implode('', $post_output_arr);
+
+        return $post_output;
+    }
+
+
+    private function build_email1($campaign_id, $template) {
+        $nc_posts_all = $this->get_posts($campaign_id);
+
+        $nc_reg_posts = $nc_posts_all['newsletter_campaign_builder_post'];
+        $reg_posts_output = $this->content_to_template1($nc_reg_posts, $template['post']);
+
+        // Loop through nc_posts_all to get the special posts
+        foreach ($nc_posts_all as $nc_post_special => $post_ids) {
+            // Ignore regular posts
+            if($nc_post_special !== 'newsletter_campaign_builder_post') {
+                // Fetch the hashed code from the end of the key
+                $template_key_exploded = explode('_', $nc_post_special);
+                $template_key_code = array_pop($template_key_exploded);
+
+                foreach ($template['special'] as $special_template) {
+                    // Make sure the template is correct
+                    if($special_template['newsletter_campaign_template_hidden'] === $template_key_code) {
+                        $special_shortcode = $special_template['newsletter_campaign_template_special-code'];
+                        $special_posts_output[$special_shortcode] = $this->content_to_template1($post_ids, $special_template['newsletter_campaign_template_special-body']);
+
+                        // Add shortcode for these special posts
+                        $email_special_shortcode = new Newsletter_campaign_shortcodes(null, $special_template['newsletter_campaign_template_special-body']);
+                        $email_special_shortcode->add_shortcode($special_shortcode, $special_posts_output[$special_shortcode]);
+                    }
+                }
+            }
+        }
+
+        // Place the regular posts in the main template
+        $reg_posts_shortcode = new Newsletter_campaign_shortcodes(null, $reg_posts_output);
+        $email_output = $reg_posts_shortcode->nc_do_shortcodes($template['base']);
+
+        echo $email_output;
+    }
+
+
     /*
      * Fill in the supplied template with post content and returns the primary subject completed
      * Return string
@@ -70,38 +127,21 @@ class Newsletter_campaign_send_campaign {
             // Get the post object so we can get the content
             $post_object = get_post($post_item);
 
-            // Set an array to store replacements
-            $replacements_arr = array();
-            $replacements = $options['replace'];
-            $i = 0;
-            foreach ($replacements as $replacement) {
-
-                switch ($replacement) {
-                    case 'title':
-                        $replacements_arr[$i] = get_the_title($post_item);
-                        break;
-
-                    case 'body':
-                        $replacements_arr[$i] = $post_object->post_content;
-                        break;
-
-                    default:
-                        // Show the excerpt as a default
-                        $replacements_arr[$i] = $post_object->post_excerpt;
-                        break;
-                }
-                $i++;
-            }
-
             // Perform replacement
-            $subject_arr[] = str_replace($options['search'], $replacements_arr, $options['subject']);
+            $shortcodes = new Newsletter_campaign_shortcodes($post_object);
+            $subject_arr[] = $shortcodes->nc_do_shortcodes($options['subject']);
         }
 
         // Join together all the posts
         $primary_replace = implode('', $subject_arr);
 
         // Set the main email content
-        $primary_content = str_replace($options['primary_search'], $primary_replace, $options['primary_subject']);
+        //$primary_content = str_replace($options['primary_search'], $primary_replace, $options['primary_subject']);
+        $primary_shortcode = new Newsletter_campaign_shortcodes(null, $primary_replace);
+        $primary_content = $primary_shortcode->nc_do_shortcodes($options['primary_subject']);
+
+        // Replace the shortcodes
+        //$primary_content = do_shortcode($primary_content);
 
         return apply_filters( 'nc_content_to_template', $primary_content );
     }
@@ -127,8 +167,8 @@ class Newsletter_campaign_send_campaign {
         // TODO: apply filters
         $content_to_template_args = array(
             'posts_arr' => $nc_posts,
-            'search' => array($this->placeholder_title, $this->placeholder_body),
-            'replace' => array('title', 'body'),
+            'search' => array($this->placeholder_title, $this->placeholder_body, $this->placeholder_feat_img),
+            'replace' => array('title', 'body', 'feat-img'),
             'subject' => $post_template,
             'primary_search' => $this->placeholder_posts,
             'primary_subject' => $base_template
@@ -146,8 +186,11 @@ class Newsletter_campaign_send_campaign {
                 $template_key_code = array_pop($template_key_exploded);
 
                 foreach ($special_templates as $special_template) {
-                    // Make sure the template
+                    // Make sure the template is correct
                     if($special_template['newsletter_campaign_template_hidden'] === $template_key_code) {
+
+                        $special_template_shortcode = new Newsletter_campaign_shortcodes();
+                        $special_template_shortcode->add_shortcode($template_key_code, $special_template['newsletter_campaign_template_special-body']);
 
                         $content_to_template_args = array(
                             'posts_arr' => $post_ids,
@@ -465,7 +508,7 @@ class Newsletter_campaign_send_campaign {
         if(empty($campaign_message)) {
             // Build email
             $email_subject = $this->get_email_subject($campaign_id);
-            $email_content = $this->build_email($campaign_id, $template);
+            $email_content = $this->build_email1($campaign_id, $template);
 
             if (empty($email_content)) {
                 $campaign_message[] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
