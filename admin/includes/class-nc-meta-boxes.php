@@ -109,6 +109,31 @@ class Newsletter_campaign_meta_box_generator {
     }
 
 
+    /**
+     * Gets the meta and post meta strings
+     * @param  str      $post_type  The post type
+     * @param  arr/str  $field      A single string for the field or an array of strings
+     * @param  str      $meta_name  Used when multiple fields are passed
+     * @return arr                  An array of the 'meta' and 'post_meta' values
+     */
+    private function get_meta($post_type, $field, $meta_name) {
+        $meta_root = 'newsletter_campaign_' . $post_type . '_';
+        if (is_array($field)) {
+            // Provide a default of 'repeater' only if meta name hasn't been passed but it HAS multiple fields
+            $meta_name = $meta_name == '' ? 'repeater' : $meta_name;
+            $meta = $meta_root . $meta_name;
+            $post_meta = '_' . $post_type . '_' . $meta_name;
+        } else {
+            $meta = $meta_root . $field;
+            $post_meta = '_' . $post_type . '_' . $field;
+        }
+
+        $return_arr = array('meta' => $meta, 'post_meta' => $post_meta);
+
+        return $return_arr;
+    }
+
+
     /*
      * $meta_name = string: used for multiple fields
      */
@@ -117,8 +142,8 @@ class Newsletter_campaign_meta_box_generator {
 
         $meta_root = 'newsletter_campaign_' . $post_type . '_';
         if (is_array($field)) {
-            // Provide a default of 'multi' only if meta name hasn't been passed but it HAS multiple fields
-            $meta_name = $meta_name == '' ? 'multi' : $meta_name;
+            // Provide a default of 'repeater' only if meta name hasn't been passed but it HAS multiple fields
+            $meta_name = $meta_name == '' ? 'repeater' : $meta_name;
             $meta = $meta_root . $meta_name;
             $post_meta = '_' . $post_type . '_' . $meta_name;
         } else {
@@ -221,8 +246,6 @@ class Newsletter_campaign_meta_box_generator {
                 update_post_meta( $post_id, '_' . $post_type . '_' . $field, $return_val );
             }
         }
-
-
     }
 
     public function nc_render_meta_box( $post, $metabox ) {
@@ -230,14 +253,20 @@ class Newsletter_campaign_meta_box_generator {
         $field = $metabox['args']['field'];
         $title = $metabox['args']['title'];
         $type = isset($metabox['args']['type']) ? $metabox['args']['type'] : 'text'; // Defaults to text
+        $meta_name = isset($metabox['args']['meta_name']) ? $metabox['args']['meta_name'] : '';
 
-        if ($type !== 'multi'/* && $type !== 'custom'*/) {
-            // Set nonce and value for all types except multi
+        // Fetch the meta string
+        $meta_arr = $this->get_meta($post_type, $field, $meta_name);
+        $meta = $meta_arr['meta'];
+        $post_meta = $meta_arr['post_meta'];
+
+        if ($type !== 'repeater'/* && $type !== 'custom'*/) {
+            // Set nonce and value for all types except repeater
             wp_nonce_field( 'newsletter_campaign_' . $post_type . '_' . $field . '_box', 'newsletter_campaign_' . $post_type . '_' . $field . '_box_nonce' );
             $value = get_post_meta( $post->ID, '_' . $post_type . '_' . $field, true );
         } else {
-            // Multi has a different nonce
-            wp_nonce_field( 'newsletter_campaign_' . $post_type . '_multi_box', 'newsletter_campaign_' . $post_type . '_multi_box_nonce' );
+            // Repeater has a different nonce
+            wp_nonce_field( 'newsletter_campaign_' . $post_type . '_repeater_box', 'newsletter_campaign_' . $post_type . '_repeater_box_nonce' );
         }
 
         if ($type === 'textarea') {
@@ -343,7 +372,7 @@ class Newsletter_campaign_meta_box_generator {
                 }
             }
 
-        } else if ($type === 'multi') {
+        } else if ($type === 'repeater') {
 
             // Build the container div
             echo '<div class="nc-repeater">';
@@ -351,8 +380,8 @@ class Newsletter_campaign_meta_box_generator {
             // Add an empty drop area at the start
             echo $this->get_droparea(true);
 
-            // Fetch the multi field array data from post meta
-            $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_multi', true );
+            // Fetch the repeater field array data from post meta
+            $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_repeater', true );
 
             if ( $meta_vals ) {
 
@@ -372,7 +401,7 @@ class Newsletter_campaign_meta_box_generator {
                     foreach ($subfields as $subfield) {
 
                         // Output the repeater item html
-                        $this->output_repeater_item($subfield_i, $subfield, $post_type, $meta_val);
+                        $this->output_form_item($subfield_i, $subfield, $post_type, $meta_val);
 
                         // Increment the incrementor
                         $subfield_i++;
@@ -407,7 +436,7 @@ class Newsletter_campaign_meta_box_generator {
                 // For each field get the array of values stored for it
                 foreach ($subfields as $subfield) {
                     // Output the repeater item html
-                    $this->output_repeater_item($subfield_i, $subfield, $post_type);
+                    $this->output_form_item($subfield_i, $subfield, $post_type);
 
                     // Increment the incrementor
                     $subfield_i++;
@@ -436,6 +465,43 @@ class Newsletter_campaign_meta_box_generator {
                 <button type="button" class="button" id="nc_repeater_btn_add" disabled="false"><?php _e('Add row', 'newsletter_campaign'); ?></button>
             </div>
             <?php
+        } else if ($type === 'multi') {
+
+            // Fetch the multi field array data from post meta
+            $meta_vals = get_post_meta( $post->ID, $post_meta, true );
+
+            if ( $meta_vals ) {
+
+                foreach ($meta_vals as $meta_val) {
+
+                    $subfields = $metabox['args']['subfields'];
+                    // Set an incrementor to count each subfield we iterate over
+                    $subfield_i = 0;
+
+                    // Loop through each subfield
+                    foreach ($subfields as $subfield) {
+                        // Output the repeater item html
+                        $this->output_form_item($subfield_i, $subfield, $post_type, $meta_val);
+
+                        // Increment the incrementor
+                        $subfield_i++;
+                    }
+                }
+            } else {
+                // Nothing yet saved
+                $subfields = $metabox['args']['subfields'];
+                // Set an incrementor to count each subfield we iterate over
+                $subfield_i = 0;
+
+                // Loop through each subfield
+                foreach ($subfields as $subfield) {
+                    // Output the repeater item html
+                    $this->output_form_item($subfield_i, $subfield, $post_type);
+
+                    // Increment the incrementor
+                    $subfield_i++;
+                }
+            }
 
         } else if ($type === 'custom') {
 
@@ -473,38 +539,55 @@ class Newsletter_campaign_meta_box_generator {
      *          meta_val(str)
      */
 
-    private function output_repeater_item($subfield_i, $subfield, $post_type, $meta_val = null) {
+    private function output_form_item($subfield_i, $subfield, $post_type, $meta_val = null) {
 
         // If not the first iteration, add a line break
         if ($subfield_i !== 0) {
             echo '<br>';
         }
 
-        if ($subfield['type'] === 'hidden') {
-            echo '<input type="hidden" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
-            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
-                echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
-            } else {
-                // Generate a new random string
-                $num = 4;
-                $strong = true;
-                $bytes = openssl_random_pseudo_bytes($num, $strong);
-                $hex = bin2hex($bytes);
-                echo $hex;
-            }
-            echo '">';
-        } else if ($subfield['type'] === 'textarea') {
-            echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . esc_attr( $subfield['title'] ) . '">';
-            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
-                echo esc_attr($meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']]);
-            }
-            echo '</textarea>';
-        } else {
-            echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
-            if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
-                echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '"';
-            }
-            echo ' placeholder="' . esc_attr( $subfield['title'] ) . '">';
+        $placeholder = isset($subfield['placeholder']) ? esc_attr($subfield['placeholder']) : esc_attr($subfield['title']);
+
+        switch ($subfield['type']) {
+            case 'hidden':
+                echo '<input type="hidden" class="nc-repeater__hidden-id" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" value="';
+                if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
+                    echo esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] );
+                } else {
+                    // Generate a new random string
+                    $num = 4;
+                    $strong = true;
+                    $bytes = openssl_random_pseudo_bytes($num, $strong);
+                    $hex = bin2hex($bytes);
+                    echo $hex;
+                }
+                echo '">';
+                break;
+
+            case 'button':
+                echo '<button name="newsletter_campaign_' . esc_attr($post_type) . '_' . esc_attr( $subfield['field'] ) . '" class="button button-small button-primary">' . $subfield['title'] . '</button>';
+                break;
+
+            case 'textarea':
+                echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . $placeholder . '" title="' . $placeholder . '">';
+                if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
+                    echo esc_attr($meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']]);
+                }
+                echo '</textarea>';
+                break;
+
+            case 'text':
+                echo '<input type="text" name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]"';
+                if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
+                    echo ' value="' . esc_attr( $meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']] ) . '"';
+                }
+                echo ' placeholder="' . $placeholder . '" title="' . $placeholder . '">';
+                break;
+
+            default:
+                // Output as text for default using the title attribute
+                echo $subfield['title'];
+                break;
         }
     }
 

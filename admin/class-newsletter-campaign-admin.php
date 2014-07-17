@@ -354,7 +354,7 @@ class NewsletterCampaignAdmin {
                 'post_type' => 'template',
                 'field' => 'special-posts',
                 'title' => __('Special Posts','newsletter-campaign'),
-                'type' => 'multi',
+                'type' => 'repeater',
                 'subfields' => array(
                     array('field' => 'special-name',
                         'title' => __('Name', 'newsletter-campaign'),
@@ -434,6 +434,26 @@ class NewsletterCampaignAdmin {
 
             $add_class->nc_add_meta_box('nc-campaign-send-add', __('Send Campaign', 'newsletter-campaign'), 'nc_render_campaign_send_campaign', 'campaign', 'normal', 'low');
 
+            $add_class->nc_add_meta_box( 'nc-campaign-test-send', __('Test Send', 'newsletter-campaign'), 'nc_render_meta_box', 'campaign', 'side', 'low', array(
+                'post_type' => 'campaign',
+                'field' => 'test-send',
+                'title' => __('Test Send', 'newsletter-campaign'),
+                'type' => 'multi',
+                'subfields' => array(
+                    array('field' => 'test-send-addresses',
+                        'title' => __('Email Addresses', 'newsletter-campaign'),
+                        'type' => 'textarea',
+                        'placeholder' => __('Comma, space or line separated email addresses', 'newsletter-campaign')
+                    ),
+                    array('field' => 'test-send-btn',
+                        'title' => __('Send Test Email', 'newsletter-campaign'),
+                        'type' => 'button'
+                    )
+                ),
+                'meta_name' => 'test-send'
+                )
+            );
+
         }
 
         function newsletter_campaign_save_meta_boxes($post) {
@@ -458,6 +478,7 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-list-check' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
+            $save_class->nc_save_meta_box( $post, 'campaign', array('test-send-addresses'), 'test-send' );
         }
 
         add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );

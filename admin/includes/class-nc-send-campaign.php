@@ -149,15 +149,46 @@ class Newsletter_campaign_send_campaign {
         }
 
         // Fetch any special htmls
-        $special_html = get_post_meta( $template_id, '_template_multi', true);
+        $special_html = get_post_meta( $template_id, '_template_repeater', true);
 
         // Only send the special html back if there is at least name saved
         if (isset($special_html[0]['newsletter_campaign_template_special-name'])) {
             // One or more special posts saved
-            $template_return['special'] = get_post_meta( $template_id, '_template_multi', true);
+            $template_return['special'] = get_post_meta( $template_id, '_template_repeater', true);
         }
 
         return apply_filters('nc_get_template', $template_return);
+    }
+
+
+    /**
+     * Process the list of email address in the test email box and
+     * return an array of email addresses
+     * @param  int  $id     The ID of the current post
+     * @return arr          Containing valid and/or invalid email addresses
+     */
+    private function get_test_addresses($id) {
+        $test_addresses_raw_arr = get_post_meta( $id, '_campaign_test-send', true );
+        if (empty($test_addresses_raw_arr)) {
+            // Return an empty array
+            return array();
+        }
+        $test_addresses_raw = $test_addresses_raw_arr[0]['newsletter_campaign_campaign_test-send-addresses'];
+
+        // Delimiters:  comma newline, space newline, comma space, comma, space, newline,
+        $test_addresses_arr = preg_split( "/(,\\n| \\n|, |,| |\\n)/", $test_addresses_raw );
+
+        // Create an array to store just the email addresses
+        $subcriber_emails_return = array();
+
+        foreach ($test_addresses_arr as $test_address) {
+            if (is_email($test_address)) {
+                $subcriber_emails_return['valid'][] = $test_address;
+            } else {
+                $subcriber_emails_return['invalid'][] = $test_address;
+            }
+        }
+        return $subcriber_emails_return;
     }
 
 
@@ -393,10 +424,11 @@ class Newsletter_campaign_send_campaign {
      */
 
     public function send_campaign() {
-
-        if (!isset($_POST['nc-campaign__confirmation-true'])) {
+        if (!isset($_POST['nc-campaign__confirmation-true']) && !isset($_POST['newsletter_campaign_campaign_test-send-btn'])) {
             return;
         }
+
+        $send_test = isset($_POST['newsletter_campaign_campaign_test-send-btn']) ? true : false;
 
         // Get the current campagin id
         $campaign_id = $_POST['post_ID'];
@@ -405,15 +437,23 @@ class Newsletter_campaign_send_campaign {
         $campaign_message = array();
 
         // Get the list of email addresses
-        $addresses = $this->get_addresses($campaign_id);
+        if ($send_test) {
+            $send_type = __('test email', 'newsletter-campaign');
+            // Get the test email addresses
+            $addresses = $this->get_test_addresses($campaign_id);
+        } else {
+            $send_type = __('campaign', 'newsletter-campaign');
+            // Get the campaign email addresses
+            $addresses = $this->get_addresses($campaign_id);
+        }
         if (empty($addresses) || empty($addresses['valid'])) {
-            $campaign_message[] = __('Couldn\'t find any valid addresses to send the campaign to, campaign not sent.', 'newsletter-campaign');
+            $campaign_message[] = sprintf( __( 'Couldn\'t find any valid addresses, %s not sent.', 'newsletter-campaign' ), $send_type );
         }
 
         // Get the data from the template
         $template = $this->get_template($campaign_id);
         if (empty($template['base']) || empty($template['post'])) {
-            $campaign_message[] = __('Couldn\'t find valid data in the selected template, campaign not sent.', 'newsletter-campaign');
+            $campaign_message[] = sprintf( __( 'Couldn\'t find valid data in the selected template, %s not sent.', 'newsletter-campaign' ), $send_type );
         }
 
         // Proceed only if no errors have been logged
@@ -423,7 +463,7 @@ class Newsletter_campaign_send_campaign {
             $email_content = $this->build_email($campaign_id, $template);
 
             if (empty($email_content)) {
-                $campaign_message[] = __('Something went wrong in using your template, campaign not sent.', 'newsletter-campaign');
+                $campaign_message[] = sprintf( __( 'Something went wrong in using your template, %s not sent.', 'newsletter-campaign' ), $send_type );
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
                 // The email has content - send the email
@@ -432,7 +472,15 @@ class Newsletter_campaign_send_campaign {
                 // If there were duplicate or invalid addresses display messages
                 if (!empty($addresses['invalid'])) {
                     // Get a formatted list of links to invalid addresses
-                    $invalid_addresses = $this->get_subscriber_list_text($addresses, 'invalid', true);
+                    if (!$send_test) {
+                        $invalid_addresses = $this->get_subscriber_list_text($addresses, 'invalid', true);
+                    } else {
+                        // Wrap each address in <strong> tag
+                        foreach($addresses['invalid'] as $key => $invalid_address){
+                            $addresses['invalid'][$key] = '<strong>' . $invalid_address . '</strong>';
+                        }
+                        $invalid_addresses = implode(', ', $addresses['invalid']);
+                    }
                     $campaign_message[] = __('Some email addresses were invalid and could not be sent: ') . $invalid_addresses . '.';
                 }
                 if (!empty($addresses['duplicate'])) {
@@ -442,8 +490,7 @@ class Newsletter_campaign_send_campaign {
                 }
 
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
-                    //$campaign_message[] = __('Campaign has been sent successfully.', 'newsletter-campaign');
-                    $campaign_message[] = sprintf( _n('Campaign has been successfully sent to %d address.', 'Campaign has been successfully sent to %d addresses.', $mail_success[2], 'newsletter-campaign'), $mail_success[2] );
+                    $campaign_message[] = sprintf( _n('%s has been successfully sent to %d address.', '%s has been successfully sent to %d addresses.', $mail_success[2], 'newsletter-campaign'), $send_type, $mail_success[2] );
                     // Set the mail_sent meta
                     update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
 

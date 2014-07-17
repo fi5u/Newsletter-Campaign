@@ -17,12 +17,14 @@
         // If this is not a new campaign with anything saved
         if (isset($campaign_template_id) && $campaign_template_id !== '') {
 
-            $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
+            $special_posts = get_post_meta( $campaign_template_id, '_template_repeater', true );
 
-            // Put the special template ids in an array so we can match them with what's saved
-            $special_ids = [];
-            foreach ($special_posts as $special_post) {
-                $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
+            if ($special_posts) {
+                // Put the special template ids in an array so we can match them with what's saved
+                $special_ids = [];
+                foreach ($special_posts as $special_post) {
+                    $special_ids[] = $special_post['newsletter_campaign_template_hidden'];
+                }
             }
 
             if ($meta_vals) {
@@ -85,7 +87,7 @@
 
     <?php // Get details for template associated with this campaign
     $campaign_template_id = get_post_meta( $post->ID, '_campaign_template-select', true );
-    $special_posts = get_post_meta( $campaign_template_id, '_template_multi', true );
+    $special_posts = get_post_meta( $campaign_template_id, '_template_repeater', true );
     if (isset($special_posts) && !empty($special_posts)) {
         foreach ($special_posts as $special_post) {
             // Only output the special template block if the name field is there (hidden field will be there even for an empty template)
