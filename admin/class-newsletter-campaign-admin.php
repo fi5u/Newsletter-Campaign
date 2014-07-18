@@ -171,7 +171,7 @@ class NewsletterCampaignAdmin {
             wp_enqueue_script( $this->plugin_slug . '-builder-script', plugins_url( 'assets/js/builder.js', __FILE__ ), $drag_drop_deps, NewsletterCampaign::VERSION, true );
             wp_enqueue_script( $this->plugin_slug . '-campaign-script', plugins_url( 'assets/js/campaign.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
             // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-            wp_localize_script( $this->plugin_slug . '-campaign-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234 ) );
+            wp_localize_script( $this->plugin_slug . '-campaign-script', 'nc_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'we_value' => 1234, 'please_save' => __('Please save the campaign before proceeding', 'newsletter-campaign') ) );
 
         }
 

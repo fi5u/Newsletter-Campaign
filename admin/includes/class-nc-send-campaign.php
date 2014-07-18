@@ -5,27 +5,33 @@
  */
 
 class Newsletter_campaign_send_campaign {
-    private $placeholder_posts = '%POSTS%';
-    private $placeholder_post = '/\%POST\%/';
-    private $placeholder_title = '/\%TITLE\%/';
-    private $placeholder_body = '/\%BODY\%/';
-    private $placeholder_feat_img = '/\%FEAT_IMG(|\[.*\])\%/'; // match %FEAT_IMG% or %FEAT_IMG[anything here]%
+
+    private $post_id;
 
     public function __construct() {
-        add_action( 'wp_ajax_my_action', array( $this, 'my_action_callback' ) );
-        add_action( 'init', array($this, 'send_campaign'), 30 );
-        add_action( 'admin_head', array($this,'check_mail_sent') );
+        add_action( 'admin_init', array($this, 'send_campaign'), 30 );
+        add_action( 'admin_head', array($this, 'check_mail_sent') );
+        add_action( 'admin_head', array($this, 'nc_set_post_id') );
         add_action( 'current_screen', array($this, 'check_screen') );
+        add_action( 'wp_ajax_nc_save', array( $this, 'nc_save_callback' ) );
     }
 
 
-    // TEST FOR AJAX CALLBACK REMOVE WHEN DEF NOT NEED AJAX HERE
-    public function my_action_callback() {
+    public function nc_set_post_id() {
+        global $post;
+        $this->post_id = $post->ID;
+    }
+
+
+    public function nc_save_callback() {
         global $wpdb;
-        $whatever = intval( $_POST['whatever'] );
+        /*$whatever = intval( $_POST['whatever'] );
         $whatever += 10;
-            echo $whatever;
-        die();
+            //echo $whatever;
+            //echo 'superdooper';
+            //Newsletter_campaign_meta_box_generator::nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '');
+            echo $this->post_id;
+        die();*/
     }
 
 
