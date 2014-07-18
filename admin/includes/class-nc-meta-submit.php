@@ -23,6 +23,10 @@ class Newsletter_campaign_submit_meta {
     }
 
     public function add_publish_box() {
+        if (!nc_check_screen($this->post_type)) {
+            return;
+        }
+
         $title = sprintf( __( '%s' ), $this->title);
         add_meta_box( 'nc_submitdiv', $title, array($this, 'nc_post_submit_meta_box'), null, 'side', 'core' );
     }
