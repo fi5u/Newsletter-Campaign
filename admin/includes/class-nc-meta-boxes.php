@@ -462,7 +462,7 @@ class Newsletter_campaign_meta_box_generator {
             // Print out the button row
             ?>
             <div class="nc-repeater__btn-row">
-                <button type="button" class="button" id="nc_repeater_btn_add" disabled="false"><?php _e('Add row', 'newsletter_campaign'); ?></button>
+                <button type="button" class="button" id="nc_repeater_btn_add" disabled="false"><?php echo __('Add', 'newsletter_campaign') . ' ' . $metabox['args']['singular']; ?></button>
             </div>
             <?php
         } else if ($type === 'multi') {

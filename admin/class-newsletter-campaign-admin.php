@@ -355,6 +355,7 @@ class NewsletterCampaignAdmin {
                 'field' => 'special-posts',
                 'title' => __('Special Posts','newsletter-campaign'),
                 'type' => 'repeater',
+                'singular' => __('Special Post', 'newsletter-campaign'),
                 'subfields' => array(
                     array('field' => 'special-name',
                         'title' => __('Name', 'newsletter-campaign'),
