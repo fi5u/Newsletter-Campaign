@@ -42,10 +42,8 @@ class Newsletter_campaign_send_campaign {
     public function check_screen() {
         // If not in campaign screen, exit
         $screen = get_current_screen();
-        if ( 'campaign' !== $screen->post_type ) {
-            return false;
-        } else {
-            add_filter('post_updated_messages', array($this,'set_messages'));
+
+        if ( 'campaign' === $screen->post_type ) {
             return true;
         }
     }

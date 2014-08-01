@@ -80,6 +80,9 @@ class NewsletterCampaignAdmin {
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
+        // Override output messages
+        add_action( 'current_screen', array($this, 'nc_output_overrides') );
+
 		/*
 		 * Define custom functionality.
 		 *
@@ -307,9 +310,72 @@ class NewsletterCampaignAdmin {
      */
     private static function replace_submit_meta_boxes() {
         $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('campaign', __('Overview', 'newsletter-campaign'), __('Save campaign', 'newsletter-campaign'));
-        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('template', __('Overview', 'newsletter-campaign'), __('Save campaign', 'newsletter-campaign'));
-        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('subscriber', __('Overview', 'newsletter-campaign'), __('Save campaign', 'newsletter-campaign'));
+        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('template', __('Overview', 'newsletter-campaign'), __('Save template', 'newsletter-campaign'));
+        $campaign_submit_meta_box = new Newsletter_campaign_submit_meta('subscriber', __('Overview', 'newsletter-campaign'), __('Save subscriber', 'newsletter-campaign'));
     }
+
+
+    /*
+     * Override output messages
+     */
+    public function nc_output_overrides() {
+        // Get current screen
+        $screen = get_current_screen();
+
+        switch ($screen->post_type) {
+            case 'campaign':
+                add_filter('post_updated_messages', array($this,'set_campaign_messages'));
+                break;
+            case 'template':
+                add_filter('post_updated_messages', array($this,'set_template_messages'));
+                break;
+            case 'subscriber':
+                add_filter('post_updated_messages', array($this,'set_subscriber_messages'));
+                break;
+        }
+    }
+
+
+    /*
+     * Set output messages for Campaign
+     */
+    public function set_campaign_messages($messages) {
+        // Do not display 'view post' link
+        $messages['post'][1] = __('Campaign updated.', 'newsletter-campaign');
+        // Remove 'Post saved' message when mail sent
+        $messages['post'][4] = '';
+        // Override the message for first save
+        $messages['post'][6] = __('Campaign saved.', 'newsletter-campaign');
+
+        return $messages;
+    }
+
+
+    /*
+     * Set output messages for Template
+     */
+    public function set_template_messages($messages) {
+        // Do not display 'view post' link
+        $messages['post'][1] = __('Template updated.', 'newsletter-campaign');
+        // Override the message for first save
+        $messages['post'][6] = __('Template saved.', 'newsletter-campaign');
+
+        return $messages;
+    }
+
+
+    /*
+     * Set output messages for Subscriber
+     */
+    public function set_subscriber_messages($messages) {
+        // Do not display 'view post' link
+        $messages['post'][1] = __('Subscriber updated.', 'newsletter-campaign');
+        // Override the message for first save
+        $messages['post'][6] = __('Subscriber saved.', 'newsletter-campaign');
+
+        return $messages;
+    }
+
 
     /**
      * Create new meta boxes from the class
