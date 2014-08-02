@@ -81,7 +81,7 @@ class NewsletterCampaignAdmin {
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
         // Override output messages
-        add_action( 'current_screen', array($this, 'nc_output_overrides') );
+        add_action( 'current_screen', array($this, 'output_overrides') );
 
 		/*
 		 * Define custom functionality.
@@ -318,7 +318,7 @@ class NewsletterCampaignAdmin {
     /*
      * Override output messages
      */
-    public function nc_output_overrides() {
+    public function output_overrides() {
         // Get current screen
         $screen = get_current_screen();
 
