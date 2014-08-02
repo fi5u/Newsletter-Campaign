@@ -321,20 +321,6 @@ class Newsletter_campaign_send_campaign {
 
 
     /*
-     * Set output messages for Campaign
-     */
-
-    public function set_messages($messages) {
-        // Do not display 'view post' link
-        $messages['post'][1] = __('Campaign updated.', 'newsletter-campaign');
-        // Remove 'Post saved' message when mail sent
-        $messages['post'][4] = '';
-        return $messages;
-    }
-
-
-
-    /*
      * Set email content type to html
      */
 
@@ -345,12 +331,15 @@ class Newsletter_campaign_send_campaign {
 
 
     /*
-     * Get the subject of the email
+     * Get the email headers and subject
      */
 
-    private function get_email_subject($campaign_id) {
-        $subject = get_post_meta( $campaign_id, '_campaign_message-subject', true );
-        return apply_filters( 'nc_get_email_subject', $subject );
+    private function get_headers($campaign_id, $type) {
+        $return_str = get_post_meta( $campaign_id, '_campaign_message-' . $type, true );
+        if ($type === 'from') {
+            $return_str = 'From:' . $return_str;
+        }
+        return apply_filters( 'nc_get_headers', $return_str );
     }
 
 
@@ -360,7 +349,7 @@ class Newsletter_campaign_send_campaign {
      * $addresses: array of email addresses
      */
 
-    private function send_email($addresses, $subject, $message) {
+    private function send_email($addresses, $subject, $from, $message) {
 
         // Set up an array to store whether it was successful
         $mail_success = array();
@@ -373,7 +362,7 @@ class Newsletter_campaign_send_campaign {
 
         // Send mail individually
         foreach ($addresses as $address) {
-            $mail_sent = wp_mail( $address, $subject = $subject, $message = $message, $headers = 'From: My Name <myname@example.com>' . "\r\n" );
+            $mail_sent = wp_mail( $address, $subject = $subject, $message = $message, $headers = $from . "\r\n" );
 
             if ($mail_sent) {
                 // Increment the successful send counter
@@ -463,7 +452,8 @@ class Newsletter_campaign_send_campaign {
         // Proceed only if no errors have been logged
         if(empty($campaign_message)) {
             // Build email
-            $email_subject = $this->get_email_subject($campaign_id);
+            $email_subject = $this->get_headers($campaign_id, 'subject');
+            $email_from = $this->get_headers($campaign_id, 'from');
             $email_content = $this->build_email($campaign_id, $template);
 
             if (empty($email_content)) {
@@ -471,7 +461,7 @@ class Newsletter_campaign_send_campaign {
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
                 // The email has content - send the email
-                $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_content);
+                $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_from, $email_content);
 
                 // If there were duplicate or invalid addresses display messages
                 if (!empty($addresses['invalid'])) {
@@ -494,7 +484,7 @@ class Newsletter_campaign_send_campaign {
                 }
 
                 if ($mail_success[0] === 'yes') { // all messages sent successfully
-                    $campaign_message[] = sprintf( _n('%s has been successfully sent to %d address.', '%s has been successfully sent to %d addresses.', $mail_success[2], 'newsletter-campaign'), $send_type, $mail_success[2] );
+                    $campaign_message[] = sprintf( _n('%s has been successfully sent to %d address.', '%s has been successfully sent to %d addresses.', $mail_success[2], 'newsletter-campaign'), ucfirst($send_type), $mail_success[2] );
                     // Set the mail_sent meta
                     update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
 

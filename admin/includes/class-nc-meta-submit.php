@@ -46,9 +46,17 @@ class Newsletter_campaign_submit_meta {
                 <div class="misc-pub-section">
                     <label for="nc_message_subject">Message subject</label>
                     <?php wp_nonce_field( 'newsletter_campaign_campaign_message-subject_box', 'newsletter_campaign_campaign_message-subject_box_nonce' ); ?>
-                    <?php $subject = get_post_meta($post->ID, '_campaign_message-subject', true) != '' ? sanitize_text_field(get_post_meta($post->ID, '_campaign_message-subject', true)) : get_the_title(); ?>
+                    <?php // If subject is saved output that, otherwise output Campaign title ?>
+                    <?php $subject = get_post_meta($post->ID, '_campaign_message-subject', true) != '' ? get_post_meta($post->ID, '_campaign_message-subject', true) : get_the_title(); ?>
 
                     <input type="text" name="newsletter_campaign_campaign_message-subject" id="nc_message_subject"<?php echo($subject ? ' value="' . esc_attr($subject) . '"' : ''); ?>>
+
+                    <h4>Headers</h4>
+                    <label for="nc_message_from">From</label>
+                    <?php wp_nonce_field( 'newsletter_campaign_campaign_message-from_box', 'newsletter_campaign_campaign_message-from_box_nonce' ); ?>
+                    <?php $from = get_post_meta($post->ID, '_campaign_message-from', true) != '' ? get_post_meta($post->ID, '_campaign_message-from', true) : ''; ?>
+
+                    <input type="text" name="newsletter_campaign_campaign_message-from" id="nc_message_from"<?php echo($from ? ' value="' . esc_attr($from) . '"' : ''); ?>>
                 </div>
                 <?php } ?>
 

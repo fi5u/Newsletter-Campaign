@@ -199,7 +199,8 @@ class Newsletter_campaign_meta_box_generator {
                         // Sanitize the user input.
 
                         $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] : '';
-                        // TODO: perform sanitation on $data
+                        // Sanitize the data
+                        $data = sanitize_text_field($data);
                         $return_val[$i][$meta_root . $field_item] = $data;
                     }
                 }

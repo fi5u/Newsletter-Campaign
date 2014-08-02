@@ -545,6 +545,7 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-list-check' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'message-from' );
             $save_class->nc_save_meta_box( $post, 'campaign', array('test-send-addresses'), 'test-send' );
         }
 
