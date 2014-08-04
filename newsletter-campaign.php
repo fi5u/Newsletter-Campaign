@@ -51,25 +51,12 @@ add_action( 'plugins_loaded', array( 'NewsletterCampaign', 'get_instance' ) );
  * Dashboard and Administrative Functionality
  *----------------------------------------------------------------------------*/
 
-/*
- * @TODO:
- *
- * - replace `class-newsletter-campaign-admin.php` with the name of the plugin's admin file
- * - replace NewsletterCampaignAdmin with the name of the class defined in
- *   `class-newsletter-campaign-admin.php`
- *
- * If you want to include Ajax within the dashboard, change the following
- * conditional to:
- *
- * if ( is_admin() ) {
- *   ...
- * }
- *
- * The code below is intended to to give the lightest footprint possible.
- */
-if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+if ( is_admin() ) {
 
 	require_once( plugin_dir_path( __FILE__ ) . 'admin/class-newsletter-campaign-admin.php' );
 	add_action( 'plugins_loaded', array( 'NewsletterCampaignAdmin', 'get_instance' ) );
+
+    // Plugin-wide functions
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
 
 }
