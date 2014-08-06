@@ -4,7 +4,6 @@
         // Store the vals for builder in a var
         $meta_vals = get_post_meta( $post->ID, '_' . $post_type . '_builder', true );
 
-
         // We're going to get all the posts but we don't want to output posts here that
         // will be output later in the builder output boxes
 
@@ -61,7 +60,7 @@
         // Output the list of posts
         if ($builder_posts) {
             foreach ($builder_posts as $builder_post) {
-                echo outputBuilderPost($builder_post);
+                echo output_builder_post($builder_post);
             }
         } else {
             echo '<p>' . __('No posts', 'newsletter-campaign') . '</p>';
@@ -78,7 +77,7 @@
                 if ($meta_val === 'newsletter_campaign_builder_post') {
                     foreach ($value as $this_post) {
                         $selected_post = get_post($this_post);
-                        echo outputBuilderPost($selected_post, 'post');
+                        echo output_builder_post($selected_post, 'post');
                     }
                 }
             }
@@ -102,7 +101,7 @@
                             if ($meta_val === 'newsletter_campaign_builder_' . $special_post['newsletter_campaign_template_hidden']) {
                                 foreach ($value as $this_post) {
                                     $selected_post = get_post($this_post);
-                                    echo outputBuilderPost($selected_post, $special_post['newsletter_campaign_template_hidden']);
+                                    echo output_builder_post($selected_post, $special_post['newsletter_campaign_template_hidden']);
                                 }
                             }
                         }
@@ -122,7 +121,7 @@
      * Output the html for the draggable post element
      */
 
-    function outputBuilderPost($post, $name_suffix = null) {
+    function output_builder_post($post, $name_suffix = null) {
 
         $return_str = '<div class="nc-builder__post">
             <input type="hidden" class="nc-builder__post-id" value="' . $post->ID . '"';

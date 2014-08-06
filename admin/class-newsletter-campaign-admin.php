@@ -532,20 +532,20 @@ class NewsletterCampaignAdmin {
             $save_class->nc_save_meta_box( $post, 'subscriber', 'notes' );
 
             // Templates
-            $save_class->nc_save_meta_box( $post, 'template', 'base-html' );
-            $save_class->nc_save_meta_box( $post, 'template', 'post-html' );
+            $save_class->nc_save_meta_box( $post, 'template', 'base-html', '', true );
+            $save_class->nc_save_meta_box( $post, 'template', 'post-html', '', true );
             $save_class->nc_save_meta_box( $post, 'template', array(
                 'special-name', 'special-body', 'special-code', 'hidden'
-                )
+                ), '', $code = array('special-body')
             );
 
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-list-check' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'builder' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'builder', '', true );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'message-from' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'message-from', '', true );
             $save_class->nc_save_meta_box( $post, 'campaign', array('test-send-addresses'), 'test-send' );
         }
 

@@ -134,11 +134,22 @@ class Newsletter_campaign_meta_box_generator {
     }
 
 
+    /**
+     * Go through each array item to sanitize
+     * @param  str  $item   The array item
+     * @param  bool $code   Is code
+     * @return str
+     */
+    private function sanitize_array( $item, $code = array(false) ) {
+        $rtn = $code ? sanitize_text_field($item) : esc_html($item);
+        return $rtn;
+    }
+
+
     /*
      * $meta_name = string: used for multiple fields
      */
-
-    public function nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '') {
+    public function nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '', $code = false) {
 
         $meta_root = 'newsletter_campaign_' . $post_type . '_';
         if (is_array($field)) {
@@ -195,33 +206,36 @@ class Newsletter_campaign_meta_box_generator {
                 for ( $i = 0; $i < $count; $i++ ) {
 
                     // Don't save if empty
-                    if ( $_POST[$meta_root . $field_item][$i] != '' ) {
+                    if ($_POST[$meta_root . $field_item][$i] != '') {
                         // Sanitize the user input.
 
                         $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] : '';
-                        // Sanitize the data
-                        $data = sanitize_text_field($data);
-                        $return_val[$i][$meta_root . $field_item] = $data;
+                        // Sanitize and return the data
+                        // If the parameter of $code has been passed and this item is in the $code array
+                        // then use esc_html otherwise simply sanitize it
+                        $return_val[$i][$meta_root . $field_item] = is_array($code) && in_array($field_item, $code) ? esc_html($data) : sanitize_text_field($data);
                     }
                 }
             }
 
-            // Update the meta field.
+            // Update the meta field
             update_post_meta( $post_id, '_' . $post_type . '_' . $meta_name, $return_val );
 
         } else {
 
             // Check all the post and custom post values
             if (isset($_POST[$meta])) {
+
                 $count = count($_POST[$meta]);
 
                 if ($count > 1) {
                     for ( $i = 0; $i < $count; $i++ ) {
-                        $return_val[$i][$meta] = isset($_POST[$meta]) ? $_POST[$meta][$i] : '';
+                        $return_val[$i][$meta] = $code ? esc_html($_POST[$meta][$i]) : sanitize_text_field($_POST[$meta][$i]);
                     }
                 } else { // only holds a single value
-                    // TODO: sanitize!
-                    $return_val = isset($_POST[$meta]) ? $_POST[$meta] : '';
+                    // Pass to sanitize_array(), if contains code the function will esc_html otherwise will sanitize_textarea
+                    $sanitized_meta = $code ? array_map(array($this, 'sanitize_array'), $_POST[$meta], $code = array(true)) : array_map(array($this, 'sanitize_array'), $_POST[$meta], $code = array(false));
+                    $return_val = $sanitized_meta;
                 }
 
             } else {
@@ -229,10 +243,11 @@ class Newsletter_campaign_meta_box_generator {
                 foreach($_POST as $key => $value) {
                     if (strpos($key, 'newsletter_campaign_' . $field . '_') === 0) {
                         $count = count($_POST[$key]);
-
                         // Loop through each of the items, adding its data to the array
                         for ( $i = 0; $i < $count; $i++ ) {
-                            $return_val[$key] = isset($_POST[$key]) ? $_POST[$key] : '';
+                            // Pass to sanitize_array(), if contains code the function will esc_html otherwise will sanitize_textarea
+                            $sanitized_val = $code ? array_map(array($this, 'sanitize_array'), $_POST[$key], $code = array(true)) : array_map(array($this, 'sanitize_array'), $_POST[$key], $code = array(false));
+                            $return_val[$key] = $sanitized_val;
                         }
                     }
                 }
@@ -572,7 +587,7 @@ class Newsletter_campaign_meta_box_generator {
             case 'textarea':
                 echo '<textarea name="newsletter_campaign_' . $post_type . '_' . $subfield['field'] . '[]" placeholder="' . $placeholder . '" title="' . $placeholder . '">';
                 if (isset($meta_val['newsletter_campaign_' . $post_type . '_' . $subfield['field']])) {
-                    echo esc_attr($meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']]);
+                    echo esc_html($meta_val["newsletter_campaign_" . $post_type . "_" . $subfield['field']]);
                 }
                 echo '</textarea>';
                 break;
