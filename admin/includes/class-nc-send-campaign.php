@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = true;
+    private $preview = false; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -161,12 +161,14 @@ class Newsletter_campaign_send_campaign {
         // Only send the special html back if there is at least name saved
         if (isset($special_html[0]['newsletter_campaign_template_special-name'])) {
             // One or more special posts saved
-            $encoded_template = get_post_meta( $template_id, '_template_repeater', true);
+            $special_templates = get_post_meta( $template_id, '_template_repeater', true);
             // Decode the html entities
-            foreach ($encoded_template as $template_item) {
-                $template_item['newsletter_campaign_template_special-body'] = html_entity_decode($template_item['newsletter_campaign_template_special-body']);
+            $i = 0;
+            foreach ($special_templates as $template_item) {
+                $special_templates[$i]['newsletter_campaign_template_special-body'] = html_entity_decode($template_item['newsletter_campaign_template_special-body']);
+                $i++;
             }
-            $template_return['special'] = $encoded_template;
+            $template_return['special'] = $special_templates;
         }
 
         return apply_filters('nc_get_template', $template_return);
@@ -185,7 +187,9 @@ class Newsletter_campaign_send_campaign {
             // Return an empty array
             return array();
         }
-        $test_addresses_raw = $test_addresses_raw_arr[0]['newsletter_campaign_campaign_test-send-addresses'];
+
+        // Decode the test address data
+        $test_addresses_raw = html_entity_decode($test_addresses_raw_arr[0]['newsletter_campaign_campaign_test-send-addresses']);
 
         // Delimiters:  comma newline, space newline, comma space, comma, space, newline,
         $test_addresses_arr = preg_split( "/(,\\n| \\n|, |,| |\\n)/", $test_addresses_raw );
@@ -345,7 +349,7 @@ class Newsletter_campaign_send_campaign {
     private function get_headers($campaign_id, $type) {
         $return_str = get_post_meta( $campaign_id, '_campaign_message-' . $type, true );
         if ($type === 'from') {
-            $return_str = 'From:' . $return_str;
+            $return_str = 'From:' . html_entity_decode($return_str);
         }
         return apply_filters( 'nc_get_headers', $return_str );
     }
