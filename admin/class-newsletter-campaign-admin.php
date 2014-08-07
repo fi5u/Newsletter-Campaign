@@ -525,28 +525,28 @@ class NewsletterCampaignAdmin {
 
         function newsletter_campaign_save_meta_boxes($post) {
             $save_class = new Newsletter_campaign_meta_box_generator();
-            /* $save_class->nc_save_meta_box($post, $post-type, $field ); */
+            /* $save_class->nc_save_meta_box($post, $post-type, $field, $meta_name, $sanitize_as ); */
 
             // Subscribers
             $save_class->nc_save_meta_box( $post, 'subscriber', 'name' );
             $save_class->nc_save_meta_box( $post, 'subscriber', 'notes' );
 
             // Templates
-            $save_class->nc_save_meta_box( $post, 'template', 'base-html', '', true );
-            $save_class->nc_save_meta_box( $post, 'template', 'post-html', '', true );
+            $save_class->nc_save_meta_box( $post, 'template', 'base-html', '', 'code' );
+            $save_class->nc_save_meta_box( $post, 'template', 'post-html', '', 'code' );
             $save_class->nc_save_meta_box( $post, 'template', array(
                 'special-name', 'special-body', 'special-code', 'hidden'
-                ), '', $code = array('special-body')
+                ), '', $sanitize_as = array('special-body' => 'code')
             );
 
             // Campaigns
             $save_class->nc_save_meta_box( $post, 'campaign', 'description' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'template-select' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'subscriber-list-check' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'builder', '', true );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'builder', '', 'code' );
             $save_class->nc_save_meta_box( $post, 'campaign', 'message-subject' );
-            $save_class->nc_save_meta_box( $post, 'campaign', 'message-from', '', true );
-            $save_class->nc_save_meta_box( $post, 'campaign', array('test-send-addresses'), 'test-send' );
+            $save_class->nc_save_meta_box( $post, 'campaign', 'message-from', '', 'code' );
+            $save_class->nc_save_meta_box( $post, 'campaign', array('test-send-addresses'), 'test-send', 'code' );
         }
 
         add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );

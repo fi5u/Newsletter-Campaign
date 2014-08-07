@@ -7,6 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
+    private $preview = true;
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -45,6 +46,8 @@ class Newsletter_campaign_send_campaign {
 
         if ( 'campaign' === $screen->post_type ) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -143,13 +146,13 @@ class Newsletter_campaign_send_campaign {
         // Fetch the base html
         $base_html_meta = get_post_meta( $template_id, '_template_base-html', true);
         if (!empty($base_html_meta)) {
-            $template_return['base'] = $base_html_meta;
+            $template_return['base'] = html_entity_decode( $base_html_meta );
         }
 
         // Fetch the post html
         $post_html_meta = get_post_meta( $template_id, '_template_post-html', true);
         if (!empty($post_html_meta)) {
-            $template_return['post'] = $post_html_meta;
+            $template_return['post'] = html_entity_decode( $post_html_meta );
         }
 
         // Fetch any special htmls
@@ -158,7 +161,12 @@ class Newsletter_campaign_send_campaign {
         // Only send the special html back if there is at least name saved
         if (isset($special_html[0]['newsletter_campaign_template_special-name'])) {
             // One or more special posts saved
-            $template_return['special'] = get_post_meta( $template_id, '_template_repeater', true);
+            $encoded_template = get_post_meta( $template_id, '_template_repeater', true);
+            // Decode the html entities
+            foreach ($encoded_template as $template_item) {
+                $template_item['newsletter_campaign_template_special-body'] = html_entity_decode($template_item['newsletter_campaign_template_special-body']);
+            }
+            $template_return['special'] = $encoded_template;
         }
 
         return apply_filters('nc_get_template', $template_return);
@@ -461,7 +469,11 @@ class Newsletter_campaign_send_campaign {
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
                 // The email has content - send the email
-                $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_from, $email_content);
+                if ($this->preview) {
+                    echo $email_content;
+                } else {
+                    $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_from, $email_content);
+                }
 
                 // If there were duplicate or invalid addresses display messages
                 if (!empty($addresses['invalid'])) {

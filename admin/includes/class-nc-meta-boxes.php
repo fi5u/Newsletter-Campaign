@@ -135,21 +135,60 @@ class Newsletter_campaign_meta_box_generator {
 
 
     /**
+     * Create an array of $sanitize_as values
+     * @param  str $sanitize_as String to add to each array item
+     * @param  int $count       Number of iterations to do
+     * @return arr
+     */
+    private function get_sanitize_as_array($sanitize_as, $count) {
+        $return_arr = array();
+        for ($i=0; $i < $count; $i++) {
+            $return_arr[] = $sanitize_as;
+        }
+
+        return $return_arr;
+    }
+
+
+    /**
+     * Sanitize different inputs ready to be input to the database
+     * @param  str $value       The value to be sanitized
+     * @param  str $sanitize_as code, text or false
+     * @return str
+     */
+    private function sanitize($value, $sanitize_as) {
+        switch ($sanitize_as) {
+            case 'code':
+                $return_val = esc_html($value);
+                break;
+            case 'text':
+                $return_val = sanitize_text_field($value);
+                break;
+            default:
+                // No sanitization
+                $return_val = $value;
+                break;
+        }
+
+        return $return_val;
+    }
+
+
+    /**
      * Go through each array item to sanitize
      * @param  str  $item   The array item
      * @param  bool $code   Is code
      * @return str
      */
-    private function sanitize_array( $item, $code = array(false) ) {
-        $rtn = $code ? sanitize_text_field($item) : esc_html($item);
-        return $rtn;
+    private function sanitize_array( $item, $sanitize_as ) {
+        return $this->sanitize( $item, $sanitize_as );
     }
 
 
     /*
      * $meta_name = string: used for multiple fields
      */
-    public function nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '', $code = false) {
+    public function nc_save_meta_box( $post_id, $post_type, $field, $meta_name = '', $sanitize_as = 'text') {
 
         $meta_root = 'newsletter_campaign_' . $post_type . '_';
         if (is_array($field)) {
@@ -207,13 +246,26 @@ class Newsletter_campaign_meta_box_generator {
 
                     // Don't save if empty
                     if ($_POST[$meta_root . $field_item][$i] != '') {
-                        // Sanitize the user input.
 
                         $data = isset($_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i]) ? $_POST['newsletter_campaign_' . $post_type . '_' . $field_item][$i] : '';
                         // Sanitize and return the data
-                        // If the parameter of $code has been passed and this item is in the $code array
-                        // then use esc_html otherwise simply sanitize it
-                        $return_val[$i][$meta_root . $field_item] = is_array($code) && in_array($field_item, $code) ? esc_html($data) : sanitize_text_field($data);
+
+                        // When $field is an array, each field item can have a different sanitization label
+                        // Here we check for that
+                        if (is_array($sanitize_as)) {
+                            foreach ($sanitize_as as $key => $value) {
+                                if ($field_item === $key) {
+                                    // If on this iteration, the $field_item is the same as what has been listed in the sanitization array,
+                                    // then use the passed value
+                                    $return_val[$i][$meta_root . $field_item] = $this->sanitize($data, $value);
+                                } else {
+                                    // Otherwise use the default of text
+                                    $return_val[$i][$meta_root . $field_item] = $this->sanitize($data, 'text');
+                                }
+                            }
+                        } else {
+                            $return_val[$i][$meta_root . $field_item] = $this->sanitize($data, $sanitize_as);
+                        }
                     }
                 }
             }
@@ -227,15 +279,25 @@ class Newsletter_campaign_meta_box_generator {
             if (isset($_POST[$meta])) {
 
                 $count = count($_POST[$meta]);
+                // Create an array with the filled in values for sanitize_as
+                $sanitize_as_array = $this->get_sanitize_as_array($sanitize_as, $count);
+
 
                 if ($count > 1) {
+                    //print_r($_POST[$meta]);
                     for ( $i = 0; $i < $count; $i++ ) {
-                        $return_val[$i][$meta] = $code ? esc_html($_POST[$meta][$i]) : sanitize_text_field($_POST[$meta][$i]);
+                        $return_val[$i][$meta] = $this->sanitize($_POST[$meta][$i], $sanitize_as);
                     }
+                    //echo '<br>';
+                    //print_r($return_val);
                 } else { // only holds a single value
-                    // Pass to sanitize_array(), if contains code the function will esc_html otherwise will sanitize_textarea
-                    $sanitized_meta = $code ? array_map(array($this, 'sanitize_array'), $_POST[$meta], $code = array(true)) : array_map(array($this, 'sanitize_array'), $_POST[$meta], $code = array(false));
-                    $return_val = $sanitized_meta;
+
+                    // Sanitize the single value (could still be a single value array)
+                    if (is_array($_POST[$meta])) { // for example - a single checkbox checked
+                        $return_val = array_map(array($this, 'sanitize_array'), $_POST[$meta], $sanitize_as_array);
+                    } else {
+                        $return_val = $this->sanitize($_POST[$meta], $sanitize_as);
+                    }
                 }
 
             } else {
