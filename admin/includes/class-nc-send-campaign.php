@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = false; // if true, on send outputs email to browser
+    private $preview = true; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -64,6 +64,25 @@ class Newsletter_campaign_send_campaign {
 
 
     /**
+     * From the previous iteration through array, calculate the current iteration
+     * @param  arr $template_exploded The array to check iteration against
+     * @param  int $prev_iteration    The previous iteration
+     * @return int
+     */
+    private function get_template_layout_part($template_exploded, $prev_iteration) {
+        $count = count($template_exploded);
+
+        if ($prev_iteration + 1 >= $count) {
+            $cur_iteration = 0;
+        } else {
+            $cur_iteration = $prev_iteration + 1;
+        }
+
+        return $cur_iteration;
+    }
+
+
+    /**
      * Used by build_email() to feed content into the template
      * @param  arr $posts_arr   An array from get_posts()
      * @param  str $template    The template to feed content into
@@ -73,14 +92,56 @@ class Newsletter_campaign_send_campaign {
         // Set up an array to add posts content to
         $post_output_arr = array();
 
+        // If template is split, get the parts (i.e multilayout template)
+        $template_exploded = explode('<!///!>', $template);
+        if ($template_exploded !== array($template)) {
+            $multilayout_template = true;
+            // An array of template parts has been created
+            // Set the template to the first part
+            $template = $template_exploded[0];
+
+            $layout_part_count = 0;
+        }
+
+        // Set an iterator to check if we're on the first pass of foreach
+        $i = 0;
         // Generate the output for each post
         foreach ($posts_arr as $post_item) {
+
             // Get the post object so we can get the content
             $post_object = get_post($post_item);
 
             // Perform replacement
             $shortcodes = new Newsletter_campaign_shortcodes($post_object);
+
+            // If mulitlayout is used and we're not on the first iteration
+            if ($multilayout_template && $i !== 0) {
+                // Get the correct current layout part
+                $layout_part_count = $this->get_template_layout_part($template_exploded, $layout_part_count);
+
+                // Set the template to the layout part
+                $template = $template_exploded[$layout_part_count];
+            }
             $post_output_arr[] = $shortcodes->nc_do_shortcodes($template);
+            $i++;
+        }
+
+        // If doesn't end on a completed layout, output empty template parts
+        if ($multilayout_template && $i % count($template_exploded) !== 0) {
+            $required_extra = count($template_exploded) - ($i % count($template_exploded));
+
+            // Loop for each extra need empty template part
+            for ($i = 0; $i < $required_extra; $i++) {
+                // Get the correct current layout part
+                $layout_part_count = $this->get_template_layout_part($template_exploded, $layout_part_count);
+
+                // Set the template to the layout part
+                $template = $template_exploded[$layout_part_count];
+
+                // Output the empty template part removing any shortcodes
+                $post_output_arr[] = strip_shortcodes($template);
+            }
+
         }
 
         // Join together all the posts
