@@ -58,13 +58,51 @@
         $builder_posts = get_posts( $builder_posts_args );
 
         // Output the list of posts
-        if ($builder_posts) {
-            foreach ($builder_posts as $builder_post) {
-                echo output_builder_post($builder_post);
+        echo nc_output_from_block(__('Posts', 'newsletter-campaign'), $builder_posts);
+
+        // Check for custom posts
+        $args = apply_filters('newsletter_campaign_custom_post_args', array(
+               'public'   => true,
+               '_builtin' => false // discard the builtin post types
+            )
+        );
+
+        $post_types = get_post_types( $args, 'objects' );
+        // List all the Newsletter Campaign post types in an array so that we can discard those
+        $nc_post_types = array('campaign', 'template', 'subscriber');
+
+        // Loop through the user's post types removing any NC post types
+        foreach ($post_types as $key => $value) {
+            if (array_search( $key, $nc_post_types ) !== false) {
+                unset($post_types[$key]);
             }
-        } else {
-            echo '<p>' . __('No posts', 'newsletter-campaign') . '</p>';
         }
+
+        if ($post_types) {
+            // The user has some custom post types
+
+            // Loop through each post type
+            foreach ($post_types as $key => $value) {
+
+                // Fetch the list of posts
+                $builder_custom_posts_args = apply_filters(
+                    'newsletter_campaign_campaign_builder_custom_posts_args', array(
+                        'posts_per_page'   => -1,
+                        'offset'           => 0,
+                        'orderby'          => 'post_date',
+                        'order'            => 'DESC',
+                        'post_type'        => $key,
+                        'post_status'      => 'publish',
+                        'exclude'          => $exclude_arr
+                    )
+                );
+                $builder_custom_posts = get_posts( $builder_custom_posts_args );
+
+                // Output the list of posts
+                echo nc_output_from_block(ucfirst($key), $builder_custom_posts);
+            }
+        }
+
         ?>
     </div>
 
@@ -135,6 +173,21 @@
         </div>';
 
         return $return_str;
+    }
 
+
+    function nc_output_from_block($title, $posts_arr) {
+        $return_str = '<div class="nc-builder__from-block"><h4 class="nc-builder__from-block-title">' . $title . '</h4>';
+        if ($posts_arr) {
+            foreach ($posts_arr as $builder_post) {
+                $return_str .= output_builder_post($builder_post);
+            }
+        } else {
+            $return_str .= '<p>' . __('No posts', 'newsletter-campaign') . '</p>';
+        }
+
+        $return_str .= '</div>';
+
+        return $return_str;
     }
 ?>
