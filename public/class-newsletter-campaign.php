@@ -147,6 +147,9 @@ class NewsletterCampaign {
 			self::single_activate();
 		}
 
+        // TODO: Not currently used delete if not needed
+        // Save a salt into the db for use in unsubscribe
+        update_option( 'newsletter_campaign_salt', openssl_random_pseudo_bytes(16) );
 	}
 
 	/**
@@ -316,6 +319,7 @@ class NewsletterCampaign {
      */
     private static function includes() {
         include_once( 'includes/class-nc-post-types.php' );     // Register taxonomies and post types
+        include_once( 'includes/class-nc-unsubscribe.php' );    // Handles the unsubscription process
     }
 
 }

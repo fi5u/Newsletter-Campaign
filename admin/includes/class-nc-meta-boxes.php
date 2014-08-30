@@ -587,6 +587,17 @@ class Newsletter_campaign_meta_box_generator {
                 include_once('custom-meta/custom-meta-builder.php');
             }
 
+        } else if ($type === 'hash') {
+
+            echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '" value="';
+            if (isset($value) && !empty($value)) {
+                echo esc_attr( $value );
+            } else {
+                // Generate a random string of 8 digits
+                echo mt_rand();
+            }
+            echo '">';
+
         } else { // Use default type of text
             echo '<input type="text" id="newsletter_campaign_' . $post_type . '_' . $field .'" name="newsletter_campaign_' . $post_type . '_' . $field . '"';
             echo ' value="' . esc_attr( $value ) . '" placeholder="'. esc_attr( $title ) . '">';

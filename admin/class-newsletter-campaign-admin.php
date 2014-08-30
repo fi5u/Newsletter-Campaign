@@ -67,6 +67,8 @@ class NewsletterCampaignAdmin {
         // Add the options page and menu items for after custom post types
         add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
 
+        add_action( 'admin_init', array( $this, 'settings_init') );
+
         // Include required files
         $this->includes();
 
@@ -82,6 +84,9 @@ class NewsletterCampaignAdmin {
 
         // Override output messages
         add_action( 'current_screen', array($this, 'output_overrides') );
+
+        // Set some meta boxes to hidden
+        add_filter('default_hidden_meta_boxes', array($this, 'hide_meta_boxes'), 10, 2);
 
 		/*
 		 * Define custom functionality.
@@ -190,23 +195,22 @@ class NewsletterCampaignAdmin {
 	 * @since    0.0.0
 	 */
 	public function add_plugin_admin_menu() {
-
 		$this->plugin_screen_hook_suffix = add_menu_page(
 			__( 'Newsletter Campaign', $this->plugin_slug ), // Page title
-			__( 'Newsletter', $this->plugin_slug ), // Menu title
-			'manage_options', // Capability
-			$this->plugin_slug, // Menu slug
-			array( $this, 'display_plugin_admin_page' ), // Function
-            'dashicons-email-alt' // Icon url
+			__( 'Newsletter', $this->plugin_slug ),          // Menu title
+			'manage_options',                                // Capability
+			$this->plugin_slug,                              // Menu slug
+			array( $this, 'display_plugin_admin_page' ),     // Function
+            'dashicons-email-alt'                            // Icon url
 		);
 
         $this->plugin_screen_dashboard = add_submenu_page(
             $this->plugin_slug, // Parent slug
-            __( 'Dashboard', $this->plugin_slug ), // Page title
-            __( 'Dashboard', $this->plugin_slug ), // Menu title
-            'manage_options', // Capability
-            $this->plugin_slug, // Menu slug
-            array( $this, 'display_plugin_admin_page' ) // Function
+            __( 'Dashboard', $this->plugin_slug ),           // Page title
+            __( 'Dashboard', $this->plugin_slug ),           // Menu title
+            'manage_options',                                // Capability
+            $this->plugin_slug,                              // Menu slug
+            array( $this, 'display_plugin_admin_page' )      // Function
         );
 
 	}
@@ -229,15 +233,54 @@ class NewsletterCampaignAdmin {
     }
 
 
+    /**
+     * Register settings, add sections and add fields
+     */
+    public function settings_init() {
+
+        register_setting( 'pluginPage', 'nc_settings' );
+
+        add_settings_section(
+            'nc_pluginPage_section',
+            __( 'Your section description', 'newsletter-campaign' ),
+            array( $this, 'nc_settings_section_callback'),
+            'pluginPage'
+        );
+
+        add_settings_field(
+            'nc_unsubscribe',
+            __( 'Unsubscribe field', 'newsletter-campaign' ),
+            array( $this, 'text_field_render'),
+            'pluginPage',
+            'nc_pluginPage_section',
+            array(
+                'label_for' => 'nc_unsubscribe',
+                'name'      => 'nc_unsubscribe'
+            )
+        );
+    }
+
+    public function text_field_render($args) {
+        $name = $args['name'];
+        $options = get_option( 'nc_settings' );
+        ?>
+        <input type='text' name='nc_settings[<?php echo $name; ?>]' value='<?php echo $options[$name]; ?>'>
+        <?php
+
+    }
+
+    public function nc_settings_section_callback() {
+        echo __( 'This section description', 'newsletter-campaign' );
+    }
+
+
 	/**
 	 * Render the settings page for this plugin.
 	 *
 	 * @since    0.0.0
 	 */
 	public function display_plugin_admin_page() {
-
 		include_once( 'views/admin.php' );
-
 	}
 
 
@@ -299,7 +342,7 @@ class NewsletterCampaignAdmin {
         include_once( 'includes/class-nc-campaign.php' );       // Format the campaign admin
         include_once( 'includes/class-nc-shortcodes.php' );     // Register the shortcodes
         include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
-
+        include_once( 'includes/class-nc-options.php' );        // General options page
     }
 
 
@@ -400,6 +443,13 @@ class NewsletterCampaignAdmin {
                 'field' => 'notes',
                 'title' => __('Notes','newsletter-campaign'),
                 'type' => 'textarea'
+                )
+            );
+            $add_class->nc_add_meta_box( 'nc-subscriber-hash-add', __('Secure Hash', 'newsletter-campaign'), 'nc_render_meta_box', 'subscriber', 'normal', 'high', array(
+                'post_type' => 'subscriber',
+                'field' => 'hash',
+                'title' => __('Secure Hash', 'newsletter-campaign'),
+                'type' => 'hash'
                 )
             );
 
@@ -530,6 +580,7 @@ class NewsletterCampaignAdmin {
             // Subscribers
             $save_class->nc_save_meta_box( $post, 'subscriber', 'name' );
             $save_class->nc_save_meta_box( $post, 'subscriber', 'notes' );
+            $save_class->nc_save_meta_box( $post, 'subscriber', 'hash' );
 
             // Templates
             $save_class->nc_save_meta_box( $post, 'template', 'base-html', '', 'code' );
@@ -552,6 +603,23 @@ class NewsletterCampaignAdmin {
         add_action( 'add_meta_boxes', 'newsletter_campaign_add_meta_boxes' );
         add_action( 'save_post', 'newsletter_campaign_save_meta_boxes', 10, 2 );
 
+    }
+
+
+    /**
+     * Automatically hide certain meta boxes from view
+     * @param  arr $hidden The already set array of hidden meta boxes
+     * @param  obj $screen Current active screen
+     * @return arr
+     */
+    public function hide_meta_boxes($hidden, $screen) {
+        switch ($screen->base) {
+            case 'subscriber':
+                $hidden[] = 'hash';
+                break;
+        }
+
+        return $hidden;
     }
 
 }
