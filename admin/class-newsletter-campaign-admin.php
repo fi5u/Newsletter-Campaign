@@ -67,7 +67,7 @@ class NewsletterCampaignAdmin {
         // Add the options page and menu items for after custom post types
         add_action( 'admin_menu', array( $this, 'add_plugin_admin_menu_after' ), 11 );
 
-        add_action( 'admin_init', array( $this, 'settings_init') );
+        /*add_action( 'admin_init', array( $this, 'settings_init') );*/
 
         // Include required files
         $this->includes();
@@ -232,46 +232,6 @@ class NewsletterCampaignAdmin {
         );
     }
 
-
-    /**
-     * Register settings, add sections and add fields
-     */
-    public function settings_init() {
-
-        register_setting( 'pluginPage', 'nc_settings' );
-
-        add_settings_section(
-            'nc_pluginPage_section',
-            __( 'Your section description', 'newsletter-campaign' ),
-            array( $this, 'nc_settings_section_callback'),
-            'pluginPage'
-        );
-
-        add_settings_field(
-            'nc_unsubscribe',
-            __( 'Unsubscribe field', 'newsletter-campaign' ),
-            array( $this, 'text_field_render'),
-            'pluginPage',
-            'nc_pluginPage_section',
-            array(
-                'label_for' => 'nc_unsubscribe',
-                'name'      => 'nc_unsubscribe'
-            )
-        );
-    }
-
-    public function text_field_render($args) {
-        $name = $args['name'];
-        $options = get_option( 'nc_settings' );
-        ?>
-        <input type='text' name='nc_settings[<?php echo $name; ?>]' value='<?php echo $options[$name]; ?>'>
-        <?php
-
-    }
-
-    public function nc_settings_section_callback() {
-        echo __( 'This section description', 'newsletter-campaign' );
-    }
 
 
 	/**
