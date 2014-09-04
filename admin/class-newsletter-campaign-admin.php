@@ -170,8 +170,26 @@ class NewsletterCampaignAdmin {
 		$screen = get_current_screen();
 
 		if ( 'template' === $screen->post_type ) {
+            wp_enqueue_script( $this->plugin_slug . '-codemirror-script', plugins_url( 'assets/js/codemirror.js', __FILE__ ), array(), NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-codemirror-xml', plugins_url( 'assets/js/xml.js', __FILE__ ), array(), NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-codemirror-javascript', plugins_url( 'assets/js/javascript.js', __FILE__ ), array(), NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-codemirror-css', plugins_url( 'assets/js/css.js', __FILE__ ), array(), NewsletterCampaign::VERSION, true );
+            wp_enqueue_script( $this->plugin_slug . '-codemirror-html', plugins_url( 'assets/js/htmlmixed.js', __FILE__ ), array(
+                $this->plugin_slug . '-codemirror-xml',
+                $this->plugin_slug . '-codemirror-javascript',
+                $this->plugin_slug . '-codemirror-css'
+            ), NewsletterCampaign::VERSION, true );
+
+            wp_enqueue_style( $this->plugin_slug . '-codemirror-style', plugins_url( 'assets/css/codemirror.css', __FILE__ ), array(), NewsletterCampaign::VERSION );
+
 
             wp_enqueue_script( $this->plugin_slug . '-repeater-script', plugins_url( 'assets/js/repeater.js', __FILE__ ), $drag_drop_deps, NewsletterCampaign::VERSION, true );
+
+            wp_enqueue_script( $this->plugin_slug . '-template-script', plugins_url( 'assets/js/template.js', __FILE__ ), array(
+                'jquery',
+                $this->plugin_slug . '-codemirror-script',
+                $this->plugin_slug . '-codemirror-html'
+            ), NewsletterCampaign::VERSION, true );
         }
 
         if ( 'campaign' === $screen->post_type ) {
