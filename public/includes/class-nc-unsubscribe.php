@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Unsubscibe using the url params like:
+ * http://dev.wordpress/?unsubscribe=jeff@123.com&hash=77649117
+ */
 class Newsletter_campaign_unsubscribe {
 
     public function __construct() {
@@ -156,10 +160,12 @@ class Newsletter_campaign_unsubscribe {
         // Go ahead and delete the user
         $deletion_results = $this->delete_user($verified_records);
 
+        // Fetch the saved unsubscribe page
+        $unsubscribe_page = get_option('nc_settings')['nc_unsubscribe'];
 
         // If anything was successfully deleted proceed to send user to the unsubscribed page
         if (in_array('no', $deletion_results)) {
-            wp_redirect(get_permalink(22));
+            wp_redirect(get_permalink($unsubscribe_page));
             exit();
         }
     }
