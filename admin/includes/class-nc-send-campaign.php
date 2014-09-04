@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = true; // if true, on send outputs email to browser
+    private $preview = false; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -309,6 +309,8 @@ class Newsletter_campaign_send_campaign {
         // Create an array to store broken email addresses
         $subscriber_emails_invalid = array();
 
+        $i = 0;
+
         // Loop through the posts to generate an array of emails
         foreach ($subscriber_posts as $subscriber) {
 
@@ -317,9 +319,11 @@ class Newsletter_campaign_send_campaign {
 
                 // Check that it is a valid email address
                 if (is_email($subscriber->post_title)) {
-
-                    // Everything is fine with address, add it to array
-                    $subscriber_emails_valid[] = $subscriber->post_title;
+                    // Everything is fine with address, add it to array along with other data to be possibly put into individual messages
+                    $subscriber_emails_valid[$i]['email'] = $subscriber->post_title;
+                    $subscriber_emails_valid[$i]['name'] = get_post_meta( $subscriber->ID, '_subscriber_name', true );
+                    $subscriber_emails_valid[$i]['extra'] = get_post_meta( $subscriber->ID, '_subscriber_extra', true );
+                    $subscriber_emails_valid[$i]['hash'] = get_post_meta( $subscriber->ID, '_subscriber_hash', true );
 
                 } else { // Not valid
                     $subscriber_emails_invalid[] = array($subscriber->ID => $subscriber->post_title);
@@ -328,6 +332,8 @@ class Newsletter_campaign_send_campaign {
             } else { // A duplicate
                 $subscriber_emails_duplicate[] = array($subscriber->ID => $subscriber->post_title);
             }
+
+            $i++;
         }
 
         // Group all email types together into an array to return
@@ -435,7 +441,13 @@ class Newsletter_campaign_send_campaign {
 
         // Send mail individually
         foreach ($addresses as $address) {
-            $mail_sent = wp_mail( $address, $subject = $subject, $message = $message, $headers = $from . "\r\n" );
+
+            // Insert per-email shortcodes
+            // Get the sender details and send the object to the shortcodes class
+            $per_email_shortcodes = new Newsletter_campaign_shortcodes(null, null, $address);
+            $converted_message = $per_email_shortcodes->nc_do_shortcodes($message);
+
+            $mail_sent = wp_mail( $address['email'], $subject = $subject, $converted_message = $converted_message, $headers = $from . "\r\n" );
 
             if ($mail_sent) {
                 // Increment the successful send counter
@@ -512,6 +524,7 @@ class Newsletter_campaign_send_campaign {
             // Get the campaign email addresses
             $addresses = $this->get_addresses($campaign_id);
         }
+
         if (empty($addresses) || empty($addresses['valid'])) {
             $campaign_message[] = sprintf( __( 'Couldn\'t find any valid addresses, %s not sent.', 'newsletter-campaign' ), $send_type );
         }
@@ -566,7 +579,7 @@ class Newsletter_campaign_send_campaign {
                     update_post_meta($campaign_id, 'mail_sent', array('yes', $campaign_message));
 
                 } else {
-                    $count_tried = count($addresses['valid']);
+                    $count_tried = count($addresses['valid']['email']);
                     $count_failed = count($mail_success[1]);
                     $count_success = $count_tried - $count_failed;
 

@@ -4,9 +4,10 @@ class Newsletter_campaign_shortcodes {
     private $post_object;
     private $posts_content;
     private $custom_output;
+    private $recipient;
 
 
-    public function __construct($post_object = null, $posts_content = null) {
+    public function __construct($post_object = null, $posts_content = null, $recipient = false) {
         if ($post_object) {
             $this->post_object = $post_object;
         }
@@ -15,7 +16,12 @@ class Newsletter_campaign_shortcodes {
             $this->posts_content = $posts_content;
         }
 
-        $this->add_shortcodes();
+        if (!$recipient) {
+            $this->add_shortcodes();
+        } else {
+            $this->recipient = $recipient;
+            $this->add_per_message_shortcodes();
+        }
     }
 
 
@@ -29,6 +35,13 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_title', array($this, 'set_title') );
         add_shortcode( 'nc_body', array($this, 'set_body') );
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
+    }
+
+
+    public function add_per_message_shortcodes() {
+        add_shortcode( 'nc_name', array($this, 'set_name') );
+        add_shortcode( 'nc_email', array($this, 'set_email') );
+        add_shortcode( 'nc_extra', array($this, 'set_extra') );
     }
 
 
@@ -79,6 +92,54 @@ class Newsletter_campaign_shortcodes {
                 }
             }
         }
+    }
+
+
+    public function set_name($atts) {
+        $a = shortcode_atts( array(
+            'before'    => '',
+            'after'     => '',
+            'noval'     => ''
+        ), $atts );
+        $recipient = $this->recipient;
+
+        $output = $a['before'] !== '' ? $a['before'] : '';
+        $output .= $recipient['name'] ? $recipient['name'] : $a['noval'];
+        $output .= $a['after'] !== '' ? $a['after'] : '';
+
+        return $output;
+    }
+
+
+    public function set_email($atts) {
+        $a = shortcode_atts( array(
+            'before'    => '',
+            'after'     => '',
+            'noval'     => ''
+        ), $atts );
+        $recipient = $this->recipient;
+
+        $output = $a['before'] !== '' ? $a['before'] : '';
+        $output .= $recipient['email'] ? $recipient['email'] : $a['noval'];
+        $output .= $a['after'] !== '' ? $a['after'] : '';
+
+        return $output;
+    }
+
+
+    public function set_extra($atts) {
+        $a = shortcode_atts( array(
+            'before'    => '',
+            'after'     => '',
+            'noval'     => ''
+        ), $atts );
+        $recipient = $this->recipient;
+
+        $output = $a['before'] !== '' ? $a['before'] : '';
+        $output .= $recipient['extra'] ? $recipient['extra'] : $a['noval'];
+        $output .= $a['after'] !== '' ? $a['after'] : '';
+
+        return $output;
     }
 }
 

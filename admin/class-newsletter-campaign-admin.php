@@ -398,10 +398,10 @@ class NewsletterCampaignAdmin {
                 'title' => __('Name', 'newsletter-campaign')
                 )
             );
-            $add_class->nc_add_meta_box( 'nc-subscriber-notes-add', __('Notes', 'newsletter-campaign'), 'nc_render_meta_box', 'subscriber', 'normal', 'high', array(
+            $add_class->nc_add_meta_box( 'nc-subscriber-extra-add', __('Extra Information', 'newsletter-campaign'), 'nc_render_meta_box', 'subscriber', 'normal', 'high', array(
                 'post_type' => 'subscriber',
-                'field' => 'notes',
-                'title' => __('Notes','newsletter-campaign'),
+                'field' => 'extra',
+                'title' => __('Extra Information','newsletter-campaign'),
                 'type' => 'textarea'
                 )
             );
@@ -539,7 +539,7 @@ class NewsletterCampaignAdmin {
 
             // Subscribers
             $save_class->nc_save_meta_box( $post, 'subscriber', 'name' );
-            $save_class->nc_save_meta_box( $post, 'subscriber', 'notes' );
+            $save_class->nc_save_meta_box( $post, 'subscriber', 'extra' );
             $save_class->nc_save_meta_box( $post, 'subscriber', 'hash' );
 
             // Templates
