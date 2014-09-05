@@ -96,8 +96,14 @@ class NewsletterCampaignAdmin {
 		 */
 		add_action( '@TODO', array( $this, 'action_method_name' ) );
 		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
+
+        add_filter('newsletter_campaign_codemirror_args', array( $this, 'my_topic_title' ), 10);
 	}
 
+    public function my_topic_title( $codemirror_args ){
+      $codemirror_args['lineWrapping'] = true;
+      return $codemirror_args;
+    }
 
 	/**
 	 * Return an instance of this class.
@@ -190,6 +196,13 @@ class NewsletterCampaignAdmin {
                 $this->plugin_slug . '-codemirror-script',
                 $this->plugin_slug . '-codemirror-html'
             ), NewsletterCampaign::VERSION, true );
+
+            $codemirror_args = apply_filters( 'newsletter_campaign_codemirror_args', array(
+                'lineNumbers'   => true,
+                'mode'          => 'htmlmixed'
+            ));
+
+            wp_localize_script( $this->plugin_slug . '-template-script', 'codemirrorArgs', $codemirror_args);
         }
 
         if ( 'campaign' === $screen->post_type ) {

@@ -6,7 +6,7 @@
 
 
     function codemirrorEditor(id) {
-        CodeMirror.fromTextArea(id, {});
+        CodeMirror.fromTextArea(id, codemirrorArgs);
     }
 
 
