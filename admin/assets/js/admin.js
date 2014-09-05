@@ -5,7 +5,6 @@
         /*
          * Submit div custom meta
          */
-
         if ( $('#nc_submitdiv').length ) {
 
             var $timestampdiv = $('#timestampdiv');

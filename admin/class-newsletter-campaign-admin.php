@@ -96,14 +96,8 @@ class NewsletterCampaignAdmin {
 		 */
 		add_action( '@TODO', array( $this, 'action_method_name' ) );
 		add_filter( '@TODO', array( $this, 'filter_method_name' ) );
-
-        add_filter('newsletter_campaign_codemirror_args', array( $this, 'my_topic_title' ), 10);
 	}
 
-    public function my_topic_title( $codemirror_args ){
-      $codemirror_args['lineWrapping'] = true;
-      return $codemirror_args;
-    }
 
 	/**
 	 * Return an instance of this class.
@@ -214,9 +208,18 @@ class NewsletterCampaignAdmin {
 
         }
 
-        //if( $this->plugin_screen_hook_suffix === $screen->id ) {
+        // Load JS to ensure the correct menu is visible under subscriber edit tags
+        if ('edit-tags' === $screen->base && 'subscriber' === $screen->post_type) {
+            wp_enqueue_script( $this->plugin_slug . '-subscriber-edit-tags-script', plugins_url( 'assets/js/subscriber-edit-tags.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
+        }
+
+        // Load on all Newsletter Campaign pages, including dashboard
+        if ( 'campaign' === $screen->post_type ||
+            'template' === $screen->post_type ||
+            'subscriber' === $screen->post_type ||
+            'toplevel_page_newsletter-campaign' === $screen->base) {
         	wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array('jquery'), NewsletterCampaign::VERSION, true );
-        //}
+        }
 
 	}
 
