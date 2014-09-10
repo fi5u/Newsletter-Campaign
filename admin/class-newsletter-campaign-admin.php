@@ -196,7 +196,107 @@ class NewsletterCampaignAdmin {
                 'mode'          => 'htmlmixed'
             ));
 
+            $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
+                array(
+                    'title'     => 'Email functionality',
+                    'class'     => 'nc-button-bar__parent',
+                    'children'  => array(
+                        array(
+                            'title'     => 'View in browser',
+                            'id'        => 'nc-button-view-browser',
+                            'class'     => 'nc-button-bar__button',
+                            'shortcode' => 'nc_browser_link'
+                        ),
+                        array(
+                            'title'     => 'Unsubscribe link',
+                            'id'        => 'nc-button-unsubscribe',
+                            'class'     => 'nc-button-bar__button',
+                            'shortcode' => 'nc_unsubscribe_link'
+                        )
+                    )
+                ),
+                array(
+                    'title'     => 'Personal fields',
+                    'class'     => 'nc-button-bar__parent',
+                    'children'  => array(
+                        array(
+                            'title'     => 'Name',
+                            'id'        => 'nc-button-personal-name',
+                            'class'     => 'nc-button-bar__button',
+                            'shortcode' => 'nc_name',
+                            'args'      => array(
+                                array(
+                                    'name'  => 'nc-shortcode-arg-name-before',
+                                    'arg'   => 'before',
+                                    'title' => 'Before'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-name-after',
+                                    'arg'   => 'after',
+                                    'title' => 'After'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-name-noval',
+                                    'arg'   => 'noval',
+                                    'title' => 'If no value'
+                                )
+                            )
+                        ),
+                        array(
+                            'title'     => 'Email',
+                            'id'        => 'nc-button-personal-email',
+                            'class'     => 'nc-button-bar__button',
+                            'shortcode' => 'nc_email',
+                            'args'      => array(
+                                array(
+                                    'name'  => 'nc-shortcode-arg-email-before',
+                                    'arg'   => 'before',
+                                    'title' => 'Before'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-email-after',
+                                    'arg'   => 'after',
+                                    'title' => 'After'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-email-noval',
+                                    'arg'   => 'noval',
+                                    'title' => 'If no value'
+                                )
+                            )
+                        ),
+                        array(
+                            'title'     => 'Extra info',
+                            'id'        => 'nc-button-personal-extra',
+                            'class'     => 'nc-button-bar__button',
+                            'shortcode' => 'nc_extra',
+                            'args'      => array(
+                                array(
+                                    'name'  => 'nc-shortcode-arg-extra-before',
+                                    'arg'   => 'before',
+                                    'title' => 'Before'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-extra-after',
+                                    'arg'   => 'after',
+                                    'title' => 'After'
+                                ),
+                                array(
+                                    'name'  => 'nc-shortcode-arg-extra-noval',
+                                    'arg'   => 'noval',
+                                    'title' => 'If no value'
+                                )
+                            )
+                        )
+                    )
+                )
+            ));
+
             wp_localize_script( $this->plugin_slug . '-template-script', 'codemirrorArgs', $codemirror_args);
+            wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', $shortcode_btns);
+
+
+            wp_enqueue_style( $this->plugin_slug . '-button-bar', plugins_url( 'assets/css/button-bar.css', __FILE__ ), array(), NewsletterCampaign::VERSION );
         }
 
         if ( 'campaign' === $screen->post_type ) {

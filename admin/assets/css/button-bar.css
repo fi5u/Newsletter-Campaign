@@ -1,0 +1,32 @@
+.nc-button-bar {
+
+}
+
+    .nc-button-bar__parent,
+    .nc-button-bar__button {
+
+    }
+
+    .nc-button-bar__parent {
+        display: inline-block;
+        position: relative;
+    }
+
+        .nc-button-bar__parent ul {
+            display: none;
+            position: absolute;
+            top: 0px;
+            left: 0;
+            z-index: 4;
+
+            background: #ddd;
+        }
+
+        .nc-button-bar__parent:hover ul {
+            display: block;
+        }
+
+    .nc-button-bar__button {
+        display: block;
+        margin: 0;
+    }
