@@ -198,17 +198,17 @@ class NewsletterCampaignAdmin {
 
             $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
                 array(
-                    'title'     => 'Email functionality',
+                    'title'     => __('Email functionality', 'newsletter-campaign'),
                     'class'     => 'nc-button-bar__parent',
                     'children'  => array(
                         array(
-                            'title'     => 'View in browser',
+                            'title'     => __('View in browser', 'newsletter-campaign'),
                             'id'        => 'nc-button-view-browser',
                             'class'     => 'nc-button-bar__button',
                             'shortcode' => 'nc_browser_link'
                         ),
                         array(
-                            'title'     => 'Unsubscribe link',
+                            'title'     => __('Unsubscribe link', 'newsletter-campaign'),
                             'id'        => 'nc-button-unsubscribe',
                             'class'     => 'nc-button-bar__button',
                             'shortcode' => 'nc_unsubscribe_link'
@@ -216,11 +216,11 @@ class NewsletterCampaignAdmin {
                     )
                 ),
                 array(
-                    'title'     => 'Personal fields',
+                    'title'     => __('Personal fields', 'newsletter-campaign'),
                     'class'     => 'nc-button-bar__parent',
                     'children'  => array(
                         array(
-                            'title'     => 'Name',
+                            'title'     => __('Name', 'newsletter-campaign'),
                             'id'        => 'nc-button-personal-name',
                             'class'     => 'nc-button-bar__button',
                             'shortcode' => 'nc_name',
@@ -228,22 +228,22 @@ class NewsletterCampaignAdmin {
                                 array(
                                     'name'  => 'nc-shortcode-arg-name-before',
                                     'arg'   => 'before',
-                                    'title' => 'Before'
+                                    'title' => __('Before', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-name-after',
                                     'arg'   => 'after',
-                                    'title' => 'After'
+                                    'title' => __('After', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-name-noval',
                                     'arg'   => 'noval',
-                                    'title' => 'If no value'
+                                    'title' => __('If no value', 'newsletter-campaign')
                                 )
                             )
                         ),
                         array(
-                            'title'     => 'Email',
+                            'title'     => __('Email', 'newsletter-campaign'),
                             'id'        => 'nc-button-personal-email',
                             'class'     => 'nc-button-bar__button',
                             'shortcode' => 'nc_email',
@@ -251,22 +251,22 @@ class NewsletterCampaignAdmin {
                                 array(
                                     'name'  => 'nc-shortcode-arg-email-before',
                                     'arg'   => 'before',
-                                    'title' => 'Before'
+                                    'title' => __('Before', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-email-after',
                                     'arg'   => 'after',
-                                    'title' => 'After'
+                                    'title' => __('After', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-email-noval',
                                     'arg'   => 'noval',
-                                    'title' => 'If no value'
+                                    'title' => __('If no value', 'newsletter-campaign')
                                 )
                             )
                         ),
                         array(
-                            'title'     => 'Extra info',
+                            'title'     => __('Extra info', 'newsletter-campaign'),
                             'id'        => 'nc-button-personal-extra',
                             'class'     => 'nc-button-bar__button',
                             'shortcode' => 'nc_extra',
@@ -274,17 +274,17 @@ class NewsletterCampaignAdmin {
                                 array(
                                     'name'  => 'nc-shortcode-arg-extra-before',
                                     'arg'   => 'before',
-                                    'title' => 'Before'
+                                    'title' => __('Before', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-extra-after',
                                     'arg'   => 'after',
-                                    'title' => 'After'
+                                    'title' => __('After', 'newsletter-campaign')
                                 ),
                                 array(
                                     'name'  => 'nc-shortcode-arg-extra-noval',
                                     'arg'   => 'noval',
-                                    'title' => 'If no value'
+                                    'title' => __('If no value', 'newsletter-campaign')
                                 )
                             )
                         )
