@@ -17,6 +17,8 @@ class Newsletter_campaign_shortcode_btns {
             return;
         }
 
+        $options = get_option( 'nc_settings' );
+
         $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
             array(
                 'title'     => __('Email functionality', $this->plugin_slug),
@@ -38,7 +40,7 @@ class Newsletter_campaign_shortcode_btns {
                         'title'             => __('Post Divider', $this->plugin_slug),
                         'id'                => 'nc-button-divider',
                         'class'             => 'nc-button-bar__button',
-                        'shortcode'         => 'nc_divider',
+                        'shortcode'         => $options['nc_shortcode_divider'],
                         'instance_exclude'  => 'newsletter_campaign_template_base-html'
                     )
                 )

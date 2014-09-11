@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = false; // if true, on send outputs email to browser
+    private $preview = true; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -92,8 +92,13 @@ class Newsletter_campaign_send_campaign {
         // Set up an array to add posts content to
         $post_output_arr = array();
 
+        // Fetch the shortcode divider text
+        $options = get_option( 'nc_settings' );
+        $divider_text = $options['nc_shortcode_divider'];
+
         // If template is split, get the parts (i.e multilayout template)
-        $template_exploded = explode('<!///!>', $template);
+        $template_exploded = explode('[' . $divider_text . ']', $template);
+
         if ($template_exploded !== array($template)) {
             $multilayout_template = true;
             // An array of template parts has been created
