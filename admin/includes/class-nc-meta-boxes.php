@@ -475,6 +475,9 @@ class Newsletter_campaign_meta_box_generator {
                     // Build the container HTML
                     echo '<div class="nc-repeater__item">';
 
+                    // Add the handle to drag the item with
+                    echo '<div class="nc-repeater__item-handle">' . __('Handle', 'newsletter-campaign') . '</div>';
+
                     // For each field get the array of values stored for it
                     foreach ($subfields as $subfield) {
 

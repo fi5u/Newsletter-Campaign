@@ -24,6 +24,7 @@
             dropMarginLeft = parseInt($('.nc-repeater__droparea').css('marginLeft')),
 
             draggableAttr = {
+                handle: '.nc-repeater__item-handle',
                 start: function(event, ui) {
                     $(this).data('originalOffset', ui.offset);
                 },
