@@ -3,7 +3,7 @@
 
     function init() {
         setCodemirrorTextareas();
-        addTextareaButtons();
+        addButtonBar();
     }
 
 
@@ -27,41 +27,56 @@
 
 
     /**
-     * Insert the button bar and buttons into the DOM before every Codemirror
+     * Generate the buttons to go into each button bar
+     * @param  {str} textareaId The id of the textarea with which the button bar is located
+     * @return {str}            The complete HTML for the buttons
      */
-    function addTextareaButtons() {
-        var output;
-        $('.CodeMirror').before('<div class="nc-button-bar"><ul></ul></div>');
-        buttonBar = [];
+    function generateButtons(textareaId) {
+        var buttonBar = '';
 
         for (var button in buttons) {
             if (buttons.hasOwnProperty(button)) {
-                output = '<li class="' + buttons[button].class + '"><a href="#"';
+                buttonBar += '<li class="' + buttons[button].class + '"><a href="#"';
 
-                output += buttons[button].id ? '" id="' + buttons[button].id + '"' : '';
+                buttonBar += buttons[button].id ? '" id="' + buttons[button].id + '"' : '';
 
-                output += '>' + buttons[button].title + '</a>';
+                buttonBar += '>' + buttons[button].title + '</a>';
 
                 if (buttons[button].children) {
-                    output += '<ul>';
+                    buttonBar += '<ul>';
 
                     for (var buttonChild in buttons[button].children) {
                         if (buttons[button].children.hasOwnProperty(buttonChild)) {
                             var selfButtonChild = buttons[button].children[buttonChild];
-                            output += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a></li>';
+                            // If this button should not be in this button bar, skip this iteration
+                            if (selfButtonChild.instance_exclude && selfButtonChild.instance_exclude === textareaId) {
+                                continue;
+                            }
+                            buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a></li>';
                         }
                     }
 
-                    output += '</ul>';
+                    buttonBar += '</ul>';
                 }
 
-                output += '</li>';
-
-                buttonBar.push(output);
+                buttonBar += '</li>';
             }
         }
 
-        $('.nc-button-bar ul').append(buttonBar.join(''));
+        return buttonBar;
+    }
+
+
+    /**
+     * Insert the button bar and buttons into the DOM before every Codemirror
+     */
+    function addButtonBar() {
+        $('.CodeMirror').before('<div class="nc-button-bar"><ul></ul></div>');
+
+        $('.CodeMirror').each(function() {
+            var selfBtns = generateButtons($(this).prevAll('textarea').attr('id'));
+            $(this).prev('.nc-button-bar').find('ul').append(selfBtns);
+        });
     }
 
 
