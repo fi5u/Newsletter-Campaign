@@ -26,9 +26,12 @@
     }
 
 
+    /**
+     * Insert the button bar and buttons into the DOM before every Codemirror
+     */
     function addTextareaButtons() {
         var output;
-        $('textarea').before('<div class="nc-button-bar"><ul></ul></div>');
+        $('.CodeMirror').before('<div class="nc-button-bar"><ul></ul></div>');
         buttonBar = [];
 
         for (var button in buttons) {
@@ -62,9 +65,19 @@
     }
 
 
-    function addArgsBar(args, shortcode, iteration) {
-        var argsBar;
-        argsBar = '<div class="nc-button-bar--args" id="nc-button-bar-args-' + shortcode + '">';
+    /**
+     * Insert the args bar into the DOM
+     * @param {obj} args      Properties for arguments
+     * @param {str} shortcode The shortcode used by WordPress
+     * @param {int} iteration The nth instance
+     * @param {str} shortcodeTitle Title of the shortcode
+     */
+    function addArgsBar(args, shortcode, iteration, shortcodeTitle) {
+        var argsBar = '<div class="nc-button-bar--args" id="nc-button-bar-args-' + shortcode + '">';
+
+        // First remove any currenly active args bars
+        $('.nc-button-bar--args').remove();
+        argsBar += '<h5 class="nc-button-bar__title">' + shortcodeTitle + '</h5>';
 
         for (var arg = 0; arg < args.length; arg++) {
             argsBar += '<div class="nc-button-bar__arg">';
@@ -74,6 +87,7 @@
         };
 
         argsBar += '<button type="button" class="button" id="nc-shortcode-arg-btn-' + shortcode + '">Insert</button>'; /* TODO: gettext this val */
+        argsBar += '<button type="button" class="button" id="nc-shortcode-cancel-btn-' + shortcode + '">Cancel</button>'; /* TODO: gettext this val */
         argsBar += '</div>';
 
         // Insert into the DOM
@@ -81,6 +95,11 @@
     }
 
 
+    /**
+     * Fetch all the args for this shortcode
+     * @param  {str} shortcode The shortcode WordPress uses
+     * @param  {int} iteration The nth instance
+     */
     function populateWithArgs(shortcode, iteration) {
         var args = '',
             shortcodeComplete;
@@ -100,6 +119,11 @@
     }
 
 
+    /**
+     * Insert shortcode at the cursor, or if has optional parameters, fetch them
+     * @param  {str} shortcode The shortcode WordPress uses
+     * @param  {int} iteration The nth instance
+     */
     function populateWithShortcode(shortcode, iteration) {
         // Find out if this shortcode takes args
 
@@ -111,25 +135,38 @@
                         // Check if it contains args
                         if (buttons[button].children[child].args) {
                             // Add the args bar
-                            addArgsBar(buttons[button].children[child].args, shortcode, iteration);
+                            addArgsBar(buttons[button].children[child].args, shortcode, iteration, buttons[button].children[child].title);
                         } else {
                             // Insert the shortcode without args
                             ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
                         }
                     }
-
-
                 };
             }
         };
     }
 
+
+    /**
+     * Remove the current argument bar
+     * @param  {obj} $self The pressed cancel button
+     */
+    function cancelArgInput($self) {
+        $self.closest('.nc-button-bar--args').remove();
+    }
+
+
+    /**
+     * On load function calls
+     */
     init();
 
 
     /*
      * EVENTS
      */
+
+    // Click a shortcode button
     $('body').on('click', '.nc-button-bar__button a', function(e) {
         // Get the instance iteration
         var iteration = $(this).closest('.nc-button-bar').nextAll('.CodeMirror').index('.CodeMirror');
@@ -137,12 +174,18 @@
         e.preventDefault();
     });
 
+    // Click the shortcode insert with args button
     $('body').on('click', '[id^=nc-shortcode-arg-btn-]', function(e) {
         var idSplit = $(this).attr('id').split('-'),
             shortcode = idSplit[idSplit.length - 1],
             iteration = $(this).closest('.nc-button-bar--args').nextAll('.CodeMirror').index('.CodeMirror');
         populateWithArgs(shortcode, iteration);
         e.preventDefault();
+    });
+
+    // Click the shortcode args cancel button
+    $('body').on('click', '[id^=nc-shortcode-cancel-btn-]', function(e) {
+        cancelArgInput($(this));
     });
 
 }(jQuery));
