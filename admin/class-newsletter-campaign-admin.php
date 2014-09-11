@@ -299,7 +299,7 @@ class NewsletterCampaignAdmin {
             ));
 
             wp_localize_script( $this->plugin_slug . '-template-script', 'codemirrorArgs', $codemirror_args);
-            wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', $shortcode_btns);
+            /*wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', $shortcode_btns);*/
             wp_localize_script( $this->plugin_slug . '-template-script', 'translation', $template_translations);
 
 
@@ -442,6 +442,7 @@ class NewsletterCampaignAdmin {
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
         include_once( 'includes/class-nc-campaign.php' );       // Format the campaign admin
         include_once( 'includes/class-nc-shortcodes.php' );     // Register the shortcodes
+        include_once( 'includes/class-nc-shortcode-btns.php' ); // Register the shortcode buttons
         include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
         include_once( 'includes/class-nc-options.php' );        // General options page
     }
