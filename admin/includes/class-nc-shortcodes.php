@@ -35,6 +35,7 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_title', array($this, 'set_title') );
         add_shortcode( 'nc_body', array($this, 'set_body') );
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
+        add_shortcode( 'nc_divider', array($this, 'set_divider') );
     }
 
 
@@ -92,6 +93,10 @@ class Newsletter_campaign_shortcodes {
                 }
             }
         }
+    }
+
+    public function set_divider() {
+        return '';
     }
 
 
