@@ -36,6 +36,12 @@
 
         for (var button in buttons) {
             if (buttons.hasOwnProperty(button)) {
+
+                // If arg instance_include is present make sure to output only for that instance
+                if ((buttons[button].instance_include && buttons[button].instance_include !== textareaId) ||
+                    (buttons[button].instance_exclude && buttons[button].instance_exclude === textareaId)) {
+                    continue;
+                }
                 buttonBar += '<li class="' + buttons[button].class + '"><a href="#"';
 
                 buttonBar += buttons[button].id ? '" id="' + buttons[button].id + '"' : '';
@@ -49,7 +55,8 @@
                         if (buttons[button].children.hasOwnProperty(buttonChild)) {
                             var selfButtonChild = buttons[button].children[buttonChild];
                             // If this button should not be in this button bar, skip this iteration
-                            if (selfButtonChild.instance_exclude && selfButtonChild.instance_exclude === textareaId) {
+                            if ((selfButtonChild.instance_include && selfButtonChild.instance_include !== textareaId) ||
+                                (selfButtonChild.instance_exclude && selfButtonChild.instance_exclude === textareaId)) {
                                 continue;
                             }
                             buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a></li>';

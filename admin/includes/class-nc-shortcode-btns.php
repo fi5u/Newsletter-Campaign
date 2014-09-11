@@ -21,9 +21,10 @@ class Newsletter_campaign_shortcode_btns {
 
         $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
             array(
-                'title'     => __('Email functionality', $this->plugin_slug),
-                'class'     => 'nc-button-bar__parent',
-                'children'  => array(
+                'title'             => __('Email functionality', $this->plugin_slug),
+                'class'             => 'nc-button-bar__parent',
+                'instance_include'  => 'newsletter_campaign_template_base-html',
+                'children'          => array(
                     array(
                         'title'     => __('View in browser', $this->plugin_slug),
                         'id'        => 'nc-button-view-browser',
@@ -35,13 +36,6 @@ class Newsletter_campaign_shortcode_btns {
                         'id'        => 'nc-button-unsubscribe',
                         'class'     => 'nc-button-bar__button',
                         'shortcode' => 'nc_unsubscribe_link'
-                    ),
-                    array(
-                        'title'             => __('Post Divider', $this->plugin_slug),
-                        'id'                => 'nc-button-divider',
-                        'class'             => 'nc-button-bar__button',
-                        'shortcode'         => $options['nc_shortcode_divider'],
-                        'instance_exclude'  => 'newsletter_campaign_template_base-html'
                     )
                 )
             ),
@@ -121,9 +115,10 @@ class Newsletter_campaign_shortcode_btns {
                 )
             ),
             array(
-                'title'     => __('Post', $this->plugin_slug),
-                'class'     => 'nc-button-bar__parent',
-                'children'  => array(
+                'title'             => __('Post', $this->plugin_slug),
+                'class'             => 'nc-button-bar__parent',
+                'instance_exclude'  => 'newsletter_campaign_template_base-html',
+                'children'          => array(
                     array(
                         'title'     => __('Post title', $this->plugin_slug),
                         'id'        => 'nc-button-post-title',
@@ -161,6 +156,12 @@ class Newsletter_campaign_shortcode_btns {
                             ),
                         )
                     ),
+                    array(
+                        'title'             => __('Post Divider', $this->plugin_slug),
+                        'id'                => 'nc-button-divider',
+                        'class'             => 'nc-button-bar__button',
+                        'shortcode'         => $options['nc_shortcode_divider']
+                    )
                 )
             )
         ));
