@@ -64,7 +64,7 @@
 
     function addArgsBar(args, shortcode, iteration) {
         var argsBar;
-        argsBar = '<div class"nc-button-bar--args" id="nc-button-bar-args-' + shortcode + '">';
+        argsBar = '<div class="nc-button-bar--args" id="nc-button-bar-args-' + shortcode + '">';
 
         for (var arg = 0; arg < args.length; arg++) {
             argsBar += '<div class="nc-button-bar__arg">';
@@ -81,7 +81,7 @@
     }
 
 
-    function populateWithArgs(shortcode) {
+    function populateWithArgs(shortcode, iteration) {
         var args = '',
             shortcodeComplete;
         $('#nc-button-bar-args-' + shortcode + '').find('.nc-button-bar__arg').each(function(i) {
@@ -95,7 +95,8 @@
 
         shortcodeComplete = '[' + shortcode + args + ']';
 
-        console.log(shortcodeComplete);
+        // Insert the shortcode with args (if supplied)
+        ncCodemirror[iteration].doc.replaceSelection(shortcodeComplete);
     }
 
 
@@ -138,8 +139,9 @@
 
     $('body').on('click', '[id^=nc-shortcode-arg-btn-]', function(e) {
         var idSplit = $(this).attr('id').split('-'),
-            shortcode = idSplit[idSplit.length - 1];
-        populateWithArgs(shortcode);
+            shortcode = idSplit[idSplit.length - 1],
+            iteration = $(this).closest('.nc-button-bar--args').nextAll('.CodeMirror').index('.CodeMirror');
+        populateWithArgs(shortcode, iteration);
         e.preventDefault();
     });
 
