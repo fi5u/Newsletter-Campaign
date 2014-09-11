@@ -82,12 +82,12 @@
         for (var arg = 0; arg < args.length; arg++) {
             argsBar += '<div class="nc-button-bar__arg">';
             argsBar += '<label class="nc-button-bar__arg-label" for="' + args[arg].name + '">' + args[arg].title + '</label>';
-            argsBar += '<input type="text" name="' + args[arg].name + '" id="' + args[arg].name + '" placeholder="Optional" data-arg="' + args[arg].arg + '">';
+            argsBar += '<input type="text" name="' + args[arg].name + '" id="' + args[arg].name + '" placeholder="' + translation.optional + '" data-arg="' + args[arg].arg + '">';
             argsBar += '</div>';
         };
 
-        argsBar += '<button type="button" class="button" id="nc-shortcode-arg-btn-' + shortcode + '">Insert</button>'; /* TODO: gettext this val */
-        argsBar += '<button type="button" class="button" id="nc-shortcode-cancel-btn-' + shortcode + '">Cancel</button>'; /* TODO: gettext this val */
+        argsBar += '<button type="button" class="button" id="nc-shortcode-arg-btn-' + shortcode + '">' + translation.insert + '</button>'; /* TODO: gettext this val */
+        argsBar += '<button type="button" class="button" id="nc-shortcode-cancel-btn-' + shortcode + '">' + translation.cancel + '</button>'; /* TODO: gettext this val */
         argsBar += '</div>';
 
         // Insert into the DOM

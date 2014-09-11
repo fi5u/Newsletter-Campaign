@@ -196,6 +196,12 @@ class NewsletterCampaignAdmin {
                 'mode'          => 'htmlmixed'
             ));
 
+            $template_translations = apply_filters( 'newsletter_campaign_template_translations', array(
+                'optional'  => __('Optional', 'newsletter-campaign'),
+                'insert'    => __('Insert', 'newsletter-campaign'),
+                'cancel'    => __('Cancel', 'newsletter-campaign')
+            ));
+
             $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
                 array(
                     'title'     => __('Email functionality', 'newsletter-campaign'),
@@ -294,6 +300,7 @@ class NewsletterCampaignAdmin {
 
             wp_localize_script( $this->plugin_slug . '-template-script', 'codemirrorArgs', $codemirror_args);
             wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', $shortcode_btns);
+            wp_localize_script( $this->plugin_slug . '-template-script', 'translation', $template_translations);
 
 
             wp_enqueue_style( $this->plugin_slug . '-button-bar', plugins_url( 'assets/css/button-bar.css', __FILE__ ), array(), NewsletterCampaign::VERSION );
