@@ -32,8 +32,8 @@ class Newsletter_campaign_shortcodes {
 
     public function add_shortcodes() {
         add_shortcode( 'nc_posts', array($this, 'set_posts') );
-        add_shortcode( 'nc_title', array($this, 'set_title') );
-        add_shortcode( 'nc_body', array($this, 'set_body') );
+        add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
+        add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
     }
 
@@ -63,12 +63,12 @@ class Newsletter_campaign_shortcodes {
     }
 
 
-    public function set_title() {
+    public function set_post_title() {
         return get_the_title($this->post_object->ID);
     }
 
 
-    public function set_body() {
+    public function set_post_body() {
         return $this->post_object->post_content;
     }
 

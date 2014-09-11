@@ -119,6 +119,49 @@ class Newsletter_campaign_shortcode_btns {
                         )
                     )
                 )
+            ),
+            array(
+                'title'     => __('Post', $this->plugin_slug),
+                'class'     => 'nc-button-bar__parent',
+                'children'  => array(
+                    array(
+                        'title'     => __('Post title', $this->plugin_slug),
+                        'id'        => 'nc-button-post-title',
+                        'class'     => 'nc-button-bar__button',
+                        'shortcode' => 'nc_post_title'
+                    ),
+                    array(
+                        'title'     => __('Post body', $this->plugin_slug),
+                        'id'        => 'nc-button-post-body',
+                        'class'     => 'nc-button-bar__button',
+                        'shortcode' => 'nc_post_body'
+                    ),
+                    array(
+                        'title'     => __('Featured image', $this->plugin_slug),
+                        'id'        => 'nc-button-feat-img',
+                        'class'     => 'nc-button-bar__button',
+                        'shortcode' => 'nc_feat_image',
+                        'args'      => array(
+                            array(
+                                'name'  => 'nc-shortcode-arg-feat-img-size',
+                                'arg'   => 'size',
+                                'title' => __('Size', $this->plugin_slug),
+                                'type'  => 'select',
+                                'values'=>  get_intermediate_image_sizes()
+                            ),
+                            array(
+                                'name'  => 'nc-shortcode-arg-feat-img-width',
+                                'arg'   => 'width',
+                                'title' => __('Width', $this->plugin_slug)
+                            ),
+                            array(
+                                'name'  => 'nc-shortcode-arg-feat-img-height',
+                                'arg'   => 'height',
+                                'title' => __('Height', $this->plugin_slug)
+                            ),
+                        )
+                    ),
+                )
             )
         ));
 

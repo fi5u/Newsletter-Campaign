@@ -97,7 +97,19 @@
         for (var arg = 0; arg < args.length; arg++) {
             argsBar += '<div class="nc-button-bar__arg">';
             argsBar += '<label class="nc-button-bar__arg-label" for="' + args[arg].name + '">' + args[arg].title + '</label>';
-            argsBar += '<input type="text" name="' + args[arg].name + '" id="' + args[arg].name + '" placeholder="' + translation.optional + '" data-arg="' + args[arg].arg + '">';
+
+            if (args[arg].type === 'select' && args[arg].values) {
+                argsBar += '<select name="' + args[arg].name + '" id="' + args[arg].name + '" data-arg="' + args[arg].arg + '">';
+                // Insert a value-less option
+                argsBar += '<option value="">' + translation.selectImageSize + '</option>';
+                for (var i = 0; i < args[arg].values.length; i++) {
+                    var value = args[arg].values[i];
+                    argsBar += '<option value="' + value + '">' + value + '</option>';
+                };
+                argsBar += '</select>';
+            } else {
+                argsBar += '<input type="text" name="' + args[arg].name + '" id="' + args[arg].name + '" placeholder="' + translation.optional + '" data-arg="' + args[arg].arg + '">';
+            }
             argsBar += '</div>';
         };
 
@@ -119,8 +131,9 @@
         var args = '',
             shortcodeComplete;
         $('#nc-button-bar-args-' + shortcode + '').find('.nc-button-bar__arg').each(function(i) {
-            var argName = $(this).find('input').data('arg'),
-                argVal = $(this).find('input').val();
+            var inputType = $(this).find('input').length ? 'input' : 'select';
+            var argName = $(this).find(inputType).data('arg'),
+                argVal = $(this).find(inputType).val();
 
             if (argVal) {
                 args += ' ' + argName + '="' + argVal + '"';

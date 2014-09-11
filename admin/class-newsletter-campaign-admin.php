@@ -197,9 +197,10 @@ class NewsletterCampaignAdmin {
             ));
 
             $template_translations = apply_filters( 'newsletter_campaign_template_translations', array(
-                'optional'  => __('Optional', 'newsletter-campaign'),
-                'insert'    => __('Insert', 'newsletter-campaign'),
-                'cancel'    => __('Cancel', 'newsletter-campaign')
+                'optional'          => __('Optional', 'newsletter-campaign'),
+                'insert'            => __('Insert', 'newsletter-campaign'),
+                'cancel'            => __('Cancel', 'newsletter-campaign'),
+                'selectImageSize'   => __('Select image size', 'newsletter-campaign')
             ));
 
             $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
