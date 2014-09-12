@@ -35,11 +35,11 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
         add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
-        add_shortcode( 'nc_unsubscribe_link', array($this, 'set_unsubscribe') );
     }
 
 
     public function add_per_message_shortcodes() {
+        add_shortcode( 'nc_unsubscribe_link', array($this, 'set_unsubscribe') );
         add_shortcode( 'nc_name', array($this, 'set_name') );
         add_shortcode( 'nc_email', array($this, 'set_email') );
         add_shortcode( 'nc_extra', array($this, 'set_extra') );
@@ -97,7 +97,8 @@ class Newsletter_campaign_shortcodes {
 
 
     public function set_unsubscribe($atts, $content = null) {
-        $unsubscribe_url = 'www.google.com';
+        // Get unsubscribe url
+        $unsubscribe_url = get_home_url() . '/&unsubscribe=';
         $output =   $content = null ? '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign') . '</a>' :
                     '<a href="' . $unsubscribe_url . '">' . $content . '</a>';
         return $output;
