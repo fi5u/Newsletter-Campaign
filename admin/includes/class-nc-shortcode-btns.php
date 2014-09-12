@@ -32,10 +32,12 @@ class Newsletter_campaign_shortcode_btns {
                         'shortcode' => 'nc_browser_link'
                     ),
                     array(
-                        'title'     => __('Unsubscribe link', $this->plugin_slug),
-                        'id'        => 'nc-button-unsubscribe',
-                        'class'     => 'nc-button-bar__button',
-                        'shortcode' => 'nc_unsubscribe_link'
+                        'title'             => __('Unsubscribe link', $this->plugin_slug),
+                        'id'                => 'nc-button-unsubscribe',
+                        'class'             => 'nc-button-bar__button',
+                        'shortcode'         => 'nc_unsubscribe_link',
+                        'enclosing'         => true,
+                        'enclosing_text'    => __('Unsubscribe text')
                     )
                 )
             ),

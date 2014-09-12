@@ -174,6 +174,27 @@
                         } else {
                             // Insert the shortcode without args
                             ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+
+                            // Insert the encolsing shortcode
+                            if (buttons[button].children[child].enclosing) {
+                                ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
+
+                                // Set the cursor to the middle of the tags
+                                var cursor = ncCodemirror[iteration].doc.getCursor();
+                                // Calculate the middle of the tags, 3 is total bracket chars
+                                cursor.ch = cursor.ch - shortcode.length - 3;
+
+                                ncCodemirror[iteration].doc.setCursor(cursor);
+
+                                // Add the enclosing text
+                                ncCodemirror[iteration].doc.replaceSelection(buttons[button].children[child].enclosing_text);
+
+                                // Select the added enclosing text
+                                ncCodemirror[iteration].doc.setSelection(cursor, {ch: cursor.ch + shortcode.length - 3, line: cursor.line});
+
+                                // Set the focus to the codemirror instance
+                                ncCodemirror[iteration].doc.cm.focus();
+                            }
                         }
                     }
                 };

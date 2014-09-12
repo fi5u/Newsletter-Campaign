@@ -35,6 +35,7 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
         add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
+        add_shortcode( 'nc_unsubscribe', array($this, 'set_unsubscribe') );
     }
 
 
@@ -94,8 +95,14 @@ class Newsletter_campaign_shortcodes {
         }
     }
 
-    public function set_divider() {
-        return '';
+
+    public function set_unsubscribe($atts, $content = null) {
+        $unsubscribe_url = 'www.google.com';
+        if ($content = null) {
+            return '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign');
+        } else {
+            return '<a href="' . $unsubscribe_url . '">' . $content . '</a>';
+        }
     }
 
 
