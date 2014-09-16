@@ -166,6 +166,7 @@ class Newsletter_campaign_send_campaign {
         $nc_posts_all = $this->get_posts($campaign_id);
 
         $nc_reg_posts = $nc_posts_all['newsletter_campaign_builder_post'];
+
         $reg_posts_output = $this->content_to_template($nc_reg_posts, $template['post']);
 
         // Loop through nc_posts_all to get the special posts
@@ -444,6 +445,7 @@ class Newsletter_campaign_send_campaign {
         // Set email content type to html
         add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 
+        $i = 0;
         // Send mail individually
         foreach ($addresses as $address) {
 
@@ -452,16 +454,27 @@ class Newsletter_campaign_send_campaign {
             $per_email_shortcodes = new Newsletter_campaign_shortcodes(null, null, $address);
             $converted_message = $per_email_shortcodes->nc_do_shortcodes($message);
 
-            $mail_sent = wp_mail( $address['email'], $subject = $subject, $converted_message = $converted_message, $headers = $from . "\r\n" );
-
-            if ($mail_sent) {
-                // Increment the successful send counter
-                $mail_success[2]++;
+            // The email has content - send the email
+            if ($this->preview) {
+                // Just show one message as the preview
+                if ($i === 1) {
+                    echo $converted_message;
+                }
             } else {
-                // Add any failed sends to the mail_failed array
-                $mail_success[0] = 'no';
-                $mail_success[1][] = $address;
+                $mail_sent = wp_mail( $address['email'], $subject = $subject, $converted_message = $converted_message, $headers = $from . "\r\n" );
+
+                if ($mail_sent) {
+                    // Increment the successful send counter
+                    $mail_success[2]++;
+                } else {
+                    // Add any failed sends to the mail_failed array
+                    $mail_success[0] = 'no';
+                    $mail_success[1][] = $address;
+                }
+
             }
+
+            $i++;
         }
 
         // Remove html email type
@@ -551,12 +564,7 @@ class Newsletter_campaign_send_campaign {
                 $campaign_message[] = sprintf( __( 'Something went wrong in using your template, %s not sent.', 'newsletter-campaign' ), $send_type );
                 update_post_meta($campaign_id, 'mail_sent', array('no', $campaign_message));
             } else {
-                // The email has content - send the email
-                if ($this->preview) {
-                    echo $email_content;
-                } else {
-                    $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_from, $email_content);
-                }
+                $mail_success = $this->send_email($addresses['valid'], $email_subject, $email_from, $email_content);
 
                 // If there were duplicate or invalid addresses display messages
                 if (!empty($addresses['invalid'])) {

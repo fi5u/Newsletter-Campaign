@@ -98,7 +98,8 @@ class Newsletter_campaign_shortcodes {
 
     public function set_unsubscribe($atts, $content = null) {
         // Get unsubscribe url
-        $unsubscribe_url = get_home_url() . '/&unsubscribe=xxx';
+        $recipient = $this->recipient;
+        $unsubscribe_url = get_home_url() . '/?unsubscribe=' . $recipient['email'] . '&hash=' . $recipient['hash'];
         $output =   $content = null ? '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign') . '</a>' :
                     '<a href="' . $unsubscribe_url . '">' . $content . '</a>';
         return $output;
