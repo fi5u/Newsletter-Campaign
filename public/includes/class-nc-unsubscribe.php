@@ -46,20 +46,23 @@ class Newsletter_campaign_unsubscribe {
      * @return arr          Array of posts - any that don't match the stored hash will be removed
      */
     private function check_user_hash($records, $hash) {
-        // Loop through each record checking the hash
-        $i = 0;
+        // If more than one record is being checked, only one hash has to match
+        $match = false;
 
         foreach ($records as $record) {
-
             $stored_hash = get_post_meta($record->ID, '_subscriber_hash', true);
-            if ($stored_hash !== $hash) {
+            if ($stored_hash === $hash) {
                 // If doesn't match to the database stored hash, remove it from the array
-                unset($records[$i]);
+                $match = true;
             }
-            $i++;
         }
 
-        return $records;
+        if ($match === true) {
+            return $records;
+        } else {
+            return false;
+        }
+
     }
 
 
@@ -70,7 +73,7 @@ class Newsletter_campaign_unsubscribe {
     private function get_raw_unsubscribe_details() {
         $unsubscribe_details = array();
         $unsubscribe_details['address'] = trim($_GET['unsubscribe']);
-        $unsubscribe_details['list'] = isset($_GET['list']) ? trim($_GET['list']) : 'nc_all';
+        $unsubscribe_details['list'] = isset($_GET['list']) && $_GET['list'] !== '' ? trim($_GET['list']) : 'nc_all';
         $unsubscribe_details['hash'] = trim($_GET['hash']);
 
         // Return false unless they're all set
@@ -152,7 +155,7 @@ class Newsletter_campaign_unsubscribe {
 
         $verified_records = $this->check_user_hash($records, $hash);
 
-        if (empty($verified_records)) {
+        if (!$verified_records) {
             // Don't go any further if no hashes were matched
             return false;
         }
