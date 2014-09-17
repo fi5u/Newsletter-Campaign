@@ -24,6 +24,9 @@ class Newsletter_campaign_shortcode_btns {
             )
         );
 
+        // Fetch the array of subscriber lists, prepending with 'all lists' option
+        $subscriber_list_cats = array_merge(array(array('name' => __('All lists'), 'slug' => 'nc_all')), get_categories($subscriber_list_cat_args));
+
         $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
             array(
                 'title'             => __('Email functionality', $this->plugin_slug),
@@ -49,7 +52,7 @@ class Newsletter_campaign_shortcode_btns {
                                 'arg'   => 'list',
                                 'title' => __('Subscriber list', $this->plugin_slug),
                                 'type'  => 'select',
-                                'values'=>  get_categories($subscriber_list_cat_args),
+                                'values'=>  $subscriber_list_cats,
                                 'key'   => 'name',
                                 'value' => 'slug'
                             )
