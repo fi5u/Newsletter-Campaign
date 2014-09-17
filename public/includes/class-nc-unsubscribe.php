@@ -2,7 +2,8 @@
 
 /**
  * Unsubscibe using the url params like:
- * http://dev.wordpress/?unsubscribe=jeff@123.com&hash=77649117
+ * http://dev.wordpress/?unsubscribe=jeff@123.com&list=newbies&hash=77649117 (for a specific list)
+ * http://dev.wordpress/?unsubscribe=jeff@123.com&hash=77649117 (to remove from all lists)
  */
 class Newsletter_campaign_unsubscribe {
 
@@ -10,8 +11,6 @@ class Newsletter_campaign_unsubscribe {
         // Hook add_query_vars function into query_vars
         add_filter( 'query_vars', array($this, 'add_query_vars_filter') );
         add_action( 'init', array($this, 'process_unsubscription'), 35 );
-
-        //$this->salt = get_option('newsletter_campaign_salt');
     }
 
 
@@ -52,7 +51,6 @@ class Newsletter_campaign_unsubscribe {
         foreach ($records as $record) {
             $stored_hash = get_post_meta($record->ID, '_subscriber_hash', true);
             if ($stored_hash === $hash) {
-                // If doesn't match to the database stored hash, remove it from the array
                 $match = true;
             }
         }
@@ -82,33 +80,19 @@ class Newsletter_campaign_unsubscribe {
         } else {
             return false;
         }
-
-
     }
 
 
     /**
      * Retrieve posts for supplied user
      * @param  str $email_address   Email address to search for
-     * @param  str $subscriber_list Which subsciber list the user belongs, nc_all includes all lists
      * @return arr                  An array of post objects
      */
-    private function get_user_records($email_address, $subscriber_list) {
+    private function get_user_records($email_address) {
         $subscriber_args = array(
             'posts_per_page'    => -1, // Get all occurances in case the user is register more than once
             'post_type'         => 'subscriber'
         );
-
-        // If a specific subscriber list has been sent through then search for that
-        if ($subscriber_list !== 'nc_all') {
-            $subscriber_args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'subscriber_list',
-                    'field' => 'slug',
-                    'terms' => $subscriber_list
-                )
-            );
-        }
 
         $user_records = get_posts($subscriber_args);
 
@@ -131,6 +115,25 @@ class Newsletter_campaign_unsubscribe {
 
 
     /**
+     * If a specific list has been passed, only get the user from that list
+     * @param  arr $user_records    All the records for that email
+     * @param  str $subscriber_list The name of the subscriber list
+     * @return arr
+     */
+    private function check_list($user_records, $subscriber_list) {
+        if ($subscriber_list !== 'nc_all') {
+            for ($i = 0; $i < count($user_records); $i++) {
+                if (!has_term($subscriber_list, 'subscriber_list', $user_records[$i]->ID)) {
+                    unset($user_records[$i]);
+                }
+            }
+        }
+
+        return $user_records;
+    }
+
+
+    /**
      * Processes the unsubscription
      */
     public function process_unsubscription() {
@@ -146,8 +149,7 @@ class Newsletter_campaign_unsubscribe {
         $hash = $raw_unsubscribe_details['hash'];
 
         // Get the user records
-        $records = $this->get_user_records($address, $list);
-
+        $records = $this->get_user_records($address);
         if (empty($records)) {
             // Don't go any further if no matches have been found
             return false;
@@ -160,16 +162,19 @@ class Newsletter_campaign_unsubscribe {
             return false;
         }
 
+        // If a specific list is chosen then remove anything not in that list
+        $list_checked_records = $this->check_list($verified_records, $list);
+
         // Go ahead and delete the user
-        $deletion_results = $this->delete_user($verified_records);
+        $deletion_results = $this->delete_user($list_checked_records);
 
         // Fetch the saved unsubscribe page
         $unsubscribe_page = get_option('nc_settings')['nc_unsubscribe'];
 
         // If anything was successfully deleted proceed to send user to the unsubscribed page
         if (in_array('no', $deletion_results)) {
-            wp_redirect(get_permalink($unsubscribe_page));
-            exit();
+           wp_redirect(get_permalink($unsubscribe_page));
+           exit();
         }
     }
 
