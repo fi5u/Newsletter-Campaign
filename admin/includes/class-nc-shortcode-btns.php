@@ -19,6 +19,11 @@ class Newsletter_campaign_shortcode_btns {
 
         $options = get_option( 'nc_settings' );
 
+        $subscriber_list_cat_args = apply_filters( 'newsletter_campaign_subscriber_list_cat_args', array(
+                'taxonomy'  => 'subscriber_list'
+            )
+        );
+
         $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
             array(
                 'title'             => __('Email functionality', $this->plugin_slug),
@@ -37,7 +42,26 @@ class Newsletter_campaign_shortcode_btns {
                         'class'             => 'nc-button-bar__button',
                         'shortcode'         => 'nc_unsubscribe_link',
                         'enclosing'         => true,
-                        'enclosing_text'    => __('Unsubscribe text')
+                        'enclosing_text'    => __('Unsubscribe text', $this->plugin_slug),
+                        'args'              => array(
+                            array(
+                                'name'  => 'nc-shortcode-arg-unsubscribe-list',
+                                'arg'   => 'list',
+                                'title' => __('Subscriber list', $this->plugin_slug),
+                                'type'  => 'select',
+                                'values'=>  get_categories($subscriber_list_cat_args),
+                                'key'   => 'name',
+                                'value' => 'slug'
+                            )
+                        )
+                    ),
+                    array(
+                        'title'             => __('Test me', $this->plugin_slug),
+                        'id'                => 'nc-button-test',
+                        'class'             => 'nc-button-bar__button',
+                        'shortcode'         => 'nc_test',
+                        'enclosing'         => true,
+                        'enclosing_text'    => __('Im being tested, now go and test me, Isaid now!', $this->plugin_slug)
                     )
                 )
             ),

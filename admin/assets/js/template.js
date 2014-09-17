@@ -108,10 +108,16 @@
             if (args[arg].type === 'select' && args[arg].values) {
                 argsBar += '<select name="' + args[arg].name + '" id="' + args[arg].name + '" data-arg="' + args[arg].arg + '">';
                 // Insert a value-less option
-                argsBar += '<option value="">' + translation.selectImageSize + '</option>';
+                argsBar += '<option value="">' + translation.selectAnOption + '</option>';
                 for (var i = 0; i < args[arg].values.length; i++) {
                     var value = args[arg].values[i];
-                    argsBar += '<option value="' + value + '">' + value + '</option>';
+                    // If we've got a specific key and value to use, use them
+                    if (args[arg].key && args[arg].value) {
+                        argsBar += '<option value="' + value[args[arg].value] + '">' + value[args[arg].key] + '</option>';
+                    } else {
+                        // A simple array has been passed
+                        argsBar += '<option value="' + value + '">' + value + '</option>';
+                    }
                 };
                 argsBar += '</select>';
             } else {
@@ -151,6 +157,41 @@
 
         // Insert the shortcode with args (if supplied)
         ncCodemirror[iteration].doc.replaceSelection(shortcodeComplete);
+
+        // Insert the encolsing shortcode
+        for (var button = 0; button < buttons.length; button++) {
+            if (buttons[button].children) {
+                for (var child = 0; child < buttons[button].children.length; child++) {
+                    if (buttons[button].children[child].shortcode === shortcode) {
+                        // This is the correct object
+                        insertEnclosingText(shortcode, iteration, button, child);
+                    }
+                }
+            }
+        }
+    }
+
+
+    function insertEnclosingText(shortcode, iteration, button, child) {
+        if (buttons[button].children[child].enclosing) {
+            ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
+
+            // Set the cursor to the middle of the tags
+            var cursor = ncCodemirror[iteration].doc.getCursor();
+            // Calculate the middle of the tags, 3 is total bracket chars
+            cursor.ch = cursor.ch - shortcode.length - 3;
+
+            ncCodemirror[iteration].doc.setCursor(cursor);
+
+            // Add the enclosing text
+            ncCodemirror[iteration].doc.replaceSelection(buttons[button].children[child].enclosing_text);
+
+            // Select the added enclosing text
+            ncCodemirror[iteration].doc.setSelection(cursor, {ch: cursor.ch + buttons[button].children[child].enclosing_text.length, line: cursor.line});
+
+            // Set the focus to the codemirror instance
+            ncCodemirror[iteration].doc.cm.focus();
+        }
     }
 
 
@@ -174,27 +215,8 @@
                         } else {
                             // Insert the shortcode without args
                             ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
-
                             // Insert the encolsing shortcode
-                            if (buttons[button].children[child].enclosing) {
-                                ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
-
-                                // Set the cursor to the middle of the tags
-                                var cursor = ncCodemirror[iteration].doc.getCursor();
-                                // Calculate the middle of the tags, 3 is total bracket chars
-                                cursor.ch = cursor.ch - shortcode.length - 3;
-
-                                ncCodemirror[iteration].doc.setCursor(cursor);
-
-                                // Add the enclosing text
-                                ncCodemirror[iteration].doc.replaceSelection(buttons[button].children[child].enclosing_text);
-
-                                // Select the added enclosing text
-                                ncCodemirror[iteration].doc.setSelection(cursor, {ch: cursor.ch + shortcode.length - 3, line: cursor.line});
-
-                                // Set the focus to the codemirror instance
-                                ncCodemirror[iteration].doc.cm.focus();
-                            }
+                            insertEnclosingText(shortcode, iteration, button, child);
                         }
                     }
                 };

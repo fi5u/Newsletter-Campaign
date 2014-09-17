@@ -2,8 +2,8 @@
 
 /**
  * Unsubscibe using the url params like:
- * http://dev.wordpress/?unsubscribe=jeff@123.com&list=newbies&hash=77649117 (for a specific list)
- * http://dev.wordpress/?unsubscribe=jeff@123.com&hash=77649117 (to remove from all lists)
+ * [home_url]?unsubscribe=jeff@123.com&list=newbies&hash=77649117 (for a specific list)
+ * [home_url]?unsubscribe=jeff@123.com&hash=77649117 (to remove from all lists)
  */
 class Newsletter_campaign_unsubscribe {
 
