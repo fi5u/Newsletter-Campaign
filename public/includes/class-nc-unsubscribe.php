@@ -15,20 +15,48 @@ class Newsletter_campaign_unsubscribe {
 
 
     /**
+     * Saves timestamp, user id (post id), user email address, list name to options
+     * to fetch: get_option('nc_stats')['unsubscribe']
+     * @param  int $email_id      Post id
+     * @param  str $email_address Email address
+     * @param  str $list          Subscription list
+     */
+    private function save_unsubscribe_details($email_id, $email_address, $list) {
+        $stats = get_option('nc_stats');
+
+        $stats['unsubscribe'][] = array(
+            'timestamp'     => current_time( 'mysql' ),
+            'user_id'       => $email_id,
+            'user_address'  => $email_address,
+            'list'          => $list
+        );
+
+        update_option('nc_stats', $stats);
+    }
+
+
+    /**
      * Goes through each record deleting it
      * @param  arr $records The array of posts to delete
      * @return arr          An array of bools - the success or failure of each deletion
      */
-    private function delete_user($records) {
+    private function delete_user($records, $list) {
         // Set up an array to store any failures
         $failure = array();
 
         foreach ($records as $record) {
-            $deleted_user = wp_delete_post($record->ID);
+            // Store user email address and id
+            $email_id = $record->ID;
+            $email_address = get_the_title($email_id);
 
+            // Delete the user
+            $deleted_user = wp_delete_post($record->ID);
             // Record whether deletion failed or not
             if ($deleted_user) {
                 $failure[] = 'no';
+
+                // Save the unsubscribe details
+                $this->save_unsubscribe_details($email_id, $email_address, $list);
             } else {
                 $failure[] = 'yes';
             }
@@ -166,15 +194,15 @@ class Newsletter_campaign_unsubscribe {
         $list_checked_records = $this->check_list($verified_records, $list);
 
         // Go ahead and delete the user
-        $deletion_results = $this->delete_user($list_checked_records);
+        $deletion_results = $this->delete_user($list_checked_records, $list);
 
         // Fetch the saved unsubscribe page
         $unsubscribe_page = get_option('nc_settings')['nc_unsubscribe'];
 
         // If anything was successfully deleted proceed to send user to the unsubscribed page
         if (in_array('no', $deletion_results)) {
-           wp_redirect(get_permalink($unsubscribe_page));
-           exit();
+            wp_redirect(get_permalink($unsubscribe_page));
+            exit();
         }
     }
 
