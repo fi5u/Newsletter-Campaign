@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = true; // if true, on send outputs email to browser
+    private $preview = false; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );
@@ -471,10 +471,31 @@ class Newsletter_campaign_send_campaign {
                     $mail_success[0] = 'no';
                     $mail_success[1][] = $address;
                 }
-
             }
 
             $i++;
+        }
+
+        // Save to archive for the view in browser functionality
+        if ($mail_success[2] > 0) {
+            // If any mail has been successfully sent, save the campaign
+            $message_hash = wp_hash($message);
+
+            // Get the current view in browser options
+            $html_archive = get_option('nc_html_archive');
+            foreach ($html_archive as $html_template) {
+                // Only save a new archive item if the same hash hasn't been used before
+                if (in_array($message_hash, $html_template)) {
+                    $duplicate = true;
+                    break;
+                }
+            }
+
+            // If not been saved before save now
+            if (!$duplicate) {
+                $html_archive[] = array('hash' => $message_hash, 'content' => $message);
+                update_option('nc_html_archive', $html_archive);
+            }
         }
 
         // Remove html email type
