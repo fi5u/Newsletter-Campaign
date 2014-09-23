@@ -437,12 +437,11 @@ class NewsletterCampaignAdmin {
      * @since    0.0.0
      */
     public function includes() {
-
         include_once( 'includes/class-nc-meta-boxes.php' );     // Register metaboxes
         include_once( 'includes/class-nc-meta-submit.php' );    // Replace the submit metabox
         include_once( 'includes/class-nc-admin-filters.php' );  // Filter admin output
         include_once( 'includes/class-nc-campaign.php' );       // Format the campaign admin
-        include_once( 'includes/class-nc-shortcodes.php' );     // Register the shortcodes
+        include_once( PLUGIN_DIR . 'includes/class-nc-shortcodes.php' );     // Register the shortcodes
         include_once( 'includes/class-nc-shortcode-btns.php' ); // Register the shortcode buttons
         include_once( 'includes/class-nc-send-campaign.php' );  // Send the selected campaign
         include_once( 'includes/class-nc-options.php' );        // General options page
