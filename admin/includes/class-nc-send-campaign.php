@@ -7,7 +7,7 @@
 class Newsletter_campaign_send_campaign {
 
     private $post_id;
-    private $preview = false; // if true, on send outputs email to browser
+    private $preview = true; // if true, on send outputs email to browser
 
     public function __construct() {
         add_action( 'admin_init', array($this, 'send_campaign'), 30 );

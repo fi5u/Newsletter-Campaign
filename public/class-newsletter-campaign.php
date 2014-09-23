@@ -320,6 +320,7 @@ class NewsletterCampaign {
     private static function includes() {
         include_once( 'includes/class-nc-post-types.php' );     // Register taxonomies and post types
         include_once( 'includes/class-nc-unsubscribe.php' );    // Handles the unsubscription process
+        include_once( 'includes/class-nc-browser-view.php' );   // Handles the 'view in browser' functionality
     }
 
 }
