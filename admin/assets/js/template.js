@@ -54,12 +54,25 @@
                     for (var buttonChild in buttons[button].children) {
                         if (buttons[button].children.hasOwnProperty(buttonChild)) {
                             var selfButtonChild = buttons[button].children[buttonChild];
+
                             // If this button should not be in this button bar, skip this iteration
                             if ((selfButtonChild.instance_include && selfButtonChild.instance_include !== textareaId) ||
                                 (selfButtonChild.instance_exclude && selfButtonChild.instance_exclude === textareaId)) {
                                 continue;
                             }
-                            buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a></li>';
+
+                            buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a>';
+                            if (selfButtonChild.children) {
+                                buttonBar += '<ul>';
+                                for (var buttonGrandchild in selfButtonChild.children) {
+                                    if (selfButtonChild.children.hasOwnProperty(buttonGrandchild)) {
+                                        var selfButtonGrandchild = selfButtonChild.children[buttonGrandchild];
+                                        buttonBar += '<li class="' + selfButtonGrandchild.class + '"><a href="#" id="' + selfButtonGrandchild.id + '" title="' + selfButtonGrandchild.title + '" data-shortcode="' + selfButtonGrandchild.shortcode + '">' + selfButtonGrandchild.title + '</a></li>';
+                                    }
+                                }
+                                buttonBar += '</ul>';
+                            }
+                            buttonBar += '</li>';
                         }
                     }
 

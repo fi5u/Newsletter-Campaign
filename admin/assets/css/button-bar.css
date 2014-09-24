@@ -22,8 +22,12 @@
             background: #ddd;
         }
 
-        .nc-button-bar__parent:hover ul {
+        .nc-button-bar__parent:hover > ul {
             display: block;
+        }
+
+        .nc-button-bar__parent .nc-button-bar__parent ul {
+            left: 100%;
         }
 
     .nc-button-bar__button {

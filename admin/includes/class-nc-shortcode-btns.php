@@ -29,6 +29,58 @@ class Newsletter_campaign_shortcode_btns {
 
         $shortcode_btns = apply_filters( 'newsletter_campaign_shortcode_btns', array(
             array(
+                'title'             => __('HTML', $this->plugin_slug),
+                'class'             => 'nc-button-bar__parent',
+                'children'          => array(
+                    array(
+                        'title'             => __('Document structure', $this->plugin_slug),
+                        'class'             => 'nc-button-bar__parent',
+                        'instance_include'  => 'newsletter_campaign_template_base-html',
+                        'children'          => array(
+                            array(
+                                'title'     => 'Doctype',
+                                'id'        => 'nc-button-doctype',
+                                'class'     => 'nc-button-bar__button',
+                                'shortcode' => 'nc_html_doctype',
+                                'args'      => array(
+                                    array(
+                                        'name'  => 'nc-shortcode-arg-html-doctype',
+                                        'arg'   => 'doctype',
+                                        'title' => 'Doctype',
+                                        'type'  => 'select',
+                                        'values'=>  array(
+                                            array(
+                                                'name' => 'XHTML 1.0 Strict',
+                                                'value'=> 'xhtml-1-strict'
+                                            ),
+                                            array(
+                                                'name' => 'HTML5',
+                                                'value'=> 'html5'
+                                            )
+                                        ),
+                                        'key'   => 'name',
+                                        'value' => 'value'
+                                    )
+                                )
+                            ),
+                            array(
+                                'title'     => 'HTML',
+                                'id'        => 'nc-button-html',
+                                'class'     => 'nc-button-bar__button',
+                                'shortcode' => 'nc_html_html',
+                                'args'      => array(
+                                    array(
+                                        'name'  => 'nc-shortcode-arg-html-xmlns',
+                                        'arg'   => 'xmlns',
+                                        'title' => 'XMLNS'
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            array(
                 'title'             => __('Email functionality', $this->plugin_slug),
                 'class'             => 'nc-button-bar__parent',
                 'instance_include'  => 'newsletter_campaign_template_base-html',
