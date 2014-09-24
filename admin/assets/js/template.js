@@ -67,6 +67,12 @@
                                 for (var buttonGrandchild in selfButtonChild.children) {
                                     if (selfButtonChild.children.hasOwnProperty(buttonGrandchild)) {
                                         var selfButtonGrandchild = selfButtonChild.children[buttonGrandchild];
+
+                                        // If this button should not be in this button bar, skip this iteration
+                                        if ((selfButtonGrandchild.instance_include && selfButtonGrandchild.instance_include !== textareaId) ||
+                                            (selfButtonGrandchild.instance_exclude && selfButtonGrandchild.instance_exclude === textareaId)) {
+                                            continue;
+                                        }
                                         buttonBar += '<li class="' + selfButtonGrandchild.class + '"><a href="#" id="' + selfButtonGrandchild.id + '" title="' + selfButtonGrandchild.title + '" data-shortcode="' + selfButtonGrandchild.shortcode + '">' + selfButtonGrandchild.title + '</a></li>';
                                     }
                                 }
@@ -175,9 +181,18 @@
         for (var button = 0; button < buttons.length; button++) {
             if (buttons[button].children) {
                 for (var child = 0; child < buttons[button].children.length; child++) {
-                    if (buttons[button].children[child].shortcode === shortcode) {
-                        // This is the correct object
-                        insertEnclosingText(shortcode, iteration, button, child);
+                    if (buttons[button].children[child].children) {
+                        for (var grandchild = 0; grandchild < buttons[button].children[child].children.length; grandchild++) {
+                            if (buttons[button].children[child].children[grandchild].shortcode === shortcode) {
+                                // This is the correct object
+                                insertEnclosingText(shortcode, iteration, button, child, grandchild);
+                            }
+                        }
+                    } else {
+                        if (buttons[button].children[child].shortcode === shortcode) {
+                            // This is the correct object
+                            insertEnclosingText(shortcode, iteration, button, child);
+                        }
                     }
                 }
             }
@@ -185,7 +200,10 @@
     }
 
 
-    function insertEnclosingText(shortcode, iteration, button, child) {
+    function insertEnclosingText(shortcode, iteration, button, child, grandchild) {
+        if (grandchild) {
+            buttons[button].children[child] = buttons[button].children[child].children[grandchild];
+        }
         if (buttons[button].children[child].enclosing) {
             ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
 
@@ -219,17 +237,36 @@
         for (var button = 0; button < buttons.length; button++) {
             if (buttons[button].children) {
                 for (var child = 0; child < buttons[button].children.length; child++) {
-                    if (buttons[button].children[child].shortcode === shortcode) {
-                        // This is the correct object
-                        // Check if it contains args
-                        if (buttons[button].children[child].args) {
-                            // Add the args bar
-                            addArgsBar(buttons[button].children[child].args, shortcode, iteration, buttons[button].children[child].title);
-                        } else {
-                            // Insert the shortcode without args
-                            ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
-                            // Insert the encolsing shortcode
-                            insertEnclosingText(shortcode, iteration, button, child);
+                    // If contains grandchildren
+                    if (buttons[button].children[child].children) {
+                        for (var grandchild = 0; grandchild < buttons[button].children[child].children.length; grandchild++) {
+                            if (buttons[button].children[child].children[grandchild].shortcode === shortcode) {
+                                // This is the correct object
+                                // Check if it contains args
+                                if (buttons[button].children[child].children[grandchild].args) {
+                                    // Add the args bar
+                                    addArgsBar(buttons[button].children[child].children[grandchild].args, shortcode, iteration, buttons[button].children[child].children[grandchild].title);
+                                } else {
+                                    // Insert the shortcode without args
+                                    ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                    // Insert the encolsing shortcode
+                                    insertEnclosingText(shortcode, iteration, button, child);
+                                }
+                            }
+                        }
+                    } else {
+                        if (buttons[button].children[child].shortcode === shortcode) {
+                            // This is the correct object
+                            // Check if it contains args
+                            if (buttons[button].children[child].args) {
+                                // Add the args bar
+                                addArgsBar(buttons[button].children[child].args, shortcode, iteration, buttons[button].children[child].title);
+                            } else {
+                                // Insert the shortcode without args
+                                ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                // Insert the encolsing shortcode
+                                insertEnclosingText(shortcode, iteration, button, child);
+                            }
                         }
                     }
                 };

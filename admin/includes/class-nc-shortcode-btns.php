@@ -64,11 +64,13 @@ class Newsletter_campaign_shortcode_btns {
                                 )
                             ),
                             array(
-                                'title'     => 'HTML',
-                                'id'        => 'nc-button-html',
-                                'class'     => 'nc-button-bar__button',
-                                'shortcode' => 'nc_html_html',
-                                'args'      => array(
+                                'title'             => 'HTML',
+                                'id'                => 'nc-button-html',
+                                'class'             => 'nc-button-bar__button',
+                                'shortcode'         => 'nc_html_html',
+                                'enclosing'         => true,
+                                'enclosing_text'    => __('HTML content', $this->plugin_slug),
+                                'args'              => array(
                                     array(
                                         'name'  => 'nc-shortcode-arg-html-xmlns',
                                         'arg'   => 'xmlns',
@@ -111,14 +113,6 @@ class Newsletter_campaign_shortcode_btns {
                                 'value' => 'slug'
                             )
                         )
-                    ),
-                    array(
-                        'title'             => __('Test me', $this->plugin_slug),
-                        'id'                => 'nc-button-test',
-                        'class'             => 'nc-button-bar__button',
-                        'shortcode'         => 'nc_test',
-                        'enclosing'         => true,
-                        'enclosing_text'    => __('Im being tested, now go and test me, Isaid now!', $this->plugin_slug)
                     )
                 )
             ),
