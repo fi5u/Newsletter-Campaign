@@ -40,6 +40,7 @@ class Newsletter_campaign_shortcodes {
 
     public function add_per_message_shortcodes() {
         add_shortcode( 'nc_unsubscribe_link', array($this, 'set_unsubscribe') );
+        add_shortcode( 'nc_browser_link', array($this, 'set_browser_link') );
         add_shortcode( 'nc_name', array($this, 'set_name') );
         add_shortcode( 'nc_email', array($this, 'set_email') );
         add_shortcode( 'nc_extra', array($this, 'set_extra') );
@@ -107,6 +108,17 @@ class Newsletter_campaign_shortcodes {
         $unsubscribe_url .= '&hash=' . $recipient['hash'];
         $output =   $content = null ? '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign') . '</a>' :
                     '<a href="' . $unsubscribe_url . '">' . $content . '</a>';
+        return $output;
+    }
+
+
+    public function set_browser_link($atts, $content = null) {
+        // Get ´view in browser´ url
+        $recipient = $this->recipient;
+        $browser_view_url = get_home_url() . '/?viewinbrowser=' . $recipient['id'];
+        $browser_view_url .= '&hash=' . $recipient['message_hash'];
+        $output =   $content = null ? '<a href="' . $browser_view_url . '">' . __('View in browser', 'newsletter-campaign') . '</a>' :
+                    '<a href="' . $browser_view_url . '">' . $content . '</a>';
         return $output;
     }
 

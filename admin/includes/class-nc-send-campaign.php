@@ -326,6 +326,7 @@ class Newsletter_campaign_send_campaign {
                 // Check that it is a valid email address
                 if (is_email($subscriber->post_title)) {
                     // Everything is fine with address, add it to array along with other data to be possibly put into individual messages
+                    $subscriber_emails_valid[$i]['id'] = $subscriber->ID;
                     $subscriber_emails_valid[$i]['email'] = $subscriber->post_title;
                     $subscriber_emails_valid[$i]['name'] = get_post_meta( $subscriber->ID, '_subscriber_name', true );
                     $subscriber_emails_valid[$i]['extra'] = get_post_meta( $subscriber->ID, '_subscriber_extra', true );
@@ -445,9 +446,15 @@ class Newsletter_campaign_send_campaign {
         // Set email content type to html
         add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 
+        // Add the hash of the message to be passed through - for ´view in browser´ functionality
+        $message_hash = wp_hash($message);
+
         $i = 0;
         // Send mail individually
         foreach ($addresses as $address) {
+
+            // Add the message hash to the $address array
+            $address['message_hash'] = $message_hash;
 
             // Insert per-email shortcodes
             // Get the sender details and send the object to the shortcodes class
@@ -459,6 +466,7 @@ class Newsletter_campaign_send_campaign {
                 // Just show one message as the preview
                 if ($i === 1) {
                     echo $converted_message;
+                    $mail_success[2]++;
                 }
             } else {
                 $mail_sent = wp_mail( $address['email'], $subject = $subject, $converted_message = $converted_message, $headers = $from . "\r\n" );
@@ -479,7 +487,6 @@ class Newsletter_campaign_send_campaign {
         // Save to archive for the view in browser functionality
         if ($mail_success[2] > 0) {
             // If any mail has been successfully sent, save the campaign
-            $message_hash = wp_hash($message);
 
             // Get the current view in browser options
             $html_archive = get_option('nc_html_archive');
@@ -496,6 +503,7 @@ class Newsletter_campaign_send_campaign {
                 $html_archive[] = array('hash' => $message_hash, 'content' => $message);
                 update_option('nc_html_archive', $html_archive);
             }
+
         }
 
         // Remove html email type
