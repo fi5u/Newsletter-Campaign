@@ -21,7 +21,6 @@ class Newsletter_campaign_browser_view {
      */
     private function get_subscriber_details($post_id) {
         $subscriber_post = get_post($post_id);
-
         $subscriber_details['email'] = $subscriber_post->post_title;
         $subscriber_details['name'] = get_post_meta( $post_id, '_subscriber_name', true );
         $subscriber_details['extra'] = get_post_meta( $post_id, '_subscriber_extra', true );
@@ -65,7 +64,6 @@ class Newsletter_campaign_browser_view {
         $html_archive = get_option('nc_html_archive');
 
         foreach ($html_archive as $html_template) {
-
             if ($html_template['hash'] === $browser_view_details['hash']) {
                 $this_template = $html_template['content'];
                 break;

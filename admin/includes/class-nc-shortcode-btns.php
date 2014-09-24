@@ -34,10 +34,12 @@ class Newsletter_campaign_shortcode_btns {
                 'instance_include'  => 'newsletter_campaign_template_base-html',
                 'children'          => array(
                     array(
-                        'title'     => __('View in browser', $this->plugin_slug),
-                        'id'        => 'nc-button-view-browser',
-                        'class'     => 'nc-button-bar__button',
-                        'shortcode' => 'nc_browser_link'
+                        'title'             => __('View in browser', $this->plugin_slug),
+                        'id'                => 'nc-button-view-browser',
+                        'class'             => 'nc-button-bar__button',
+                        'shortcode'         => 'nc_browser_link',
+                        'enclosing'         => true,
+                        'enclosing_text'    => __('View in browser', $this->plugin_slug),
                     ),
                     array(
                         'title'             => __('Unsubscribe link', $this->plugin_slug),
