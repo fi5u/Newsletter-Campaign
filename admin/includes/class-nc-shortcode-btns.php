@@ -9,6 +9,7 @@ class Newsletter_campaign_shortcode_btns {
         add_action( 'admin_enqueue_scripts', array( $this, 'define_shortcode_btns' ), 99 );
     }
 
+
     public function define_shortcode_btns() {
 
         // Ensure that we're on the template screen
@@ -41,7 +42,7 @@ class Newsletter_campaign_shortcode_btns {
                                 'title'     => 'Doctype',
                                 'id'        => 'nc-button-doctype',
                                 'class'     => 'nc-button-bar__button',
-                                'shortcode' => 'nc_html_doctype',
+                                'shortcode' => 'nc_doctype',
                                 'args'      => array(
                                     array(
                                         'name'  => 'nc-shortcode-arg-html-doctype',
@@ -67,7 +68,7 @@ class Newsletter_campaign_shortcode_btns {
                                 'title'             => 'HTML',
                                 'id'                => 'nc-button-html',
                                 'class'             => 'nc-button-bar__button',
-                                'shortcode'         => 'nc_html_html',
+                                'shortcode'         => 'nc_html',
                                 'enclosing'         => true,
                                 'enclosing_text'    => __('HTML content', $this->plugin_slug),
                                 'args'              => array(
@@ -76,7 +77,7 @@ class Newsletter_campaign_shortcode_btns {
                                         'arg'   => 'xmlns',
                                         'title' => 'XMLNS'
                                     )
-                                )
+                                ) + nc_general_html_attributes()
                             )
                         )
                     )

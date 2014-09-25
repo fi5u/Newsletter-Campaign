@@ -31,6 +31,7 @@ class Newsletter_campaign_shortcodes {
 
 
     public function add_shortcodes() {
+        add_shortcode( 'nc_html', array($this, 'set_html') );
         add_shortcode( 'nc_posts', array($this, 'set_posts') );
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
         add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
@@ -58,41 +59,55 @@ class Newsletter_campaign_shortcodes {
     }
 
 
+    /**
+     * HTML
+     */
+
+
+    /**
+     * Put the general HTML attributes into a format that shortcode attributes can use
+     * @param  arr $general_attrs The array of general attributes
+     * @return arr
+     */
+    private function prepare_general_attrs($general_attrs) {
+        $shortcode_general_attrs = [];
+
+        foreach ($general_attrs as $attr) {
+            $shortcode_general_attrs[$attr['arg']] = '';
+        }
+
+        return $shortcode_general_attrs;
+    }
+
+
+    public function set_html($atts, $content = null) {
+        // Prepare general html attributes
+        $general_attributes = $this->prepare_general_attrs(nc_general_html_attributes());
+
+        $a = shortcode_atts( array_merge($general_attributes, array(
+            'xmlns' => ''
+        )), $atts );
+
+        $tag = '<html';
+
+        foreach ($a as $key => $value) {
+             $tag .= $a[$key] !== '' ? ' ' . $key . '="' . $value . '"' : '';
+        }
+
+        $tag .= '>';
+
+        $output = $content = null ? $tag . '</html>' : $tag . $content . '</html>';
+        return $output;
+    }
+
+
+    /**
+     * EMAIL FUNCTIONALITY
+     */
+
     public function set_posts() {
         if (!empty($this->posts_content)) {
             return $this->posts_content;
-        }
-    }
-
-
-    public function set_post_title() {
-        return get_the_title($this->post_object->ID);
-    }
-
-
-    public function set_post_body() {
-        return $this->post_object->post_content;
-    }
-
-
-    public function set_feat_img($atts) {
-        if (has_post_thumbnail($this->post_object->ID)) {
-            // If width or height passed, takes priority over size
-            if (isset($atts['width']) || isset($atts['height'])) {
-                // If only a width or height given then set both to the same
-                $size_arr[] = isset($atts['width']) ? $atts['width'] : $atts['height'];
-                $size_arr[] = isset($atts['height']) ? $atts['height'] : $atts['width'];
-
-                return get_the_post_thumbnail($this->post_object->ID, $size_arr);
-            } else {
-                if (isset($atts['size'])) {
-                    // Use the thumbnail size by name
-                    return get_the_post_thumbnail($this->post_object->ID, $atts['size']);
-                } else {
-                    // Use the thumbnail size by default
-                    return get_the_post_thumbnail($this->post_object->ID, 'thumbnail');
-                }
-            }
         }
     }
 
@@ -122,6 +137,10 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
+
+    /**
+     * PERSONAL FIELDS
+     */
 
     public function set_name($atts) {
         $a = shortcode_atts( array(
@@ -168,6 +187,42 @@ class Newsletter_campaign_shortcodes {
         $output .= $a['after'] !== '' ? $a['after'] : '';
 
         return $output;
+    }
+
+
+    /**
+     * POST
+     */
+
+    public function set_post_title() {
+        return get_the_title($this->post_object->ID);
+    }
+
+
+    public function set_post_body() {
+        return $this->post_object->post_content;
+    }
+
+
+    public function set_feat_img($atts) {
+        if (has_post_thumbnail($this->post_object->ID)) {
+            // If width or height passed, takes priority over size
+            if (isset($atts['width']) || isset($atts['height'])) {
+                // If only a width or height given then set both to the same
+                $size_arr[] = isset($atts['width']) ? $atts['width'] : $atts['height'];
+                $size_arr[] = isset($atts['height']) ? $atts['height'] : $atts['width'];
+
+                return get_the_post_thumbnail($this->post_object->ID, $size_arr);
+            } else {
+                if (isset($atts['size'])) {
+                    // Use the thumbnail size by name
+                    return get_the_post_thumbnail($this->post_object->ID, $atts['size']);
+                } else {
+                    // Use the thumbnail size by default
+                    return get_the_post_thumbnail($this->post_object->ID, 'thumbnail');
+                }
+            }
+        }
     }
 }
 
