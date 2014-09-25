@@ -51,13 +51,25 @@ class Newsletter_campaign_shortcode_btns {
                                         'type'  => 'select',
                                         'values'=>  array(
                                             array(
+                                                'name' => 'HTML5',
+                                                'value'=> 'html5'
+                                            ),
+                                            array(
+                                                'name' => 'HTML 4.01 Strict',
+                                                'value'=> 'html-4-01-strict'
+                                            ),
+                                            array(
+                                                'name' => 'HTML 4.01 Transitional',
+                                                'value'=> 'html-4-01-transitional'
+                                            ),
+                                            array(
                                                 'name' => 'XHTML 1.0 Strict',
                                                 'value'=> 'xhtml-1-strict'
                                             ),
                                             array(
-                                                'name' => 'HTML5',
-                                                'value'=> 'html5'
-                                            )
+                                                'name' => 'XHTML 1.0 Transitional',
+                                                'value'=> 'xhtml-1-transitional'
+                                            ),
                                         ),
                                         'key'   => 'name',
                                         'value' => 'value'
@@ -78,6 +90,16 @@ class Newsletter_campaign_shortcode_btns {
                                         'title' => 'XMLNS'
                                     )
                                 ) + nc_general_html_attributes()
+                            ),
+                            array(
+                                'title'             => 'Head',
+                                'id'                => 'nc-button-head',
+                                'class'             => 'nc-button-bar__button',
+                                'shortcode'         => 'nc_head',
+                                'enclosing'         => true,
+                                /* translators: do not translate ´Head´ - is an HTML element name */
+                                'enclosing_text'    => __('Head content', $this->plugin_slug),
+                                'args'              => nc_general_html_attributes()
                             )
                         )
                     )

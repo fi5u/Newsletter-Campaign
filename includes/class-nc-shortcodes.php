@@ -31,6 +31,7 @@ class Newsletter_campaign_shortcodes {
 
 
     public function add_shortcodes() {
+        add_shortcode( 'nc_doctype', array($this, 'set_doctype') );
         add_shortcode( 'nc_html', array($this, 'set_html') );
         add_shortcode( 'nc_posts', array($this, 'set_posts') );
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
@@ -80,15 +81,20 @@ class Newsletter_campaign_shortcodes {
     }
 
 
-    public function set_html($atts, $content = null) {
+    /**
+     * Process attributes for html shortcodes
+     * @param arr $atts      Shortcode attributes
+     * @param str $content   Content between shortcodes
+     * @param str $tag_name  Name of the tag
+     * @param arr $tag_attrs Attributes to add to the HTML output
+     */
+    private function set_html_tag($atts, $content, $tag_name, $tag_attrs = array(), $enclosing = true) {
         // Prepare general html attributes
         $general_attributes = $this->prepare_general_attrs(nc_general_html_attributes());
 
-        $a = shortcode_atts( array_merge($general_attributes, array(
-            'xmlns' => ''
-        )), $atts );
+        $a = shortcode_atts( array_merge($general_attributes, $tag_attrs), $atts );
 
-        $tag = '<html';
+        $tag = '<' . $tag_name;
 
         foreach ($a as $key => $value) {
              $tag .= $a[$key] !== '' ? ' ' . $key . '="' . $value . '"' : '';
@@ -96,7 +102,44 @@ class Newsletter_campaign_shortcodes {
 
         $tag .= '>';
 
-        $output = $content = null ? $tag . '</html>' : $tag . $content . '</html>';
+        $output = $content === null ? $tag . '</' . $tag_name . '>' : $tag . $content . '</' . $tag_name . '>';
+        return $output;
+    }
+
+    public function set_doctype($atts) {
+        $a = shortcode_atts( array(
+            'doctype' => 'html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"'
+        ), $atts );
+
+        switch ($a['doctype']) {
+            case 'html5':
+                $doctype = 'html';
+                break;
+
+            case 'html-4-01-strict':
+                $doctype = 'HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"';
+                break;
+
+            case 'html-4-01-transitional':
+                $doctype = 'HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"';
+                break;
+
+            case 'xhtml-1-transitional':
+                $doctype = 'html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"';
+                break;
+
+            default:
+                // Defaults to xhtml-1-strict
+                $doctype = 'html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"';
+                break;
+        }
+
+        $output = '<!DOCTYPE ' . $doctype . '>';
+        return $output;
+    }
+
+    public function set_html($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'html', array('xmlns' => ''));
         return $output;
     }
 
