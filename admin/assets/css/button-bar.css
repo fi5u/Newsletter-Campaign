@@ -10,6 +10,12 @@
     .nc-button-bar__parent {
         display: inline-block;
         position: relative;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+
+    .nc-button-bar__parent + .nc-button-bar__parent {
+        margin-top: -10px;
     }
 
         .nc-button-bar__parent ul {

@@ -43,9 +43,7 @@
                     continue;
                 }
                 buttonBar += '<li class="' + buttons[button].class + '"><a href="#"';
-
-                buttonBar += buttons[button].id ? '" id="' + buttons[button].id + '"' : '';
-
+                buttonBar += buttons[button].id ? ' id="' + buttons[button].id + '"' : '';
                 buttonBar += '>' + buttons[button].title + '</a>';
 
                 if (buttons[button].children) {
@@ -61,7 +59,11 @@
                                 continue;
                             }
 
-                            buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#" id="' + selfButtonChild.id + '" title="' + selfButtonChild.title + '" data-shortcode="' + selfButtonChild.shortcode + '">' + selfButtonChild.title + '</a>';
+                            buttonBar += '<li class="' + selfButtonChild.class + '"><a href="#"';
+                            buttonBar += selfButtonChild.id ? ' id="' + selfButtonChild.id + '"' : '';
+                            buttonBar += ' title="' + selfButtonChild.title + '"';
+                            buttonBar += selfButtonChild.shortcode ? ' data-shortcode="' + selfButtonChild.shortcode + '"' : '';
+                            buttonBar += '>' + selfButtonChild.title + '</a>';
                             if (selfButtonChild.children) {
                                 buttonBar += '<ul>';
                                 for (var buttonGrandchild in selfButtonChild.children) {
@@ -73,7 +75,29 @@
                                             (selfButtonGrandchild.instance_exclude && selfButtonGrandchild.instance_exclude === textareaId)) {
                                             continue;
                                         }
-                                        buttonBar += '<li class="' + selfButtonGrandchild.class + '"><a href="#" id="' + selfButtonGrandchild.id + '" title="' + selfButtonGrandchild.title + '" data-shortcode="' + selfButtonGrandchild.shortcode + '">' + selfButtonGrandchild.title + '</a></li>';
+                                        buttonBar += '<li class="' + selfButtonGrandchild.class + '"><a href="#"';
+                                        buttonBar += selfButtonGrandchild.id ? ' id="' + selfButtonGrandchild.id + '"' : '';
+                                        buttonBar += ' title="' + selfButtonGrandchild.title + '"';
+                                        buttonBar += selfButtonGrandchild.shortcode ? ' data-shortcode="' + selfButtonGrandchild.shortcode + '"' : '';
+                                        buttonBar += '>' + selfButtonGrandchild.title + '</a>';
+                                        if (selfButtonGrandchild.children) {
+                                            buttonBar += '<ul>';
+                                            for (var buttonGreatgrandchild in selfButtonGrandchild.children) {
+                                                if (selfButtonGrandchild.children.hasOwnProperty(buttonGreatgrandchild)) {
+                                                    var selfButtonGreatgrandchild = selfButtonGrandchild.children[buttonGreatgrandchild];
+
+                                                    // If this button should not be in this button bar, skip this iteration
+                                                    if ((selfButtonGreatgrandchild.instance_include && selfButtonGreatgrandchild.instance_include !== textareaId) ||
+                                                        (selfButtonGreatgrandchild.instance_exclude && selfButtonGreatgrandchild.instance_exclude === textareaId)) {
+                                                        continue;
+                                                    }
+
+                                                    buttonBar += '<li class="' + selfButtonGreatgrandchild.class + '"><a href="#" id="' + selfButtonGreatgrandchild.id + '" title="' + selfButtonGreatgrandchild.title + '" data-shortcode="' + selfButtonGreatgrandchild.shortcode + '">' + selfButtonGreatgrandchild.title + '</a>';
+                                                }
+                                            }
+                                            buttonBar += '</ul>';
+                                        }
+                                        buttonBar += '</li>';
                                     }
                                 }
                                 buttonBar += '</ul>';
@@ -121,6 +145,9 @@
         argsBar += '<h5 class="nc-button-bar__title">' + shortcodeTitle + '</h5>';
 
         for (var arg = 0; arg < args.length; arg++) {
+            if (typeof args[arg].title === 'undefined') {
+                continue;
+            }
             argsBar += '<div class="nc-button-bar__arg">';
             argsBar += '<label class="nc-button-bar__arg-label" for="' + args[arg].name + '">' + args[arg].title + '</label>';
 
@@ -186,12 +213,14 @@
                             if (buttons[button].children[child].children[grandchild].shortcode === shortcode) {
                                 // This is the correct object
                                 insertEnclosingText(shortcode, iteration, button, child, grandchild);
+                                break;
                             }
                         }
                     } else {
                         if (buttons[button].children[child].shortcode === shortcode) {
                             // This is the correct object
                             insertEnclosingText(shortcode, iteration, button, child);
+                            break;
                         }
                     }
                 }
@@ -200,9 +229,12 @@
     }
 
 
-    function insertEnclosingText(shortcode, iteration, button, child, grandchild) {
+    function insertEnclosingText(shortcode, iteration, button, child, grandchild, greatgrandchild) {
         if (grandchild) {
             buttons[button].children[child] = buttons[button].children[child].children[grandchild];
+        }
+        if (greatgrandchild) {
+            buttons[button].children[child] = buttons[button].children[child].children[grandchild].children[greatgrandchild];
         }
         if (buttons[button].children[child].enclosing) {
             ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
@@ -247,13 +279,34 @@
                                     // Add the args bar
                                     addArgsBar(buttons[button].children[child].children[grandchild].args, shortcode, iteration, buttons[button].children[child].children[grandchild].title);
                                 } else {
-                                    // Insert the shortcode without args
-                                    ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
-                                    // Insert the encolsing shortcode
-                                    insertEnclosingText(shortcode, iteration, button, child);
+
+                                    if (buttons[button].children[child].children[grandchild].children) {
+                                        for (var greatgrandchild = 0; greatgrandchild < buttons[button].children[child].children[grandchild].length; greatgrandchild++) {
+                                            if (buttons[button].children[child].children[grandchild].children[greatgrandchild].shortcode === shortcode) {
+                                                // This is the correct object
+                                                // Check if it contains args
+                                                if (buttons[button].children[child].children[grandchild].children[greatgrandchild].args) {
+                                                    // Add the args bar
+                                                    addArgsBar(buttons[button].children[child].children[grandchild].children[greatgrandchild].args, shortcode, iteration, buttons[button].children[child].children[grandchild].children[greatgrandchild].title);
+                                                } else {
+                                                    // Insert the shortcode without args
+                                                    ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                                    // Insert the encolsing shortcode
+                                                    insertEnclosingText(shortcode, iteration, button, child, grandchild, greatgrandchild);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        // Insert the shortcode without args
+                                        ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                        // Insert the encolsing shortcode
+                                        insertEnclosingText(shortcode, iteration, button, child, grandchild);
+                                    }
                                 }
+                                break;
                             }
                         }
+
                     } else {
                         if (buttons[button].children[child].shortcode === shortcode) {
                             // This is the correct object
@@ -267,6 +320,7 @@
                                 // Insert the encolsing shortcode
                                 insertEnclosingText(shortcode, iteration, button, child);
                             }
+                            break;
                         }
                     }
                 };
@@ -280,7 +334,11 @@
      * @param  {obj} $self The pressed cancel button
      */
     function cancelArgInput($self) {
-        $self.closest('.nc-button-bar--args').remove();
+        if ($self.closest('.nc-button-bar').next('.nc-button-bar--args').length) {
+            $self.closest('.nc-button-bar').next('.nc-button-bar--args').remove();
+        } else {
+            $self.closest('.nc-button-bar--args').remove();
+        }
     }
 
 
@@ -296,6 +354,8 @@
 
     // Click a shortcode button
     $('body').on('click', '.nc-button-bar__button a', function(e) {
+        // Remove any current args bar
+        cancelArgInput($(this));
         // Get the instance iteration
         var iteration = $(this).closest('.nc-button-bar').nextAll('.CodeMirror').index('.CodeMirror');
         populateWithShortcode($(this).data('shortcode'), iteration);

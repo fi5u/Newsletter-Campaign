@@ -33,6 +33,42 @@ class Newsletter_campaign_shortcodes {
     public function add_shortcodes() {
         add_shortcode( 'nc_doctype', array($this, 'set_doctype') );
         add_shortcode( 'nc_html', array($this, 'set_html') );
+        add_shortcode( 'nc_head', array($this, 'set_head') );
+        add_shortcode( 'nc_body', array($this, 'set_body') );
+        add_shortcode( 'nc_base', array($this, 'set_base') );
+        add_shortcode( 'nc_link', array($this, 'set_link') );
+        add_shortcode( 'nc_meta', array($this, 'set_meta') );
+        add_shortcode( 'nc_style', array($this, 'set_style') );
+        add_shortcode( 'nc_title', array($this, 'set_title') );
+        add_shortcode( 'nc_p', array($this, 'set_p') );
+        add_shortcode( 'nc_h1', array($this, 'set_h1') );
+        add_shortcode( 'nc_h2', array($this, 'set_h2') );
+        add_shortcode( 'nc_h3', array($this, 'set_h3') );
+        add_shortcode( 'nc_h4', array($this, 'set_h4') );
+        add_shortcode( 'nc_h5', array($this, 'set_h5') );
+        add_shortcode( 'nc_h6', array($this, 'set_h6') );
+        add_shortcode( 'nc_dl', array($this, 'set_dl') );
+        add_shortcode( 'nc_dt', array($this, 'set_dt') );
+        add_shortcode( 'nc_dd', array($this, 'set_dd') );
+        add_shortcode( 'nc_ol', array($this, 'set_ol') );
+        add_shortcode( 'nc_ul', array($this, 'set_ul') );
+        add_shortcode( 'nc_li', array($this, 'set_li') );
+        add_shortcode( 'nc_address', array($this, 'set_address') );
+        add_shortcode( 'nc_blockquote', array($this, 'set_blockquote') );
+        add_shortcode( 'nc_del', array($this, 'set_del') );
+        add_shortcode( 'nc_div', array($this, 'set_div') );
+        add_shortcode( 'nc_hr', array($this, 'set_hr') );
+        add_shortcode( 'nc_ins', array($this, 'set_ins') );
+        add_shortcode( 'nc_pre', array($this, 'set_pre') );
+        add_shortcode( 'nc_a', array($this, 'set_a') );
+        add_shortcode( 'nc_abbr', array($this, 'set_abbr') );
+        add_shortcode( 'nc_dfn', array($this, 'set_dfn') );
+        add_shortcode( 'nc_em', array($this, 'set_em') );
+        add_shortcode( 'nc_strong', array($this, 'set_strong') );
+        add_shortcode( 'nc_code', array($this, 'set_code') );
+        add_shortcode( 'nc_samp', array($this, 'set_samp') );
+
+
         add_shortcode( 'nc_posts', array($this, 'set_posts') );
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
         add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
@@ -67,17 +103,17 @@ class Newsletter_campaign_shortcodes {
 
     /**
      * Put the general HTML attributes into a format that shortcode attributes can use
-     * @param  arr $general_attrs The array of general attributes
+     * @param  arr $attrs The array of general attributes
      * @return arr
      */
-    private function prepare_general_attrs($general_attrs) {
-        $shortcode_general_attrs = [];
+    private function prepare_attrs($attrs) {
+        $shortcode_attrs = [];
 
-        foreach ($general_attrs as $attr) {
-            $shortcode_general_attrs[$attr['arg']] = '';
+        foreach ($attrs as $attr) {
+            $shortcode_attrs[$attr['arg']] = '';
         }
 
-        return $shortcode_general_attrs;
+        return $shortcode_attrs;
     }
 
 
@@ -90,21 +126,29 @@ class Newsletter_campaign_shortcodes {
      */
     private function set_html_tag($atts, $content, $tag_name, $tag_attrs = array(), $enclosing = true) {
         // Prepare general html attributes
-        $general_attributes = $this->prepare_general_attrs(nc_general_html_attributes());
+        $general_attributes = $this->prepare_attrs(nc_html_attributes());
 
         $a = shortcode_atts( array_merge($general_attributes, $tag_attrs), $atts );
 
         $tag = '<' . $tag_name;
 
         foreach ($a as $key => $value) {
-             $tag .= $a[$key] !== '' ? ' ' . $key . '="' . $value . '"' : '';
+            // Swap out any underscores for hyphens in the key
+            $key = str_replace('_', '-', $key);
+            $tag .= $a[$key] !== '' ? ' ' . $key . '="' . $value . '"' : '';
         }
 
-        $tag .= '>';
+        if ($enclsing === false) {
+            $tag .= '/>';
+            $output = $tag;
+        } else {
+            $tag .= '>';
+            $output = is_null($content) ? $tag . '</' . $tag_name . '>' : $tag . do_shortcode($content) . '</' . $tag_name . '>';
+        }
 
-        $output = $content === null ? $tag . '</' . $tag_name . '>' : $tag . $content . '</' . $tag_name . '>';
         return $output;
     }
+
 
     public function set_doctype($atts) {
         $a = shortcode_atts( array(
@@ -138,8 +182,175 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
+
     public function set_html($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'html', array('xmlns' => ''));
+        $output = $this->set_html_tag($atts, $content, 'html', $this->prepare_attrs(nc_html_attributes('html')));
+        return $output;
+    }
+
+
+    public function set_head($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'head', $this->prepare_attrs(nc_html_attributes('head')));
+        return $output;
+    }
+
+    public function set_body($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'body', $this->prepare_attrs(nc_html_attributes('body')));
+        return $output;
+    }
+
+    public function set_base($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'base', $this->prepare_attrs(nc_html_attributes('base')), false);
+        return $output;
+    }
+
+    public function set_link($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'link', $this->prepare_attrs(nc_html_attributes('link')), false);
+        return $output;
+    }
+
+    public function set_meta($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'meta', $this->prepare_attrs(nc_html_attributes('meta')), false);
+        return $output;
+    }
+
+    public function set_style($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'style', $this->prepare_attrs(nc_html_attributes('style')));
+        return $output;
+    }
+
+    public function set_title($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'title');
+        return $output;
+    }
+
+    public function set_p($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'p', $this->prepare_attrs(nc_html_attributes('p')));
+        return $output;
+    }
+
+    public function set_h1($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h1', $this->prepare_attrs(nc_html_attributes('h1')));
+        return $output;
+    }
+
+    public function set_h2($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h2', $this->prepare_attrs(nc_html_attributes('h2')));
+        return $output;
+    }
+
+    public function set_h3($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h3', $this->prepare_attrs(nc_html_attributes('h3')));
+        return $output;
+    }
+
+    public function set_h4($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h4', $this->prepare_attrs(nc_html_attributes('h4')));
+        return $output;
+    }
+
+    public function set_h5($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h5', $this->prepare_attrs(nc_html_attributes('h5')));
+        return $output;
+    }
+
+    public function set_h6($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'h6', $this->prepare_attrs(nc_html_attributes('h6')));
+        return $output;
+    }
+
+    public function set_dl($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'dl', $this->prepare_attrs(nc_html_attributes('dl')));
+        return $output;
+    }
+
+    public function set_dt($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'dt', $this->prepare_attrs(nc_html_attributes('dt')));
+        return $output;
+    }
+
+    public function set_dd($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'dd', $this->prepare_attrs(nc_html_attributes('dd')));
+        return $output;
+    }
+
+    public function set_ol($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'ol', $this->prepare_attrs(nc_html_attributes('ol')));
+        return $output;
+    }
+
+    public function set_ul($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'ul', $this->prepare_attrs(nc_html_attributes('ul')));
+        return $output;
+    }
+
+    public function set_li($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'li', $this->prepare_attrs(nc_html_attributes('li')));
+        return $output;
+    }
+
+    public function set_address($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'address', $this->prepare_attrs(nc_html_attributes('address')));
+        return $output;
+    }
+
+    public function set_blockquote($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'blockquote', $this->prepare_attrs(nc_html_attributes('blockquote')));
+        return $output;
+    }
+
+    public function set_del($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'del', $this->prepare_attrs(nc_html_attributes('del')));
+        return $output;
+    }
+
+    public function set_div($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'div', $this->prepare_attrs(nc_html_attributes('div')));
+        return $output;
+    }
+
+    public function set_hr($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'hr', $this->prepare_attrs(nc_html_attributes('hr')));
+        return $output;
+    }
+
+    public function set_ins($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'ins', $this->prepare_attrs(nc_html_attributes('ins')));
+        return $output;
+    }
+
+    public function set_pre($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'pre', $this->prepare_attrs(nc_html_attributes('pre')));
+        return $output;
+    }
+
+    public function set_a($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'a', $this->prepare_attrs(nc_html_attributes('a')));
+        return $output;
+    }
+
+    public function set_abbr($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'abbr', $this->prepare_attrs(nc_html_attributes('abbr')));
+        return $output;
+    }
+
+    public function set_dfn($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'dfn', $this->prepare_attrs(nc_html_attributes('dfn')));
+        return $output;
+    }
+
+    public function set_em($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'em', $this->prepare_attrs(nc_html_attributes('em')));
+        return $output;
+    }
+
+    public function set_code($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'code', $this->prepare_attrs(nc_html_attributes('code')));
+        return $output;
+    }
+
+    public function set_samp($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'samp', $this->prepare_attrs(nc_html_attributes('samp')));
         return $output;
     }
 
@@ -164,7 +375,7 @@ class Newsletter_campaign_shortcodes {
         $unsubscribe_url = get_home_url() . '/?unsubscribe=' . $recipient['email'];
         $unsubscribe_url .= $a['list'] !== '' ? '&list=' . $a['list'] : '';
         $unsubscribe_url .= '&hash=' . $recipient['hash'];
-        $output =   $content = null ? '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign') . '</a>' :
+        $output =   is_null($content) ? '<a href="' . $unsubscribe_url . '">' . __('Unsubscribe', 'newsletter-campaign') . '</a>' :
                     '<a href="' . $unsubscribe_url . '">' . $content . '</a>';
         return $output;
     }
@@ -175,7 +386,7 @@ class Newsletter_campaign_shortcodes {
         $recipient = $this->recipient;
         $browser_view_url = get_home_url() . '/?viewinbrowser=' . $recipient['id'];
         $browser_view_url .= '&hash=' . $recipient['message_hash'];
-        $output =   $content = null ? '<a href="' . $browser_view_url . '">' . __('View in browser', 'newsletter-campaign') . '</a>' :
+        $output =   is_null($content) ? '<a href="' . $browser_view_url . '">' . __('View in browser', 'newsletter-campaign') . '</a>' :
                     '<a href="' . $browser_view_url . '">' . $content . '</a>';
         return $output;
     }
