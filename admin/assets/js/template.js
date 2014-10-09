@@ -264,9 +264,9 @@
     function insertEnclosingText(shortcode, iteration, button, child, grandchild, greatgrandchild) {
         var targetChild;
 
-        if (greatgrandchild) {
+        if (greatgrandchild || greatgrandchild === 0) {
             targetChild = buttons[button].children[child].children[grandchild].children[greatgrandchild];
-        } else if (grandchild) {
+        } else if (grandchild || grandchild === 0) {
             targetChild = buttons[button].children[child].children[grandchild];
         }
 
