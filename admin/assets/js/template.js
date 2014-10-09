@@ -264,30 +264,125 @@
      * @param  {int} iteration The nth instance
      */
     function populateWithShortcode(shortcode, iteration) {
-        // Find out if this shortcode takes args
+        // Find out if this shortcode takes args and/or enclosing text
+        for (var buttonCount = 0; buttonCount < buttons.length; buttonCount++) {
+            var button = buttons[buttonCount];
+            if (button.shortcode && button.shortcode === shortcode) { // Do we need the double check?
 
-        for (var button = 0; button < buttons.length; button++) {
+                // Found the shortcode
+                if (button.args) {
+                    // Add the args bar
+                    addArgsBar(button.args, shortcode, iteration, button.title);
+                } else {
+                    // Insert the shortcode without args
+                    ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                    // Insert the encolsing shortcode
+                    insertEnclosingText(shortcode, iteration, buttonCount);
+                }
+                break;
+            } else {
+
+                // Keep lookin
+                if (button.children) {
+
+                    for (var buttonChildCount = 0; buttonChildCount < button.children.length; buttonChildCount++) {
+                        var buttonChild = button.children[buttonChildCount];
+                        if (buttonChild.shortcode && buttonChild.shortcode === shortcode) {
+
+                            // Found the shortcode
+                            if (buttonChild.args) {
+                                // Add the args bar
+                                addArgsBar(buttonChild.args, shortcode, iteration, buttonChild.title);
+                            } else {
+                                // Insert the shortcode without args
+                                ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                // Insert the encolsing shortcode
+                                insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount);
+                            }
+                            break;
+                        } else {
+
+                            // Keep lookin
+                            if (buttonChild.children) {
+                                for (var buttonGrandchildCount = 0; buttonGrandchildCount < buttonChild.children.length; buttonGrandchildCount++) {
+                                    var buttonGrandchild = buttonChild.children[buttonGrandchildCount];
+                                    if (buttonGrandchild.shortcode && buttonGrandchild.shortcode === shortcode) {
+
+                                        // Found the shortcode
+                                        if (buttonGrandchild.args) {
+                                            // Add the args bar
+                                            addArgsBar(buttonGrandchild.args, shortcode, iteration, buttonGrandchild.title);
+                                        } else {
+                                            // Insert the shortcode without args
+                                            ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                            // Insert the encolsing shortcode
+                                            insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount);
+                                        }
+                                        break;
+                                    } else {
+
+                                        // Keep lookin
+                                        if (buttonGrandchild.children) {
+                                            for (var buttonGreatgrandchildCount = 0; buttonGreatgrandchildCount < buttonGrandchild.children.length; buttonGreatgrandchildCount++) {
+                                                var buttonGreatgrandchild = buttonGrandchild.children[buttonGreatgrandchildCount];
+                                                if (buttonGreatgrandchild.shortcode && buttonGreatgrandchild.shortcode === shortcode) {
+
+                                                    // Found the shortcode
+                                                    if (buttonGreatgrandchild.args) {
+                                                        // Add the args bar
+                                                        addArgsBar(buttonGreatgrandchild.args, shortcode, iteration, buttonGreatgrandchild.title);
+                                                    } else {
+                                                        // Insert the shortcode without args
+                                                        ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
+                                                        // Insert the encolsing shortcode
+                                                        insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount, buttonGreatgrandchildCount);
+                                                    }
+                                                    break;
+                                                }
+
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+
+
+        /*for (var button = 0; button < buttons.length; button++) {
             if (buttons[button].children) {
                 for (var child = 0; child < buttons[button].children.length; child++) {
                     // If contains grandchildren
-                    if (buttons[button].children[child].children) {
-                        for (var grandchild = 0; grandchild < buttons[button].children[child].children.length; grandchild++) {
-                            if (buttons[button].children[child].children[grandchild].shortcode === shortcode) {
+                    var buttonChild = buttons[button].children[child];
+                    if (buttonChild.children) {
+                        for (var grandchild = 0; grandchild < buttonChild.children.length; grandchild++) {
+                            var buttonGrandchild = buttonChild.children[grandchild];
+                            if (buttonGrandchild.shortcode === shortcode) {
                                 // This is the correct object
                                 // Check if it contains args
-                                if (buttons[button].children[child].children[grandchild].args) {
+                                if (buttonGrandchild.args) {
                                     // Add the args bar
-                                    addArgsBar(buttons[button].children[child].children[grandchild].args, shortcode, iteration, buttons[button].children[child].children[grandchild].title);
+                                    addArgsBar(buttonGrandchild.args, shortcode, iteration, buttonGrandchild.title);
                                 } else {
 
-                                    if (buttons[button].children[child].children[grandchild].children) {
-                                        for (var greatgrandchild = 0; greatgrandchild < buttons[button].children[child].children[grandchild].length; greatgrandchild++) {
-                                            if (buttons[button].children[child].children[grandchild].children[greatgrandchild].shortcode === shortcode) {
+                                    if (buttonGrandchild.children) {
+                                        for (var greatgrandchild = 0; greatgrandchild < buttonGrandchild.length; greatgrandchild++) {
+                                            var buttonGreatgrandchild = buttonGrandchild.children[greatgrandchild];
+                                            if (buttonGreatgrandchild.shortcode === shortcode) {
                                                 // This is the correct object
                                                 // Check if it contains args
-                                                if (buttons[button].children[child].children[grandchild].children[greatgrandchild].args) {
+                                                if (buttonGreatgrandchild.args) {
                                                     // Add the args bar
-                                                    addArgsBar(buttons[button].children[child].children[grandchild].children[greatgrandchild].args, shortcode, iteration, buttons[button].children[child].children[grandchild].children[greatgrandchild].title);
+                                                    addArgsBar(buttonGreatgrandchild.args, shortcode, iteration, buttonGreatgrandchild.title);
                                                 } else {
                                                     // Insert the shortcode without args
                                                     ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
@@ -308,12 +403,12 @@
                         }
 
                     } else {
-                        if (buttons[button].children[child].shortcode === shortcode) {
+                        if (buttonChild.shortcode === shortcode) {
                             // This is the correct object
                             // Check if it contains args
-                            if (buttons[button].children[child].args) {
+                            if (buttonChild.args) {
                                 // Add the args bar
-                                addArgsBar(buttons[button].children[child].args, shortcode, iteration, buttons[button].children[child].title);
+                                addArgsBar(buttonChild.args, shortcode, iteration, buttonChild.title);
                             } else {
                                 // Insert the shortcode without args
                                 ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
@@ -325,7 +420,7 @@
                     }
                 };
             }
-        };
+        };*/
     }
 
 
