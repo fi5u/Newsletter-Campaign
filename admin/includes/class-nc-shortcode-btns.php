@@ -428,36 +428,232 @@ class Newsletter_campaign_shortcode_btns {
                                         'args'              => array_merge(nc_html_attributes('code'), nc_html_attributes())
                                     ),
                                     array(
-                                        'title'             => 'samp',
-                                        'id'                => 'nc-button-samp',
+                                        'title'             => 'b',
+                                        'id'                => 'nc-button-b',
                                         'class'             => 'nc-button-bar__button',
-                                        'shortcode'         => 'nc_samp',
+                                        'shortcode'         => 'nc_b',
                                         'enclosing'         => true,
-                                        /* translators: do not translate ´samp´ - is an HTML element name */
-                                        'enclosing_text'    => __('samp content', $this->plugin_slug),
-                                        'args'              => array_merge(nc_html_attributes('samp'), nc_html_attributes())
+                                        /* translators: do not translate ´b´ - is an HTML element name */
+                                        'enclosing_text'    => __('b content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('b'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'i',
+                                        'id'                => 'nc-button-i',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_i',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´i´ - is an HTML element name */
+                                        'enclosing_text'    => __('i content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('i'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'u',
+                                        'id'                => 'nc-button-u',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_u',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´u´ - is an HTML element name */
+                                        'enclosing_text'    => __('u content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('u'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'small',
+                                        'id'                => 'nc-button-small',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_small',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´small´ - is an HTML element name */
+                                        'enclosing_text'    => __('small content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('small'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'big',
+                                        'id'                => 'nc-button-big',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_big',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´big´ - is an HTML element name */
+                                        'enclosing_text'    => __('big content', $this->plugin_slug),
+                                        'args'              => nc_html_attributes('big')
+                                    ),
+                                    array(
+                                        'title'             => 'font',
+                                        'id'                => 'nc-button-font',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_font',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´font´ - is an HTML element name */
+                                        'enclosing_text'    => __('font content', $this->plugin_slug),
+                                        'args'              => nc_html_attributes('font')
+                                    ),
+                                    array(
+                                        'title'             => 'span',
+                                        'id'                => 'nc-button-span',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_span',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´span´ - is an HTML element name */
+                                        'enclosing_text'    => __('span content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('span'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'br',
+                                        'id'                => 'nc-button-br',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_br',
+                                        'args'              => array_merge(nc_html_attributes('br'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'sub',
+                                        'id'                => 'nc-button-sub',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_sub',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´sub´ - is an HTML element name */
+                                        'enclosing_text'    => __('sub content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('sub'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'sup',
+                                        'id'                => 'nc-button-sup',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_sup',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´sup´ - is an HTML element name */
+                                        'enclosing_text'    => __('sup content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('sup'), nc_html_attributes())
                                     )
                                 )
                             ),
                             array(
-                                'title'     => __('Images and objects', $this->plugin_slug),
+                                'title'     => __('Images', $this->plugin_slug),
                                 'class'     => 'nc-button-bar__parent',
                                 'children'  => array(
-
-                                )
-                            ),
-                            array(
-                                'title'     => __('Forms', $this->plugin_slug),
-                                'class'     => 'nc-button-bar__parent',
-                                'children'  => array(
-
+                                    array(
+                                        'title'             => 'img',
+                                        'id'                => 'nc-button-img',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_img',
+                                        'args'              => array_merge(nc_html_attributes('img'), nc_html_attributes())
+                                    )
                                 )
                             ),
                             array(
                                 'title'     => __('Tables', $this->plugin_slug),
                                 'class'     => 'nc-button-bar__parent',
                                 'children'  => array(
-
+                                    array(
+                                        'title'             => 'table',
+                                        'id'                => 'nc-button-table',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_table',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´table´ - is an HTML element name */
+                                        'enclosing_text'    => __('table content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('table'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'tr',
+                                        'id'                => 'nc-button-tr',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_tr',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´tr´ - is an HTML element name */
+                                        'enclosing_text'    => __('tr content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('tr'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'th',
+                                        'id'                => 'nc-button-th',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_th',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´th´ - is an HTML element name */
+                                        'enclosing_text'    => __('th content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('th'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'td',
+                                        'id'                => 'nc-button-td',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_td',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´td´ - is an HTML element name */
+                                        'enclosing_text'    => __('td content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('td'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'colgroup',
+                                        'id'                => 'nc-button-colgroup',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_colgroup',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´colgroup´ - is an HTML element name */
+                                        'enclosing_text'    => __('colgroup content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('colgroup'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'col',
+                                        'id'                => 'nc-button-col',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_col',
+                                        'args'              => array_merge(nc_html_attributes('col'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'caption',
+                                        'id'                => 'nc-button-caption',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_caption',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´caption´ - is an HTML element name */
+                                        'enclosing_text'    => __('caption content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('caption'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'thead',
+                                        'id'                => 'nc-button-thead',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_thead',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´thead´ - is an HTML element name */
+                                        'enclosing_text'    => __('thead content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('thead'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'tbody',
+                                        'id'                => 'nc-button-tbody',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_tbody',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´tbody´ - is an HTML element name */
+                                        'enclosing_text'    => __('tbody content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('tbody'), nc_html_attributes())
+                                    ),
+                                    array(
+                                        'title'             => 'tfoot',
+                                        'id'                => 'nc-button-tfoot',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_tfoot',
+                                        'enclosing'         => true,
+                                        /* translators: do not translate ´tfoot´ - is an HTML element name */
+                                        'enclosing_text'    => __('tfoot content', $this->plugin_slug),
+                                        'args'              => array_merge(nc_html_attributes('tfoot'), nc_html_attributes())
+                                    )
+                                )
+                            ),
+                            array(
+                                'title'     => __('Comments', $this->plugin_slug),
+                                'class'     => 'nc-button-bar__parent',
+                                'children'  => array(
+                                    array(
+                                        'title'             => 'comment',
+                                        'id'                => 'nc-button-comment',
+                                        'class'             => 'nc-button-bar__button',
+                                        'shortcode'         => 'nc_comment',
+                                        'enclosing'         => true,
+                                        'enclosing_text'    => __('comment content', $this->plugin_slug)
+                                    )
                                 )
                             )
                         )
@@ -469,6 +665,12 @@ class Newsletter_campaign_shortcode_btns {
                 'class'             => 'nc-button-bar__parent',
                 'instance_include'  => 'newsletter_campaign_template_base-html',
                 'children'          => array(
+                    array(
+                        'title'             => __('Output posts', $this->plugin_slug),
+                        'id'                => 'nc-button-posts',
+                        'class'             => 'nc-button-bar__button',
+                        'shortcode'         => 'nc_posts'
+                    ),
                     array(
                         'title'             => __('View in browser', $this->plugin_slug),
                         'id'                => 'nc-button-view-browser',

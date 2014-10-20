@@ -268,6 +268,8 @@
             targetChild = buttons[button].children[child].children[grandchild].children[greatgrandchild];
         } else if (grandchild || grandchild === 0) {
             targetChild = buttons[button].children[child].children[grandchild];
+        } else {
+            targetChild = buttons[button].children[child];
         }
 
         if (targetChild.enclosing) {

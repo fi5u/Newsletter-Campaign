@@ -66,8 +66,27 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_em', array($this, 'set_em') );
         add_shortcode( 'nc_strong', array($this, 'set_strong') );
         add_shortcode( 'nc_code', array($this, 'set_code') );
-        add_shortcode( 'nc_samp', array($this, 'set_samp') );
-
+        add_shortcode( 'nc_b', array($this, 'set_b') );
+        add_shortcode( 'nc_i', array($this, 'set_i') );
+        add_shortcode( 'nc_u', array($this, 'set_u') );
+        add_shortcode( 'nc_small', array($this, 'set_small') );
+        add_shortcode( 'nc_big', array($this, 'set_big') );
+        add_shortcode( 'nc_font', array($this, 'set_font') );
+        add_shortcode( 'nc_span', array($this, 'set_span') );
+        add_shortcode( 'nc_br', array($this, 'set_br') );
+        add_shortcode( 'nc_sub', array($this, 'set_sub') );
+        add_shortcode( 'nc_sup', array($this, 'set_sup') );
+        add_shortcode( 'nc_img', array($this, 'set_img') );
+        add_shortcode( 'nc_tr', array($this, 'set_tr') );
+        add_shortcode( 'nc_th', array($this, 'set_th') );
+        add_shortcode( 'nc_td', array($this, 'set_td') );
+        add_shortcode( 'nc_colgroup', array($this, 'set_colgroup') );
+        add_shortcode( 'nc_col', array($this, 'set_col') );
+        add_shortcode( 'nc_caption', array($this, 'set_caption') );
+        add_shortcode( 'nc_thead', array($this, 'set_thead') );
+        add_shortcode( 'nc_tbody', array($this, 'set_tbody') );
+        add_shortcode( 'nc_tfoot', array($this, 'set_tfoot') );
+        add_shortcode( 'nc_comment', array($this, 'set_comment') );
 
         add_shortcode( 'nc_posts', array($this, 'set_posts') );
         add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
@@ -349,9 +368,108 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
-    public function set_samp($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'samp', $this->prepare_attrs(nc_html_attributes('samp')));
+    public function set_b($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'b', $this->prepare_attrs(nc_html_attributes('b')));
         return $output;
+    }
+
+    public function set_i($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'i', $this->prepare_attrs(nc_html_attributes('i')));
+        return $output;
+    }
+
+    public function set_u($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'u', $this->prepare_attrs(nc_html_attributes('u')));
+        return $output;
+    }
+
+    public function set_small($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'small', $this->prepare_attrs(nc_html_attributes('small')));
+        return $output;
+    }
+
+    public function set_big($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'big', $this->prepare_attrs(nc_html_attributes('big')));
+        return $output;
+    }
+
+    public function set_font($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'font', $this->prepare_attrs(nc_html_attributes('font')));
+        return $output;
+    }
+
+    public function set_span($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'span', $this->prepare_attrs(nc_html_attributes('span')));
+        return $output;
+    }
+
+    public function set_br($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'br', $this->prepare_attrs(nc_html_attributes('br')));
+        return $output;
+    }
+
+    public function set_sub($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'sub', $this->prepare_attrs(nc_html_attributes('sub')));
+        return $output;
+    }
+
+    public function set_sup($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'sup', $this->prepare_attrs(nc_html_attributes('sup')));
+        return $output;
+    }
+
+    public function set_img($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'img', $this->prepare_attrs(nc_html_attributes('img')));
+        return $output;
+    }
+
+    public function set_table($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'table', $this->prepare_attrs(nc_html_attributes('table')));
+        return $output;
+    }
+
+    public function set_tr($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'tr', $this->prepare_attrs(nc_html_attributes('tr')));
+        return $output;
+    }
+
+    public function set_th($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'th', $this->prepare_attrs(nc_html_attributes('th')));
+        return $output;
+    }
+
+    public function set_td($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'td', $this->prepare_attrs(nc_html_attributes('td')));
+        return $output;
+    }
+
+    public function set_colgroup($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'colgroup', $this->prepare_attrs(nc_html_attributes('colgroup')));
+        return $output;
+    }
+
+    public function set_col($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'col', $this->prepare_attrs(nc_html_attributes('col')));
+        return $output;
+    }
+
+    public function set_caption($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'caption', $this->prepare_attrs(nc_html_attributes('caption')));
+        return $output;
+    }
+
+    public function set_thead($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'thead', $this->prepare_attrs(nc_html_attributes('thead')));
+        return $output;
+    }
+
+    public function set_tbody($atts) {
+        $output = $this->set_html_tag($atts, $content = null, 'tbody', $this->prepare_attrs(nc_html_attributes('tbody')));
+        return $output;
+    }
+
+    public function set_comment($atts, $content = null) {
+        return "<!-- " . $content . " -->";
     }
 
 

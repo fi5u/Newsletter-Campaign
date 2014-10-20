@@ -460,8 +460,355 @@ function nc_html_attributes($tag_name) {
             $attributes = apply_filters('newsletter_campaign_html_attributes_code', array());
             break;
 
-        case 'samp':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_samp', array());
+        case 'b':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_b', array());
+            break;
+
+        case 'i':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_i', array());
+            break;
+
+        case 'u':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_u', array());
+            break;
+
+        case 'small':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_small', array());
+            break;
+
+        case 'big':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_big', array());
+            break;
+
+        case 'font':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_font', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-font-color',
+                    'arg'   => 'color',
+                    'title' => 'color'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-font-face',
+                    'arg'   => 'face',
+                    'title' => 'face'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-font-size',
+                    'arg'   => 'size',
+                    'title' => 'size'
+                )
+            ));
+            break;
+
+        case 'span':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_span', array());
+            break;
+
+        case 'br':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_br', array());
+            break;
+
+        case 'sub':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_sub', array());
+            break;
+
+        case 'sup':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_sup', array());
+            break;
+
+        case 'img':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_img', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-img-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-alt',
+                    'arg'   => 'alt',
+                    'title' => 'alt'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-border',
+                    'arg'   => 'border',
+                    'title' => 'border'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-height',
+                    'arg'   => 'height',
+                    'title' => 'height'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-hspace',
+                    'arg'   => 'hspace',
+                    'title' => 'hspace'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-src',
+                    'arg'   => 'src',
+                    'title' => 'src'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-vspace',
+                    'arg'   => 'vspace',
+                    'title' => 'vspace'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-img-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'table':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_table', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-table-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-bgcolor',
+                    'arg'   => 'bgcolor',
+                    'title' => 'bgcolor'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-border',
+                    'arg'   => 'border',
+                    'title' => 'border'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-cellpadding',
+                    'arg'   => 'cellpadding',
+                    'title' => 'cellpadding'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-cellspacing',
+                    'arg'   => 'cellspacing',
+                    'title' => 'cellspacing'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'tr':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_tr', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-tr-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-tr-bgcolor',
+                    'arg'   => 'bgcolor',
+                    'title' => 'bgcolor'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-tr-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                )
+            ));
+            break;
+
+        case 'th':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_th', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-th-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-bgcolor',
+                    'arg'   => 'bgcolor',
+                    'title' => 'bgcolor'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-colspan',
+                    'arg'   => 'colspan',
+                    'title' => 'colspan'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-height',
+                    'arg'   => 'height',
+                    'title' => 'height'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-nowrap',
+                    'arg'   => 'nowrap',
+                    'title' => 'nowrap'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-rowspan',
+                    'arg'   => 'rowspan',
+                    'title' => 'rowspan'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-th-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'td':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_td', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-td-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-bgcolor',
+                    'arg'   => 'bgcolor',
+                    'title' => 'bgcolor'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-colspan',
+                    'arg'   => 'colspan',
+                    'title' => 'colspan'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-height',
+                    'arg'   => 'height',
+                    'title' => 'height'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-nowrap',
+                    'arg'   => 'nowrap',
+                    'title' => 'nowrap'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-rowspan',
+                    'arg'   => 'rowspan',
+                    'title' => 'rowspan'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-td-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'colgroup':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_colgroup', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-colgroup-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-colgroup-span',
+                    'arg'   => 'span',
+                    'title' => 'span'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-colgroup-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-colgroup-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'col':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_col', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-col-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-col-span',
+                    'arg'   => 'span',
+                    'title' => 'span'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-col-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-col-width',
+                    'arg'   => 'width',
+                    'title' => 'width'
+                )
+            ));
+            break;
+
+        case 'caption':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_caption', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-caption-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                )
+            ));
+            break;
+
+        case 'thead':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_thead', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-thead-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-thead-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                )
+            ));
+            break;
+
+        case 'tbody':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_tbody', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-tbody-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-tbody-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                )
+            ));
+            break;
+
+        case 'tfoot':
+            $attributes = apply_filters('newsletter_campaign_html_attributes_tfoot', array(
+                array(
+                    'name'  => 'nc-shortcode-arg-tfoot-align',
+                    'arg'   => 'align',
+                    'title' => 'align'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-tfoot-valign',
+                    'arg'   => 'valign',
+                    'title' => 'valign'
+                )
+            ));
             break;
 
         default: // Defaults to general attributes
