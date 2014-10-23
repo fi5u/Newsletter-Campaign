@@ -166,6 +166,8 @@
                     }
                 };
                 argsBar += '</select>';
+            } else if (args[arg].type === 'bool') {
+                argsBar += '<input type="checkbox" name="' + args[arg].name + '" id="' + args[arg].name + '" data-arg="' + args[arg].arg + '" value="' + args[arg].arg + '">';
             } else {
                 argsBar += '<input type="text" name="' + args[arg].name + '" id="' + args[arg].name + '" placeholder="' + translation.optional + '" data-arg="' + args[arg].arg + '">';
             }

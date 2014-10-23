@@ -53,25 +53,11 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_ol', array($this, 'set_ol') );
         add_shortcode( 'nc_ul', array($this, 'set_ul') );
         add_shortcode( 'nc_li', array($this, 'set_li') );
-        add_shortcode( 'nc_address', array($this, 'set_address') );
-        add_shortcode( 'nc_blockquote', array($this, 'set_blockquote') );
-        add_shortcode( 'nc_del', array($this, 'set_del') );
         add_shortcode( 'nc_div', array($this, 'set_div') );
         add_shortcode( 'nc_hr', array($this, 'set_hr') );
-        add_shortcode( 'nc_ins', array($this, 'set_ins') );
-        add_shortcode( 'nc_pre', array($this, 'set_pre') );
         add_shortcode( 'nc_a', array($this, 'set_a') );
-        add_shortcode( 'nc_abbr', array($this, 'set_abbr') );
-        add_shortcode( 'nc_dfn', array($this, 'set_dfn') );
         add_shortcode( 'nc_em', array($this, 'set_em') );
         add_shortcode( 'nc_strong', array($this, 'set_strong') );
-        add_shortcode( 'nc_code', array($this, 'set_code') );
-        add_shortcode( 'nc_b', array($this, 'set_b') );
-        add_shortcode( 'nc_i', array($this, 'set_i') );
-        add_shortcode( 'nc_u', array($this, 'set_u') );
-        add_shortcode( 'nc_small', array($this, 'set_small') );
-        add_shortcode( 'nc_big', array($this, 'set_big') );
-        add_shortcode( 'nc_font', array($this, 'set_font') );
         add_shortcode( 'nc_span', array($this, 'set_span') );
         add_shortcode( 'nc_br', array($this, 'set_br') );
         add_shortcode( 'nc_sub', array($this, 'set_sub') );
@@ -308,21 +294,6 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
-    public function set_address($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'address', $this->prepare_attrs(nc_html_attributes('address')));
-        return $output;
-    }
-
-    public function set_blockquote($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'blockquote', $this->prepare_attrs(nc_html_attributes('blockquote')));
-        return $output;
-    }
-
-    public function set_del($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'del', $this->prepare_attrs(nc_html_attributes('del')));
-        return $output;
-    }
-
     public function set_div($atts) {
         $output = $this->set_html_tag($atts, $content = null, 'div', $this->prepare_attrs(nc_html_attributes('div')));
         return $output;
@@ -333,68 +304,13 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
-    public function set_ins($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'ins', $this->prepare_attrs(nc_html_attributes('ins')));
-        return $output;
-    }
-
-    public function set_pre($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'pre', $this->prepare_attrs(nc_html_attributes('pre')));
-        return $output;
-    }
-
     public function set_a($atts) {
         $output = $this->set_html_tag($atts, $content = null, 'a', $this->prepare_attrs(nc_html_attributes('a')));
         return $output;
     }
 
-    public function set_abbr($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'abbr', $this->prepare_attrs(nc_html_attributes('abbr')));
-        return $output;
-    }
-
-    public function set_dfn($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'dfn', $this->prepare_attrs(nc_html_attributes('dfn')));
-        return $output;
-    }
-
     public function set_em($atts) {
         $output = $this->set_html_tag($atts, $content = null, 'em', $this->prepare_attrs(nc_html_attributes('em')));
-        return $output;
-    }
-
-    public function set_code($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'code', $this->prepare_attrs(nc_html_attributes('code')));
-        return $output;
-    }
-
-    public function set_b($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'b', $this->prepare_attrs(nc_html_attributes('b')));
-        return $output;
-    }
-
-    public function set_i($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'i', $this->prepare_attrs(nc_html_attributes('i')));
-        return $output;
-    }
-
-    public function set_u($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'u', $this->prepare_attrs(nc_html_attributes('u')));
-        return $output;
-    }
-
-    public function set_small($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'small', $this->prepare_attrs(nc_html_attributes('small')));
-        return $output;
-    }
-
-    public function set_big($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'big', $this->prepare_attrs(nc_html_attributes('big')));
-        return $output;
-    }
-
-    public function set_font($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'font', $this->prepare_attrs(nc_html_attributes('font')));
         return $output;
     }
 

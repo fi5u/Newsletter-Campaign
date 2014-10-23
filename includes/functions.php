@@ -50,38 +50,7 @@ function nc_html_attributes($tag_name) {
             break;
 
         case 'body':
-            $attributes = apply_filters( 'newsletter_campaign_html_attributes_body', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-body-alink',
-                    'arg'   => 'alink',
-                    'title' => 'alink'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-body-background',
-                    'arg'   => 'background',
-                    'title' => 'background'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-body-bgcolor',
-                    'arg'   => 'bgcolor',
-                    'title' => 'bgcolor'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-body-link',
-                    'arg'   => 'link',
-                    'title' => 'link'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-body-text',
-                    'arg'   => 'text',
-                    'title' => 'text'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-body-vlink',
-                    'arg'   => 'vlink',
-                    'title' => 'vlink'
-                )
-            ));
+            $attributes = apply_filters( 'newsletter_campaign_html_attributes_body', array());
             break;
 
         case 'base':
@@ -94,7 +63,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-base-target',
                     'arg'   => 'target',
-                    'title' => 'target'
+                    'title' => 'target',
+                    'type'  => 'select',
+                    'values'=>  array('_blank', '_parent', '_self', '_top')
                 )
             ));
             break;
@@ -112,11 +83,6 @@ function nc_html_attributes($tag_name) {
                     'title' => 'href'
                 ),
                 array(
-                    'name'  => 'nc-shortcode-arg-link-hreflang',
-                    'arg'   => 'hreflang',
-                    'title' => 'hreflang'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-link-media',
                     'arg'   => 'media',
                     'title' => 'media'
@@ -124,17 +90,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-link-rel',
                     'arg'   => 'rel',
-                    'title' => 'rel'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-link-rev',
-                    'arg'   => 'rev',
-                    'title' => 'rev'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-link-target',
-                    'arg'   => 'target',
-                    'title' => 'target'
+                    'title' => 'rel',
+                    'type'  => 'select',
+                    'values'=> array('alternate', 'archives', 'author', 'bookmark', 'external', 'first', 'help', 'icon', 'last', 'license', 'next', 'nofollow', 'noreferrer', 'pingback', 'prefetch', 'prev', 'search', 'sidebar', 'stylesheet', 'tag', 'up')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-link-type',
@@ -147,11 +105,6 @@ function nc_html_attributes($tag_name) {
         case 'meta':
             $attributes = apply_filters( 'newsletter_campaign_html_attributes_meta', array(
                 array(
-                    'name'  => 'nc-shortcode-arg-meta-charset',
-                    'arg'   => 'charset',
-                    'title' => 'charset'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-meta-content',
                     'arg'   => 'content',
                     'title' => 'content'
@@ -159,12 +112,16 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-meta-http-equiv',
                     'arg'   => 'http_equiv',
-                    'title' => 'http-equiv'
+                    'title' => 'http-equiv',
+                    'type'  => 'select',
+                    'values'=>  array('content-type', 'default-style', 'refresh')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-meta-name',
                     'arg'   => 'name',
-                    'title' => 'name'
+                    'title' => 'name',
+                    'type'  => 'select',
+                    'values'=>  array('application-name', 'author', 'description', 'generator', 'keywords')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-meta-scheme',
@@ -194,7 +151,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-p-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -204,7 +163,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h1-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -214,7 +175,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h2-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -224,7 +187,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h3-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -234,7 +199,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h4-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -244,7 +211,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h5-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -254,7 +223,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-h6-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -281,7 +252,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-ol-type',
                     'arg'   => 'type',
-                    'title' => 'type'
+                    'title' => 'type',
+                    'type'  => 'select',
+                    'values'=> array('1', 'a', 'A', 'i', 'I')
                 )
             ));
             break;
@@ -291,7 +264,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-ul-type',
                     'arg'   => 'type',
-                    'title' => 'type'
+                    'title' => 'type',
+                    'type'  => 'select',
+                    'values'=> array('disc', 'square', 'circle')
                 )
             ));
             break;
@@ -301,7 +276,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-li-type',
                     'arg'   => 'type',
-                    'title' => 'type'
+                    'title' => 'type',
+                    'type'  => 'select',
+                    'values'=> array('1', 'A', 'a', 'I', 'i', 'disc', 'square', 'circle')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-li-value',
@@ -311,41 +288,14 @@ function nc_html_attributes($tag_name) {
             ));
             break;
 
-        case 'address':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_address', array());
-            break;
-
-        case 'blockquote':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_blockquote', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-blockquote-cite',
-                    'arg'   => 'cite',
-                    'title' => 'cite'
-                )
-            ));
-            break;
-
-        case 'del':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_del', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-del-cite',
-                    'arg'   => 'cite',
-                    'title' => 'cite'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-del-datetime',
-                    'arg'   => 'datetime',
-                    'title' => 'datetime'
-                )
-            ));
-            break;
-
         case 'div':
             $attributes = apply_filters('newsletter_campaign_html_attributes_div', array(
                 array(
                     'name'  => 'nc-shortcode-arg-div-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify')
                 )
             ));
             break;
@@ -355,47 +305,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-hr-align',
                     'arg'   => 'align',
-                    'title' => 'align'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-hr-noshade',
-                    'arg'   => 'noshade',
-                    'title' => 'noshade'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-hr-size',
-                    'arg'   => 'size',
-                    'title' => 'size'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-hr-width',
-                    'arg'   => 'width',
-                    'title' => 'width'
-                )
-            ));
-            break;
-
-        case 'ins':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_ins', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-ins-cite',
-                    'arg'   => 'cite',
-                    'title' => 'cite'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-ins-datetime',
-                    'arg'   => 'datetime',
-                    'title' => 'datetime'
-                )
-            ));
-            break;
-
-        case 'pre':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_pre', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-pre-width',
-                    'arg'   => 'width',
-                    'title' => 'width'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center')
                 )
             ));
             break;
@@ -403,49 +315,18 @@ function nc_html_attributes($tag_name) {
         case 'a':
             $attributes = apply_filters('newsletter_campaign_html_attributes_a', array(
                 array(
-                    'name'  => 'nc-shortcode-arg-a-charset',
-                    'arg'   => 'charset',
-                    'title' => 'charset'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-a-href',
                     'arg'   => 'href',
                     'title' => 'href'
                 ),
                 array(
-                    'name'  => 'nc-shortcode-arg-a-hreflang',
-                    'arg'   => 'hreflang',
-                    'title' => 'hreflang'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-a-name',
-                    'arg'   => 'name',
-                    'title' => 'name'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-a-rel',
-                    'arg'   => 'rel',
-                    'title' => 'rel'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-a-rev',
-                    'arg'   => 'rev',
-                    'title' => 'rev'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-a-target',
                     'arg'   => 'target',
-                    'title' => 'target'
+                    'title' => 'target',
+                    'type'  => 'select',
+                    'values'=> array('_blank', '_self', '_parent', '_top')
                 )
             ));
-            break;
-
-        case 'abbr':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_abbr', array());
-            break;
-
-        case 'dfn':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_dfn', array());
             break;
 
         case 'em':
@@ -454,50 +335,6 @@ function nc_html_attributes($tag_name) {
 
         case 'strong':
             $attributes = apply_filters('newsletter_campaign_html_attributes_strong', array());
-            break;
-
-        case 'code':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_code', array());
-            break;
-
-        case 'b':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_b', array());
-            break;
-
-        case 'i':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_i', array());
-            break;
-
-        case 'u':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_u', array());
-            break;
-
-        case 'small':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_small', array());
-            break;
-
-        case 'big':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_big', array());
-            break;
-
-        case 'font':
-            $attributes = apply_filters('newsletter_campaign_html_attributes_font', array(
-                array(
-                    'name'  => 'nc-shortcode-arg-font-color',
-                    'arg'   => 'color',
-                    'title' => 'color'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-font-face',
-                    'arg'   => 'face',
-                    'title' => 'face'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-font-size',
-                    'arg'   => 'size',
-                    'title' => 'size'
-                )
-            ));
             break;
 
         case 'span':
@@ -521,7 +358,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-img-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('top', 'bottom', 'middle', 'left', 'right')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-img-alt',
@@ -529,29 +368,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'alt'
                 ),
                 array(
-                    'name'  => 'nc-shortcode-arg-img-border',
-                    'arg'   => 'border',
-                    'title' => 'border'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-img-height',
                     'arg'   => 'height',
                     'title' => 'height'
                 ),
                 array(
-                    'name'  => 'nc-shortcode-arg-img-hspace',
-                    'arg'   => 'hspace',
-                    'title' => 'hspace'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-img-src',
                     'arg'   => 'src',
                     'title' => 'src'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-img-vspace',
-                    'arg'   => 'vspace',
-                    'title' => 'vspace'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-img-width',
@@ -566,17 +390,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-table-align',
                     'arg'   => 'align',
-                    'title' => 'align'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-table-bgcolor',
-                    'arg'   => 'bgcolor',
-                    'title' => 'bgcolor'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-table-border',
-                    'arg'   => 'border',
-                    'title' => 'border'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'center', 'right')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-table-cellpadding',
@@ -601,17 +417,16 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-tr-align',
                     'arg'   => 'align',
-                    'title' => 'align'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-tr-bgcolor',
-                    'arg'   => 'bgcolor',
-                    'title' => 'bgcolor'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-tr-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 )
             ));
             break;
@@ -621,12 +436,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-th-align',
                     'arg'   => 'align',
-                    'title' => 'align'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-th-bgcolor',
-                    'arg'   => 'bgcolor',
-                    'title' => 'bgcolor'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-th-colspan',
@@ -641,7 +453,8 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-th-nowrap',
                     'arg'   => 'nowrap',
-                    'title' => 'nowrap'
+                    'title' => 'nowrap',
+                    'type'  => 'bool'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-th-rowspan',
@@ -651,7 +464,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-th-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-th-width',
@@ -666,12 +481,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-td-align',
                     'arg'   => 'align',
-                    'title' => 'align'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-td-bgcolor',
-                    'arg'   => 'bgcolor',
-                    'title' => 'bgcolor'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-td-colspan',
@@ -686,7 +498,8 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-td-nowrap',
                     'arg'   => 'nowrap',
-                    'title' => 'nowrap'
+                    'title' => 'nowrap',
+                    'type'  => 'bool'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-td-rowspan',
@@ -696,7 +509,8 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-td-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-td-width',
@@ -711,7 +525,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-colgroup-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-colgroup-span',
@@ -721,7 +537,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-colgroup-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-colgroup-width',
@@ -736,7 +554,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-col-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-col-span',
@@ -746,7 +566,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-col-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-col-width',
@@ -761,7 +583,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-caption-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'top', 'bottom')
                 )
             ));
             break;
@@ -771,12 +595,16 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-thead-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-thead-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 )
             ));
             break;
@@ -786,12 +614,16 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-tbody-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-tbody-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 )
             ));
             break;
@@ -801,12 +633,16 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-tfoot-align',
                     'arg'   => 'align',
-                    'title' => 'align'
+                    'title' => 'align',
+                    'type'  => 'select',
+                    'values'=> array('left', 'right', 'center', 'justify', 'char')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-tfoot-valign',
                     'arg'   => 'valign',
-                    'title' => 'valign'
+                    'title' => 'valign',
+                    'type'  => 'select',
+                    'values'=> array('top', 'middle', 'bottom', 'baseline')
                 )
             ));
             break;
@@ -814,49 +650,19 @@ function nc_html_attributes($tag_name) {
         default: // Defaults to general attributes
             $attributes = apply_filters( 'newsletter_campaign_html_attributes_general', array(
                 array(
-                    'name'  => 'nc-shortcode-arg-accesskey',
-                    'arg'   => 'accesskey',
-                    'title' => 'Accesskey'
-                ),
-                array(
                     'name'  => 'nc-shortcode-arg-class',
                     'arg'   => 'class',
-                    'title' => 'Class'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-contenteditable',
-                    'arg'   => 'contenteditable',
-                    'title' => 'Contenteditable'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-dir',
-                    'arg'   => 'dir',
-                    'title' => 'Dir'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-hidden',
-                    'arg'   => 'hidden',
-                    'title' => 'Hidden'
+                    'title' => 'class'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-id',
                     'arg'   => 'id',
-                    'title' => 'ID'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-lang',
-                    'arg'   => 'lang',
-                    'title' => 'Lang'
+                    'title' => 'id'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-style',
                     'arg'   => 'style',
-                    'title' => 'Style'
-                ),
-                array(
-                    'name'  => 'nc-shortcode-arg-tabindex',
-                    'arg'   => 'tabindex',
-                    'title' => 'Tabindex'
+                    'title' => 'style'
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-title',
