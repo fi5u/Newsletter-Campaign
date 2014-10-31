@@ -40,7 +40,7 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-html-xmlns',
                     'arg'   => 'xmlns',
-                    'title' => 'XMLNS'
+                    'title' => 'xmlns'
                 )
             ));
             break;
@@ -121,7 +121,7 @@ function nc_html_attributes($tag_name) {
                     'arg'   => 'name',
                     'title' => 'name',
                     'type'  => 'select',
-                    'values'=>  array('application-name', 'author', 'description', 'generator', 'keywords')
+                    'values'=>  array('viewport', 'application-name', 'author', 'description', 'generator', 'keywords')
                 ),
                 array(
                     'name'  => 'nc-shortcode-arg-meta-scheme',
@@ -141,7 +141,9 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-style-type',
                     'arg'   => 'type',
-                    'title' => 'type'
+                    'title' => 'type',
+                    'type'  => 'select',
+                    'values'=> array('text/css')
                 )
             ));
             break;
@@ -408,6 +410,19 @@ function nc_html_attributes($tag_name) {
                     'name'  => 'nc-shortcode-arg-table-width',
                     'arg'   => 'width',
                     'title' => 'width'
+                ),
+                array(
+                    'name'  => 'nc-shortcode-arg-table-border',
+                    'arg'   => 'border',
+                    'title' => 'border'
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-table-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -510,6 +525,7 @@ function nc_html_attributes($tag_name) {
                     'name'  => 'nc-shortcode-arg-td-valign',
                     'arg'   => 'valign',
                     'title' => 'valign',
+                    'type'  => 'select',
                     'values'=> array('top', 'middle', 'bottom', 'baseline')
                 ),
                 array(
@@ -667,69 +683,11 @@ function nc_html_attributes($tag_name) {
                 array(
                     'name'  => 'nc-shortcode-arg-title',
                     'arg'   => 'title',
-                    'title' => 'Title'
+                    'title' => 'title'
                 )
             ));
             break;
     }
 
     return $attributes;
-}
-
-
-function nc_general_html_attributes() {
-    $general_attributes = apply_filters('newsletter_campaign_general_html_attributes', array(
-        array(
-            'name'  => 'nc-shortcode-arg-accesskey',
-            'arg'   => 'accesskey',
-            'title' => 'Accesskey'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-class',
-            'arg'   => 'class',
-            'title' => 'Class'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-contenteditable',
-            'arg'   => 'contenteditable',
-            'title' => 'Contenteditable'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-dir',
-            'arg'   => 'dir',
-            'title' => 'Dir'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-hidden',
-            'arg'   => 'hidden',
-            'title' => 'Hidden'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-id',
-            'arg'   => 'id',
-            'title' => 'ID'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-lang',
-            'arg'   => 'lang',
-            'title' => 'Lang'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-style',
-            'arg'   => 'style',
-            'title' => 'Style'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-tabindex',
-            'arg'   => 'tabindex',
-            'title' => 'Tabindex'
-        ),
-        array(
-            'name'  => 'nc-shortcode-arg-title',
-            'arg'   => 'title',
-            'title' => 'Title'
-        )
-    ));
-
-    return $general_attributes;
 }

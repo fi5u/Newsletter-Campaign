@@ -159,7 +159,8 @@ class Newsletter_campaign_meta_box_generator {
     private function sanitize($value, $sanitize_as) {
         switch ($sanitize_as) {
             case 'code':
-                $return_val = esc_html($value);
+                global $allowedposttags;
+                $return_val = wp_kses($value, $allowedposttags);
                 break;
             case 'text':
                 $return_val = sanitize_text_field($value);

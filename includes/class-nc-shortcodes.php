@@ -69,6 +69,7 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_colgroup', array($this, 'set_colgroup') );
         add_shortcode( 'nc_col', array($this, 'set_col') );
         add_shortcode( 'nc_caption', array($this, 'set_caption') );
+        add_shortcode( 'nc_table', array($this, 'set_table') );
         add_shortcode( 'nc_thead', array($this, 'set_thead') );
         add_shortcode( 'nc_tbody', array($this, 'set_tbody') );
         add_shortcode( 'nc_tfoot', array($this, 'set_tfoot') );
@@ -133,8 +134,6 @@ class Newsletter_campaign_shortcodes {
         // Prepare general html attributes
         $general_attributes = $this->prepare_attrs(nc_html_attributes());
 
-        $a = shortcode_atts( array_merge($general_attributes, $tag_attrs), $atts );
-
         $tag = '<' . $tag_name;
 
         foreach ($a as $key => $value) {
@@ -143,12 +142,12 @@ class Newsletter_campaign_shortcodes {
             $tag .= $a[$key] !== '' ? ' ' . $key . '="' . $value . '"' : '';
         }
 
-        if ($enclsing === false) {
-            $tag .= '/>';
+        if ($enclosing === false) {
+            $tag .= ' />';
             $output = $tag;
         } else {
             $tag .= '>';
-            $output = is_null($content) ? $tag . '</' . $tag_name . '>' : $tag . do_shortcode($content) . '</' . $tag_name . '>';
+            $output = is_null($content) ? $tag . '</' . $tag_name . '>' : $tag . $this->nc_do_shortcodes($content) . '</' . $tag_name . '>';
         }
 
         return $output;
@@ -204,183 +203,188 @@ class Newsletter_campaign_shortcodes {
         return $output;
     }
 
-    public function set_base($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'base', $this->prepare_attrs(nc_html_attributes('base')), false);
+    public function set_base($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'base', $this->prepare_attrs(nc_html_attributes('base')), false);
         return $output;
     }
 
-    public function set_link($atts) {
+    public function set_link($atts, $content = null) {
         $output = $this->set_html_tag($atts, $content = null, 'link', $this->prepare_attrs(nc_html_attributes('link')), false);
         return $output;
     }
 
-    public function set_meta($atts) {
+    public function set_meta($atts, $content = null) {
         $output = $this->set_html_tag($atts, $content = null, 'meta', $this->prepare_attrs(nc_html_attributes('meta')), false);
         return $output;
     }
 
-    public function set_style($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'style', $this->prepare_attrs(nc_html_attributes('style')));
+    public function set_style($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'style', $this->prepare_attrs(nc_html_attributes('style')));
         return $output;
     }
 
-    public function set_title($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'title');
+    public function set_title($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'title');
         return $output;
     }
 
-    public function set_p($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'p', $this->prepare_attrs(nc_html_attributes('p')));
+    public function set_p($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'p', $this->prepare_attrs(nc_html_attributes('p')));
         return $output;
     }
 
-    public function set_h1($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h1', $this->prepare_attrs(nc_html_attributes('h1')));
+    public function set_h1($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h1', $this->prepare_attrs(nc_html_attributes('h1')));
         return $output;
     }
 
-    public function set_h2($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h2', $this->prepare_attrs(nc_html_attributes('h2')));
+    public function set_h2($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h2', $this->prepare_attrs(nc_html_attributes('h2')));
         return $output;
     }
 
-    public function set_h3($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h3', $this->prepare_attrs(nc_html_attributes('h3')));
+    public function set_h3($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h3', $this->prepare_attrs(nc_html_attributes('h3')));
         return $output;
     }
 
-    public function set_h4($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h4', $this->prepare_attrs(nc_html_attributes('h4')));
+    public function set_h4($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h4', $this->prepare_attrs(nc_html_attributes('h4')));
         return $output;
     }
 
-    public function set_h5($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h5', $this->prepare_attrs(nc_html_attributes('h5')));
+    public function set_h5($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h5', $this->prepare_attrs(nc_html_attributes('h5')));
         return $output;
     }
 
-    public function set_h6($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'h6', $this->prepare_attrs(nc_html_attributes('h6')));
+    public function set_h6($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'h6', $this->prepare_attrs(nc_html_attributes('h6')));
         return $output;
     }
 
-    public function set_dl($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'dl', $this->prepare_attrs(nc_html_attributes('dl')));
+    public function set_dl($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'dl', $this->prepare_attrs(nc_html_attributes('dl')));
         return $output;
     }
 
-    public function set_dt($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'dt', $this->prepare_attrs(nc_html_attributes('dt')));
+    public function set_dt($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'dt', $this->prepare_attrs(nc_html_attributes('dt')));
         return $output;
     }
 
-    public function set_dd($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'dd', $this->prepare_attrs(nc_html_attributes('dd')));
+    public function set_dd($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'dd', $this->prepare_attrs(nc_html_attributes('dd')));
         return $output;
     }
 
-    public function set_ol($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'ol', $this->prepare_attrs(nc_html_attributes('ol')));
+    public function set_ol($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'ol', $this->prepare_attrs(nc_html_attributes('ol')));
         return $output;
     }
 
-    public function set_ul($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'ul', $this->prepare_attrs(nc_html_attributes('ul')));
+    public function set_ul($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'ul', $this->prepare_attrs(nc_html_attributes('ul')));
         return $output;
     }
 
-    public function set_li($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'li', $this->prepare_attrs(nc_html_attributes('li')));
+    public function set_li($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'li', $this->prepare_attrs(nc_html_attributes('li')));
         return $output;
     }
 
-    public function set_div($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'div', $this->prepare_attrs(nc_html_attributes('div')));
+    public function set_div($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'div', $this->prepare_attrs(nc_html_attributes('div')));
         return $output;
     }
 
-    public function set_hr($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'hr', $this->prepare_attrs(nc_html_attributes('hr')));
+    public function set_hr($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'hr', $this->prepare_attrs(nc_html_attributes('hr')));
         return $output;
     }
 
-    public function set_a($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'a', $this->prepare_attrs(nc_html_attributes('a')));
+    public function set_a($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'a', $this->prepare_attrs(nc_html_attributes('a')));
         return $output;
     }
 
-    public function set_em($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'em', $this->prepare_attrs(nc_html_attributes('em')));
+    public function set_em($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'em', $this->prepare_attrs(nc_html_attributes('em')));
         return $output;
     }
 
-    public function set_span($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'span', $this->prepare_attrs(nc_html_attributes('span')));
+    public function set_strong($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'strong', $this->prepare_attrs(nc_html_attributes('strong')));
         return $output;
     }
 
-    public function set_br($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'br', $this->prepare_attrs(nc_html_attributes('br')));
+    public function set_span($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'span', $this->prepare_attrs(nc_html_attributes('span')));
         return $output;
     }
 
-    public function set_sub($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'sub', $this->prepare_attrs(nc_html_attributes('sub')));
+    public function set_br($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'br', $this->prepare_attrs(nc_html_attributes('br')));
         return $output;
     }
 
-    public function set_sup($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'sup', $this->prepare_attrs(nc_html_attributes('sup')));
+    public function set_sub($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'sub', $this->prepare_attrs(nc_html_attributes('sub')));
         return $output;
     }
 
-    public function set_img($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'img', $this->prepare_attrs(nc_html_attributes('img')));
+    public function set_sup($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'sup', $this->prepare_attrs(nc_html_attributes('sup')));
         return $output;
     }
 
-    public function set_table($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'table', $this->prepare_attrs(nc_html_attributes('table')));
+    public function set_img($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'img', $this->prepare_attrs(nc_html_attributes('img')));
         return $output;
     }
 
-    public function set_tr($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'tr', $this->prepare_attrs(nc_html_attributes('tr')));
+    public function set_table($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'table', $this->prepare_attrs(nc_html_attributes('table')));
         return $output;
     }
 
-    public function set_th($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'th', $this->prepare_attrs(nc_html_attributes('th')));
+    public function set_tr($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'tr', $this->prepare_attrs(nc_html_attributes('tr')));
         return $output;
     }
 
-    public function set_td($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'td', $this->prepare_attrs(nc_html_attributes('td')));
+    public function set_th($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'th', $this->prepare_attrs(nc_html_attributes('th')));
         return $output;
     }
 
-    public function set_colgroup($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'colgroup', $this->prepare_attrs(nc_html_attributes('colgroup')));
+    public function set_td($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'td', $this->prepare_attrs(nc_html_attributes('td')));
         return $output;
     }
 
-    public function set_col($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'col', $this->prepare_attrs(nc_html_attributes('col')));
+    public function set_colgroup($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'colgroup', $this->prepare_attrs(nc_html_attributes('colgroup')));
         return $output;
     }
 
-    public function set_caption($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'caption', $this->prepare_attrs(nc_html_attributes('caption')));
+    public function set_col($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'col', $this->prepare_attrs(nc_html_attributes('col')));
         return $output;
     }
 
-    public function set_thead($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'thead', $this->prepare_attrs(nc_html_attributes('thead')));
+    public function set_caption($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'caption', $this->prepare_attrs(nc_html_attributes('caption')));
         return $output;
     }
 
-    public function set_tbody($atts) {
-        $output = $this->set_html_tag($atts, $content = null, 'tbody', $this->prepare_attrs(nc_html_attributes('tbody')));
+    public function set_thead($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'thead', $this->prepare_attrs(nc_html_attributes('thead')));
+        return $output;
+    }
+
+    public function set_tbody($atts, $content = null) {
+        $output = $this->set_html_tag($atts, $content, 'tbody', $this->prepare_attrs(nc_html_attributes('tbody')));
         return $output;
     }
 

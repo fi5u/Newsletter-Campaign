@@ -153,16 +153,26 @@
 
             if (args[arg].type === 'select' && args[arg].values) {
                 argsBar += '<select name="' + args[arg].name + '" id="' + args[arg].name + '" data-arg="' + args[arg].arg + '">';
-                // Insert a value-less option
-                argsBar += '<option value="">' + translation.selectAnOption + '</option>';
+                // Insert a value-less option if a default hasn't been passed
+                if (typeof args[arg].default === 'undefined') {
+                    argsBar += '<option value="">' + translation.selectAnOption + '</option>';
+                }
                 for (var i = 0; i < args[arg].values.length; i++) {
                     var value = args[arg].values[i];
                     // If we've got a specific key and value to use, use them
                     if (args[arg].key && args[arg].value) {
-                        argsBar += '<option value="' + value[args[arg].value] + '">' + value[args[arg].key] + '</option>';
+                        argsBar += '<option value="' + value[args[arg].value] + '"';
+                        if (typeof args[arg].default !== 'undefined' && value[args[arg].key] === args[arg].default) {
+                            argsBar += ' selected';
+                        }
+                        argsBar += '>' + value[args[arg].key] + '</option>';
                     } else {
                         // A simple array has been passed
-                        argsBar += '<option value="' + value + '">' + value + '</option>';
+                        argsBar += '<option value="' + value + '"';
+                        if (typeof args[arg].default !== 'undefined' && value === args[arg].default) {
+                            argsBar += ' selected';
+                        }
+                        argsBar += '>' + value + '</option>';
                     }
                 };
                 argsBar += '</select>';
@@ -190,9 +200,24 @@
      */
     function populateWithArgs(shortcode, iteration) {
         var args = '',
-            shortcodeComplete;
+            shortcodeComplete,
+            nesting;
         $('#nc-button-bar-args-' + shortcode + '').find('.nc-button-bar__arg').each(function(i) {
             var inputType = $(this).find('input').length ? 'input' : 'select';
+
+            if ($(this).find(inputType).data('arg') === 'nesting') {
+                if ($(this).find(inputType).val() > 0) {
+                    nesting = $(this).find(inputType).val();
+                }
+                return true;
+            }
+
+            if ($(this).find('input').attr('type') === 'checkbox') {
+                if (!$(this).find('input').prop('checked')) {
+                    return true;
+                }
+            }
+
             var argName = $(this).find(inputType).data('arg'),
                 argVal = $(this).find(inputType).val();
 
@@ -201,7 +226,9 @@
             }
         });
 
-        shortcodeComplete = '[' + shortcode + args + ']';
+        shortcodeComplete = '[' + shortcode;
+        shortcodeComplete += nesting > 0 ? '_' + nesting : '';
+        shortcodeComplete += args + ']';
 
         // Insert the shortcode with args (if supplied)
         ncCodemirror[iteration].doc.replaceSelection(shortcodeComplete);
@@ -211,7 +238,7 @@
             var button = buttons[buttonCount];
             if (button.shortcode && button.shortcode === shortcode) { // Do we need the double check?
                 // Insert the enclosing text
-                insertEnclosingText(shortcode, iteration, buttonCount);
+                insertEnclosingText(shortcode, iteration, nesting, buttonCount);
                 break;
             } else {
 
@@ -221,7 +248,7 @@
                         var buttonChild = button.children[buttonChildCount];
                         if (buttonChild.shortcode && buttonChild.shortcode === shortcode) {
                             // Insert the enclosing text
-                            insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount);
+                            insertEnclosingText(shortcode, iteration, nesting, buttonCount, buttonChildCount);
                             break;
                         } else {
 
@@ -231,7 +258,7 @@
                                     var buttonGrandchild = buttonChild.children[buttonGrandchildCount];
                                     if (buttonGrandchild.shortcode && buttonGrandchild.shortcode === shortcode) {
                                         // Insert the enclosing shortcode
-                                        insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount);
+                                        insertEnclosingText(shortcode, iteration, nesting,buttonCount, buttonChildCount, buttonGrandchildCount);
                                         break;
                                     } else {
 
@@ -241,7 +268,7 @@
                                                 var buttonGreatgrandchild = buttonGrandchild.children[buttonGreatgrandchildCount];
                                                 if (buttonGreatgrandchild.shortcode && buttonGreatgrandchild.shortcode === shortcode) {
                                                     // Insert the enclosing shortcode
-                                                    insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount, buttonGreatgrandchildCount);
+                                                    insertEnclosingText(shortcode, iteration, nesting, buttonCount, buttonChildCount, buttonGrandchildCount, buttonGreatgrandchildCount);
                                                     break;
                                                 }
 
@@ -263,8 +290,10 @@
     }
 
 
-    function insertEnclosingText(shortcode, iteration, button, child, grandchild, greatgrandchild) {
-        var targetChild;
+    function insertEnclosingText(shortcode, iteration, nesting, button, child, grandchild, greatgrandchild) {
+        var targetChild,
+            closingTag,
+            cursorPos;
 
         if (greatgrandchild || greatgrandchild === 0) {
             targetChild = buttons[button].children[child].children[grandchild].children[greatgrandchild];
@@ -275,12 +304,17 @@
         }
 
         if (targetChild.enclosing) {
-            ncCodemirror[iteration].doc.replaceSelection('[/' + shortcode + ']');
+            closingTag = '[/' + shortcode;
+            closingTag += nesting > 0 ? '_' + nesting + ']': ']';
+            ncCodemirror[iteration].doc.replaceSelection(closingTag);
 
             // Set the cursor to the middle of the tags
             var cursor = ncCodemirror[iteration].doc.getCursor();
+
             // Calculate the middle of the tags, 3 is total bracket chars
-            cursor.ch = cursor.ch - shortcode.length - 3;
+            // 5 is if the nesting characters are present
+            cursorPos = cursor.ch - shortcode.length;
+            cursor.ch = nesting > 0 ? cursorPos - 5 : cursorPos - 3;
 
             ncCodemirror[iteration].doc.setCursor(cursor);
 
@@ -315,7 +349,7 @@
                     // Insert the shortcode without args
                     ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
                     // Insert the enclosing shortcode
-                    insertEnclosingText(shortcode, iteration, buttonCount);
+                    insertEnclosingText(shortcode, iteration, null, buttonCount);
                 }
                 break;
             } else {
@@ -335,7 +369,7 @@
                                 // Insert the shortcode without args
                                 ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
                                 // Insert the enclosing shortcode
-                                insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount);
+                                insertEnclosingText(shortcode, iteration, null, buttonCount, buttonChildCount);
                             }
                             break;
                         } else {
@@ -354,7 +388,7 @@
                                             // Insert the shortcode without args
                                             ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
                                             // Insert the enclosing shortcode
-                                            insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount);
+                                            insertEnclosingText(shortcode, iteration, null, buttonCount, buttonChildCount, buttonGrandchildCount);
                                         }
                                         break;
                                     } else {
@@ -373,7 +407,7 @@
                                                         // Insert the shortcode without args
                                                         ncCodemirror[iteration].doc.replaceSelection('[' + shortcode + ']');
                                                         // Insert the enclosing shortcode
-                                                        insertEnclosingText(shortcode, iteration, buttonCount, buttonChildCount, buttonGrandchildCount, buttonGreatgrandchildCount);
+                                                        insertEnclosingText(shortcode, iteration, null, buttonCount, buttonChildCount, buttonGrandchildCount, buttonGreatgrandchildCount);
                                                     }
                                                     break;
                                                 }
