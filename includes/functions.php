@@ -257,6 +257,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'type',
                     'type'  => 'select',
                     'values'=> array('1', 'a', 'A', 'i', 'I')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-ol-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -269,6 +277,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'type',
                     'type'  => 'select',
                     'values'=> array('disc', 'square', 'circle')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-ul-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -286,6 +302,14 @@ function nc_html_attributes($tag_name) {
                     'name'  => 'nc-shortcode-arg-li-value',
                     'arg'   => 'value',
                     'title' => 'value'
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-li-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -298,6 +322,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'align',
                     'type'  => 'select',
                     'values'=> array('left', 'right', 'center', 'justify')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-div-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -442,6 +474,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'valign',
                     'type'  => 'select',
                     'values'=> array('top', 'middle', 'bottom', 'baseline')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-tr-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -487,6 +527,14 @@ function nc_html_attributes($tag_name) {
                     'name'  => 'nc-shortcode-arg-th-width',
                     'arg'   => 'width',
                     'title' => 'width'
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-th-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -532,6 +580,14 @@ function nc_html_attributes($tag_name) {
                     'name'  => 'nc-shortcode-arg-td-width',
                     'arg'   => 'width',
                     'title' => 'width'
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-td-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -621,6 +677,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'valign',
                     'type'  => 'select',
                     'values'=> array('top', 'middle', 'bottom', 'baseline')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-thead-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -640,6 +704,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'valign',
                     'type'  => 'select',
                     'values'=> array('top', 'middle', 'bottom', 'baseline')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-tbody-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
@@ -659,6 +731,14 @@ function nc_html_attributes($tag_name) {
                     'title' => 'valign',
                     'type'  => 'select',
                     'values'=> array('top', 'middle', 'bottom', 'baseline')
+                ),
+                array(
+                    'name'      => 'nc-shortcode-arg-tfoot-nesting',
+                    'arg'       => 'nesting',
+                    'title'     => __('How many levels deep nested within same element?'),
+                    'type'      => 'select',
+                    'values'    => array(0,1,2,3,4),
+                    'default'   => 0
                 )
             ));
             break;
