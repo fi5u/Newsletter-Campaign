@@ -33,7 +33,7 @@ class Newsletter_campaign_shortcodes {
     public function nested_add_shortcodes($nested_items, $max_nest_level) {
         foreach ($nested_items as $item) {
             for ($i = 1; $i <= $max_nest_level; $i++) {
-                add_shortcode( 'nc_' . $item . '_1', array($this, 'set_' . $item) );
+                add_shortcode( 'nc_' . $item . '_' . $i, array($this, 'set_' . $item) );
             }
         }
     }
@@ -90,7 +90,7 @@ class Newsletter_campaign_shortcodes {
         add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
 
         $nested_items = array('ol', 'ul', 'li', 'div', 'table', 'tr', 'th', 'td', 'thead', 'tbody', 'tfoot');
-        $this->nested_add_shortcodes($nested_items, 4);
+        $this->nested_add_shortcodes($nested_items, NC_MAX_NEST_DEPTH);
     }
 
 

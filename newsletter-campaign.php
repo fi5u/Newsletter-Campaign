@@ -33,6 +33,11 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'PLUGIN_DIR', dirname(__FILE__).'/' );
 
+
+// Load global constants
+require_once( plugin_dir_path( __FILE__ ) . 'includes/globals.php' );
+
+
 /*----------------------------------------------------------------------------*
  * Public-Facing Functionality
  *----------------------------------------------------------------------------*/
