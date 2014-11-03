@@ -33,7 +33,7 @@ function nc_check_screen($post_type) {
 
 function nc_nest_array() {
     $nest_array = array();
-    for ($i = 1; $i <= NC_MAX_NEST_DEPTH; $i++) {
+    for ($i = 0; $i <= NC_MAX_NEST_DEPTH; $i++) {
         $nest_array[] = $i;
     }
     return $nest_array;
@@ -272,7 +272,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -292,7 +292,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -317,7 +317,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -337,7 +337,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -462,7 +462,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -489,7 +489,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -542,7 +542,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -595,7 +595,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -692,7 +692,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -719,7 +719,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));
@@ -746,7 +746,7 @@ function nc_html_attributes($tag_name) {
                     'arg'       => 'nesting',
                     'title'     => __('How many levels deep nested within same element?'),
                     'type'      => 'select',
-                    'values'    => $nest_array,
+                    'values'    => nc_nest_array(),
                     'default'   => 0
                 )
             ));

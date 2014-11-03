@@ -146,6 +146,8 @@ class Newsletter_campaign_shortcodes {
         // Prepare general html attributes
         $general_attributes = $this->prepare_attrs(nc_html_attributes());
 
+        $a = shortcode_atts( array_merge($general_attributes, $tag_attrs), $atts );
+
         $tag = '<' . $tag_name;
 
         foreach ($a as $key => $value) {
