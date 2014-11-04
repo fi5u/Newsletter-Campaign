@@ -687,7 +687,7 @@ class Newsletter_campaign_shortcode_btns {
             )
         ));
 
-        wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', $shortcode_btns);
+        wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', nc_get_html_tags());
     }
 }
 

@@ -150,6 +150,17 @@ class Newsletter_campaign_meta_box_generator {
     }
 
 
+    private function kses_add_tag($tag_name) {
+        $stored_html_attrs = nc_html_attributes($tag_name);
+
+        foreach ($stored_html_attrs as $html_attr) {
+            $return_array[$html_attr['title']] = true;
+        }
+
+        return $return_array;
+    }
+
+
     /**
      * Sanitize different inputs ready to be input to the database
      * @param  str $value       The value to be sanitized
@@ -160,7 +171,12 @@ class Newsletter_campaign_meta_box_generator {
         switch ($sanitize_as) {
             case 'code':
                 global $allowedposttags;
-                $return_val = wp_kses($value, $allowedposttags);
+
+                $allowed_tags = $allowedposttags;
+                $allowed_tags['meta'] = $this->kses_add_tag('meta');
+                $allowed_tags['base'] = $this->kses_add_tag('base');
+
+                $return_val = wp_kses($value, $allowed_tags);
                 break;
             case 'text':
                 $return_val = sanitize_text_field($value);
