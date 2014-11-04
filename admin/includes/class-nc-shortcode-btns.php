@@ -18,16 +18,6 @@ class Newsletter_campaign_shortcode_btns {
             return;
         }
 
-        $options = get_option( 'nc_settings' );
-
-        $subscriber_list_cat_args = apply_filters( 'newsletter_campaign_subscriber_list_cat_args', array(
-                'taxonomy'  => 'subscriber_list'
-            )
-        );
-
-        // Fetch the array of subscriber lists, prepending with 'all lists' option
-        $subscriber_list_cats = array_merge(array(array('name' => __('All lists'), 'slug' => 'nc_all')), get_categories($subscriber_list_cat_args));
-
         wp_localize_script( $this->plugin_slug . '-template-script', 'buttons', nc_get_html_tags());
     }
 }
