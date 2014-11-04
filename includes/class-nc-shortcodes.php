@@ -42,57 +42,19 @@ class Newsletter_campaign_shortcodes {
     }
 
 
+    private function add_general_shortcodes() {
+        $tags = nc_get_html_tags();
+        $shortcode_tags = nc_fetch_array_keys($tags, 'shortcode', 'shortcode');
+
+        foreach ($shortcode_tags as $item => $value) {
+            $shortcode_raw = str_replace('nc_', '', $value);
+            add_shortcode( $value, array($this, 'set_' . $shortcode_raw) );
+        }
+    }
+
+
     public function add_shortcodes() {
-        add_shortcode( 'nc_doctype', array($this, 'set_doctype') );
-        add_shortcode( 'nc_html', array($this, 'set_html') );
-        add_shortcode( 'nc_head', array($this, 'set_head') );
-        add_shortcode( 'nc_body', array($this, 'set_body') );
-        add_shortcode( 'nc_base', array($this, 'set_base') );
-        add_shortcode( 'nc_link', array($this, 'set_link') );
-        add_shortcode( 'nc_meta', array($this, 'set_meta') );
-        add_shortcode( 'nc_style', array($this, 'set_style') );
-        add_shortcode( 'nc_title', array($this, 'set_title') );
-        add_shortcode( 'nc_p', array($this, 'set_p') );
-        add_shortcode( 'nc_h1', array($this, 'set_h1') );
-        add_shortcode( 'nc_h2', array($this, 'set_h2') );
-        add_shortcode( 'nc_h3', array($this, 'set_h3') );
-        add_shortcode( 'nc_h4', array($this, 'set_h4') );
-        add_shortcode( 'nc_h5', array($this, 'set_h5') );
-        add_shortcode( 'nc_h6', array($this, 'set_h6') );
-        add_shortcode( 'nc_dl', array($this, 'set_dl') );
-        add_shortcode( 'nc_dt', array($this, 'set_dt') );
-        add_shortcode( 'nc_dd', array($this, 'set_dd') );
-        add_shortcode( 'nc_ol', array($this, 'set_ol') );
-        add_shortcode( 'nc_ul', array($this, 'set_ul') );
-        add_shortcode( 'nc_li', array($this, 'set_li') );
-        add_shortcode( 'nc_div', array($this, 'set_div') );
-        add_shortcode( 'nc_hr', array($this, 'set_hr') );
-        add_shortcode( 'nc_a', array($this, 'set_a') );
-        add_shortcode( 'nc_em', array($this, 'set_em') );
-        add_shortcode( 'nc_strong', array($this, 'set_strong') );
-        add_shortcode( 'nc_span', array($this, 'set_span') );
-        add_shortcode( 'nc_br', array($this, 'set_br') );
-        add_shortcode( 'nc_sub', array($this, 'set_sub') );
-        add_shortcode( 'nc_sup', array($this, 'set_sup') );
-        add_shortcode( 'nc_img', array($this, 'set_img') );
-        add_shortcode( 'nc_tr', array($this, 'set_tr') );
-        add_shortcode( 'nc_th', array($this, 'set_th') );
-        add_shortcode( 'nc_td', array($this, 'set_td') );
-        add_shortcode( 'nc_colgroup', array($this, 'set_colgroup') );
-        add_shortcode( 'nc_col', array($this, 'set_col') );
-        add_shortcode( 'nc_caption', array($this, 'set_caption') );
-        add_shortcode( 'nc_table', array($this, 'set_table') );
-        add_shortcode( 'nc_thead', array($this, 'set_thead') );
-        add_shortcode( 'nc_tbody', array($this, 'set_tbody') );
-        add_shortcode( 'nc_tfoot', array($this, 'set_tfoot') );
-        add_shortcode( 'nc_comment', array($this, 'set_comment') );
-
-        add_shortcode( 'nc_posts', array($this, 'set_posts') );
-        add_shortcode( 'nc_post_title', array($this, 'set_post_title') );
-        add_shortcode( 'nc_post_body', array($this, 'set_post_body') );
-        add_shortcode( 'nc_feat_image', array($this, 'set_feat_img') );
-
-        //$nested_items = array('ol', 'ul', 'li', 'div', 'table', 'tr', 'th', 'td', 'thead', 'tbody', 'tfoot');
+        $this->add_general_shortcodes();
         $this->nested_add_shortcodes();
     }
 
@@ -513,7 +475,7 @@ class Newsletter_campaign_shortcodes {
     }
 
 
-    public function set_feat_img($atts) {
+    public function set_feat_image($atts) {
         if (has_post_thumbnail($this->post_object->ID)) {
             // If width or height passed, takes priority over size
             if (isset($atts['width']) || isset($atts['height'])) {

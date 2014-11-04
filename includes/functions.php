@@ -818,8 +818,20 @@ function nc_fetch_array_keys($search_array, $key_to_search, $key_to_return, $val
     return $return_array;
 }
 
+/*   TEMP FUNC TESTER
+$tags = nc_get_html_tags();
+$shortcode_tags = nc_fetch_array_keys($tags, 'shortcode', 'shortcode');
+print_r($shortcode_tags);*/
 
 function nc_get_html_tags() {
+    $options = get_option( 'nc_settings' );
+    $subscriber_list_cat_args = apply_filters( 'newsletter_campaign_subscriber_list_cat_args', array(
+        'taxonomy'  => 'subscriber_list'
+    ));
+
+    // Fetch the array of subscriber lists, prepending with 'all lists' option
+    $subscriber_list_cats = array_merge(array(array('name' => __('All lists'), 'slug' => 'nc_all')), get_categories($subscriber_list_cat_args));
+
     $html_tags = apply_filters( 'newsletter_campaign_html_tags', array(
         array(
             'title'             => __('HTML', $nc_plugin_slug),
@@ -1457,7 +1469,7 @@ function nc_get_html_tags() {
                 ),
                 array(
                     'title'     => __('Featured image', $nc_plugin_slug),
-                    'id'        => 'nc-button-feat-img',
+                    'id'        => 'nc-button-feat-image',
                     'class'     => 'nc-button-bar__button',
                     'shortcode' => 'nc_feat_image',
                     'args'      => array(
@@ -1490,8 +1502,4 @@ function nc_get_html_tags() {
         )
     ));
     return $html_tags;
-}
-
-function nc_abc() {
-    return array('abc' => '123');
 }
