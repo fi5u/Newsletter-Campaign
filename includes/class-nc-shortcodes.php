@@ -5,9 +5,11 @@ class Newsletter_campaign_shortcodes {
     private $posts_content;
     private $custom_output;
     private $recipient;
+    private $tags;
 
 
     public function __construct($post_object = null, $posts_content = null, $recipient = false) {
+
         if ($post_object) {
             $this->post_object = $post_object;
         }
@@ -22,6 +24,10 @@ class Newsletter_campaign_shortcodes {
             $this->recipient = $recipient;
             $this->add_per_message_shortcodes();
         }
+
+        $this->tags = nc_get_html_tags();
+
+        //$abc = $this->new_prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_html'));
     }
 
 
@@ -92,12 +98,22 @@ class Newsletter_campaign_shortcodes {
     private function prepare_attrs($attrs) {
         $shortcode_attrs = [];
 
-        foreach ($attrs as $attr) {
+        foreach ($attrs[0] as $attr) {
             $shortcode_attrs[$attr['arg']] = '';
         }
 
         return $shortcode_attrs;
     }
+
+    /*private function new_prepare_attrs($attrs) {
+        $shortcode_attrs = [];
+
+        foreach ($attrs[0] as $attr) {
+            $shortcode_attrs[$attr['arg']] = '';
+        }
+
+        return $shortcode_attrs;
+    }*/
 
 
     /**
@@ -108,10 +124,7 @@ class Newsletter_campaign_shortcodes {
      * @param arr $tag_attrs Attributes to add to the HTML output
      */
     private function set_html_tag($atts, $content, $tag_name, $tag_attrs = array(), $enclosing = true) {
-        // Prepare general html attributes
-        $general_attributes = $this->prepare_attrs(nc_html_attributes());
-
-        $a = shortcode_atts( array_merge($general_attributes, $tag_attrs), $atts );
+        $a = shortcode_atts( $tag_attrs, $atts );
 
         $tag = '<' . $tag_name;
 
@@ -167,38 +180,38 @@ class Newsletter_campaign_shortcodes {
 
 
     public function set_html($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'html', $this->prepare_attrs(nc_html_attributes('html')));
+        $output = $this->set_html_tag($atts, $content, 'html', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_html')));
         return $output;
     }
 
 
     public function set_head($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'head', $this->prepare_attrs(nc_html_attributes('head')));
+        $output = $this->set_html_tag($atts, $content, 'head', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_head')));
         return $output;
     }
 
     public function set_body($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'body', $this->prepare_attrs(nc_html_attributes('body')));
+        $output = $this->set_html_tag($atts, $content, 'body', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_body')));
         return $output;
     }
 
     public function set_base($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'base', $this->prepare_attrs(nc_html_attributes('base')), false);
+        $output = $this->set_html_tag($atts, $content, 'base', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_base')), false);
         return $output;
     }
 
     public function set_link($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content = null, 'link', $this->prepare_attrs(nc_html_attributes('link')), false);
+        $output = $this->set_html_tag($atts, $content = null, 'link', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_link')), false);
         return $output;
     }
 
     public function set_meta($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content = null, 'meta', $this->prepare_attrs(nc_html_attributes('meta')), false);
+        $output = $this->set_html_tag($atts, $content = null, 'meta', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_meta')), false);
         return $output;
     }
 
     public function set_style($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'style', $this->prepare_attrs(nc_html_attributes('style')));
+        $output = $this->set_html_tag($atts, $content, 'style', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_style')));
         return $output;
     }
 
@@ -208,162 +221,162 @@ class Newsletter_campaign_shortcodes {
     }
 
     public function set_p($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'p', $this->prepare_attrs(nc_html_attributes('p')));
+        $output = $this->set_html_tag($atts, $content, 'p', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_p')));
         return $output;
     }
 
     public function set_h1($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h1', $this->prepare_attrs(nc_html_attributes('h1')));
+        $output = $this->set_html_tag($atts, $content, 'h1', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h1')));
         return $output;
     }
 
     public function set_h2($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h2', $this->prepare_attrs(nc_html_attributes('h2')));
+        $output = $this->set_html_tag($atts, $content, 'h2', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h2')));
         return $output;
     }
 
     public function set_h3($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h3', $this->prepare_attrs(nc_html_attributes('h3')));
+        $output = $this->set_html_tag($atts, $content, 'h3', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h3')));
         return $output;
     }
 
     public function set_h4($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h4', $this->prepare_attrs(nc_html_attributes('h4')));
+        $output = $this->set_html_tag($atts, $content, 'h4', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h4')));
         return $output;
     }
 
     public function set_h5($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h5', $this->prepare_attrs(nc_html_attributes('h5')));
+        $output = $this->set_html_tag($atts, $content, 'h5', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h5')));
         return $output;
     }
 
     public function set_h6($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'h6', $this->prepare_attrs(nc_html_attributes('h6')));
+        $output = $this->set_html_tag($atts, $content, 'h6', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_h6')));
         return $output;
     }
 
     public function set_dl($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'dl', $this->prepare_attrs(nc_html_attributes('dl')));
+        $output = $this->set_html_tag($atts, $content, 'dl', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_dl')));
         return $output;
     }
 
     public function set_dt($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'dt', $this->prepare_attrs(nc_html_attributes('dt')));
+        $output = $this->set_html_tag($atts, $content, 'dt', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_dt')));
         return $output;
     }
 
     public function set_dd($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'dd', $this->prepare_attrs(nc_html_attributes('dd')));
+        $output = $this->set_html_tag($atts, $content, 'dd', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_dd')));
         return $output;
     }
 
     public function set_ol($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'ol', $this->prepare_attrs(nc_html_attributes('ol')));
+        $output = $this->set_html_tag($atts, $content, 'ol', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_ol')));
         return $output;
     }
 
     public function set_ul($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'ul', $this->prepare_attrs(nc_html_attributes('ul')));
+        $output = $this->set_html_tag($atts, $content, 'ul', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_ul')));
         return $output;
     }
 
     public function set_li($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'li', $this->prepare_attrs(nc_html_attributes('li')));
+        $output = $this->set_html_tag($atts, $content, 'li', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_li')));
         return $output;
     }
 
     public function set_div($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'div', $this->prepare_attrs(nc_html_attributes('div')));
+        $output = $this->set_html_tag($atts, $content, 'div', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_div')));
         return $output;
     }
 
     public function set_hr($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'hr', $this->prepare_attrs(nc_html_attributes('hr')));
+        $output = $this->set_html_tag($atts, $content, 'hr', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_hr')));
         return $output;
     }
 
     public function set_a($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'a', $this->prepare_attrs(nc_html_attributes('a')));
+        $output = $this->set_html_tag($atts, $content, 'a', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_a')));
         return $output;
     }
 
     public function set_em($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'em', $this->prepare_attrs(nc_html_attributes('em')));
+        $output = $this->set_html_tag($atts, $content, 'em', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_em')));
         return $output;
     }
 
     public function set_strong($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'strong', $this->prepare_attrs(nc_html_attributes('strong')));
+        $output = $this->set_html_tag($atts, $content, 'strong', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_strong')));
         return $output;
     }
 
     public function set_span($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'span', $this->prepare_attrs(nc_html_attributes('span')));
+        $output = $this->set_html_tag($atts, $content, 'span', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_span')));
         return $output;
     }
 
     public function set_br($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'br', $this->prepare_attrs(nc_html_attributes('br')));
+        $output = $this->set_html_tag($atts, $content, 'br', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_br')));
         return $output;
     }
 
     public function set_sub($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'sub', $this->prepare_attrs(nc_html_attributes('sub')));
+        $output = $this->set_html_tag($atts, $content, 'sub', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_sub')));
         return $output;
     }
 
     public function set_sup($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'sup', $this->prepare_attrs(nc_html_attributes('sup')));
+        $output = $this->set_html_tag($atts, $content, 'sup', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_sup')));
         return $output;
     }
 
     public function set_img($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'img', $this->prepare_attrs(nc_html_attributes('img')));
+        $output = $this->set_html_tag($atts, $content, 'img', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_img')));
         return $output;
     }
 
     public function set_table($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'table', $this->prepare_attrs(nc_html_attributes('table')));
+        $output = $this->set_html_tag($atts, $content, 'table', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_table')));
         return $output;
     }
 
     public function set_tr($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'tr', $this->prepare_attrs(nc_html_attributes('tr')));
+        $output = $this->set_html_tag($atts, $content, 'tr', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_tr')));
         return $output;
     }
 
     public function set_th($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'th', $this->prepare_attrs(nc_html_attributes('th')));
+        $output = $this->set_html_tag($atts, $content, 'th', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_th')));
         return $output;
     }
 
     public function set_td($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'td', $this->prepare_attrs(nc_html_attributes('td')));
+        $output = $this->set_html_tag($atts, $content, 'td', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_td')));
         return $output;
     }
 
     public function set_colgroup($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'colgroup', $this->prepare_attrs(nc_html_attributes('colgroup')));
+        $output = $this->set_html_tag($atts, $content, 'colgroup', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_colgroup')));
         return $output;
     }
 
     public function set_col($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'col', $this->prepare_attrs(nc_html_attributes('col')));
+        $output = $this->set_html_tag($atts, $content, 'col', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_col')));
         return $output;
     }
 
     public function set_caption($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'caption', $this->prepare_attrs(nc_html_attributes('caption')));
+        $output = $this->set_html_tag($atts, $content, 'caption', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_caption')));
         return $output;
     }
 
     public function set_thead($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'thead', $this->prepare_attrs(nc_html_attributes('thead')));
+        $output = $this->set_html_tag($atts, $content, 'thead', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_thead')));
         return $output;
     }
 
     public function set_tbody($atts, $content = null) {
-        $output = $this->set_html_tag($atts, $content, 'tbody', $this->prepare_attrs(nc_html_attributes('tbody')));
+        $output = $this->set_html_tag($atts, $content, 'tbody', $this->prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_tbody')));
         return $output;
     }
 
