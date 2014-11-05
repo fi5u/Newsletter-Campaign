@@ -33,6 +33,11 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( 'PLUGIN_DIR', dirname(__FILE__).'/' );
 
+
+// Load global constants
+require_once( plugin_dir_path( __FILE__ ) . 'includes/globals.php' );
+
+
 /*----------------------------------------------------------------------------*
  * Public-Facing Functionality
  *----------------------------------------------------------------------------*/
@@ -54,11 +59,9 @@ add_action( 'plugins_loaded', array( 'NewsletterCampaign', 'get_instance' ) );
  *----------------------------------------------------------------------------*/
 
 if ( is_admin() ) {
-
-	require_once( plugin_dir_path( __FILE__ ) . 'admin/class-newsletter-campaign-admin.php' );
-	add_action( 'plugins_loaded', array( 'NewsletterCampaignAdmin', 'get_instance' ) );
-
     // Plugin-wide functions
     require_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
 
+	require_once( plugin_dir_path( __FILE__ ) . 'admin/class-newsletter-campaign-admin.php' );
+	add_action( 'plugins_loaded', array( 'NewsletterCampaignAdmin', 'get_instance' ) );
 }

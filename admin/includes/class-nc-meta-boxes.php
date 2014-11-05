@@ -151,6 +151,50 @@ class Newsletter_campaign_meta_box_generator {
 
 
     /**
+     * Loop through the html tags array to generate an array to add into allowed kses tags
+     * @return arr  An array of html tags and attributes key:tag name, value: attributes
+     */
+    private function kses_add_tags() {
+        $tags = nc_get_html_tags();
+        foreach ($tags[0]['children'] as $group) {
+            if ($group['shortcode_only']) {
+                continue;
+            }
+            foreach ($group['children'] as $tag) {
+                if ($tag['shortcode_only']) {
+                    continue;
+                }
+                if ($tag['children']) {
+                    foreach ($tag['children'] as $tag) {
+                        $this_args = [];
+                        foreach ($tag['args'] as $arg) {
+                            $this_args[] = $arg['arg'];
+                        }
+                        $this_formatted_args = [];
+                        foreach ($this_args as $arg) {
+                            $this_formatted_args[$arg] = true;
+                        }
+                        $new_kses[$tag['title']] = $this_formatted_args;
+                    }
+                } else {
+                    $this_args = [];
+                    foreach ($tag['args'] as $arg) {
+                        $this_args[] = $arg['arg'];
+                    }
+                    $this_formatted_args = [];
+                    foreach ($this_args as $arg) {
+                        $this_formatted_args[$arg] = true;
+                    }
+                    $new_kses[$tag['title']] = $this_formatted_args;
+                }
+            }
+        }
+
+        return $new_kses;
+    }
+
+
+    /**
      * Sanitize different inputs ready to be input to the database
      * @param  str $value       The value to be sanitized
      * @param  str $sanitize_as code, text or false
@@ -159,7 +203,9 @@ class Newsletter_campaign_meta_box_generator {
     private function sanitize($value, $sanitize_as) {
         switch ($sanitize_as) {
             case 'code':
-                $return_val = esc_html($value);
+                global $allowedposttags;
+                $allowed_tags = nc_recursive_merge($this->kses_add_tags(), $allowedposttags);
+                $return_val = wp_kses($value, $allowed_tags);
                 break;
             case 'text':
                 $return_val = sanitize_text_field($value);

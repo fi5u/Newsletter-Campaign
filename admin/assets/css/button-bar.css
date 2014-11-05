@@ -10,6 +10,12 @@
     .nc-button-bar__parent {
         display: inline-block;
         position: relative;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+
+    .nc-button-bar__parent + .nc-button-bar__parent {
+        margin-top: -10px;
     }
 
         .nc-button-bar__parent ul {
@@ -17,13 +23,17 @@
             position: absolute;
             top: 0px;
             left: 0;
-            z-index: 4;
+            z-index: 400;
 
             background: #ddd;
         }
 
-        .nc-button-bar__parent:hover ul {
+        .nc-button-bar__parent:hover > ul {
             display: block;
+        }
+
+        .nc-button-bar__parent .nc-button-bar__parent ul {
+            left: 100%;
         }
 
     .nc-button-bar__button {
