@@ -26,8 +26,6 @@ class Newsletter_campaign_shortcodes {
         }
 
         $this->tags = nc_get_html_tags();
-
-        //$abc = $this->new_prepare_attrs(nc_fetch_array_keys($this->tags, 'shortcode', 'args', 'nc_html'));
     }
 
 
@@ -104,16 +102,6 @@ class Newsletter_campaign_shortcodes {
 
         return $shortcode_attrs;
     }
-
-    /*private function new_prepare_attrs($attrs) {
-        $shortcode_attrs = [];
-
-        foreach ($attrs[0] as $attr) {
-            $shortcode_attrs[$attr['arg']] = '';
-        }
-
-        return $shortcode_attrs;
-    }*/
 
 
     /**

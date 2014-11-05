@@ -150,14 +150,47 @@ class Newsletter_campaign_meta_box_generator {
     }
 
 
-    private function kses_add_tag($tag_name) {
-        $stored_html_attrs = nc_html_attributes($tag_name);
-
-        foreach ($stored_html_attrs as $html_attr) {
-            $return_array[$html_attr['title']] = true;
+    /**
+     * Loop through the html tags array to generate an array to add into allowed kses tags
+     * @return arr  An array of html tags and attributes key:tag name, value: attributes
+     */
+    private function kses_add_tags() {
+        $tags = nc_get_html_tags();
+        foreach ($tags[0]['children'] as $group) {
+            if ($group['shortcode_only']) {
+                continue;
+            }
+            foreach ($group['children'] as $tag) {
+                if ($tag['shortcode_only']) {
+                    continue;
+                }
+                if ($tag['children']) {
+                    foreach ($tag['children'] as $tag) {
+                        $this_args = [];
+                        foreach ($tag['args'] as $arg) {
+                            $this_args[] = $arg['arg'];
+                        }
+                        $this_formatted_args = [];
+                        foreach ($this_args as $arg) {
+                            $this_formatted_args[$arg] = true;
+                        }
+                        $new_kses[$tag['title']] = $this_formatted_args;
+                    }
+                } else {
+                    $this_args = [];
+                    foreach ($tag['args'] as $arg) {
+                        $this_args[] = $arg['arg'];
+                    }
+                    $this_formatted_args = [];
+                    foreach ($this_args as $arg) {
+                        $this_formatted_args[$arg] = true;
+                    }
+                    $new_kses[$tag['title']] = $this_formatted_args;
+                }
+            }
         }
 
-        return $return_array;
+        return $new_kses;
     }
 
 
@@ -171,11 +204,7 @@ class Newsletter_campaign_meta_box_generator {
         switch ($sanitize_as) {
             case 'code':
                 global $allowedposttags;
-
-                $allowed_tags = $allowedposttags;
-                $allowed_tags['meta'] = $this->kses_add_tag('meta');
-                $allowed_tags['base'] = $this->kses_add_tag('base');
-
+                $allowed_tags = nc_recursive_merge($this->kses_add_tags(), $allowedposttags);
                 $return_val = wp_kses($value, $allowed_tags);
                 break;
             case 'text':
