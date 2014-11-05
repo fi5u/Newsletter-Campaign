@@ -112,63 +112,6 @@ function nc_fetch_array_keys($search_array, $key_to_search, $key_to_return, $val
     return $return_array;
 }
 
-/*   TEMP FUNC TESTER
-$tags = nc_get_html_tags();
-$shortcode_tags = nc_fetch_array_keys($tags, $key_to_search = 'title', $key_to_return = 'args', $value_to_search = null);
-//print_r($shortcode_tags); die();*/
-
-
-/*$tags = nc_get_html_tags();
-foreach ($tags[0]['children'] as $group) {
-    foreach ($group['children'] as $tag) {
-        if ($tag['children']) {
-            foreach ($tag['children'] as $tag) {
-                $this_args = [];
-                foreach ($tag['args'] as $arg) {
-                    $this_args[] = $arg['arg'];
-                }
-                $return[$tag['title']] = $this_args;
-            }
-        } else {
-            $this_args = [];
-            foreach ($tag['args'] as $arg) {
-                $this_args[] = $arg['arg'];
-            }
-            $return[$tag['title']] = $this_args;
-        }
-    }
-}
-
-
-
-
-function snippet_color_part() { return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT); }
-function snippet_array_table($array, $table_call) {
-    $table = '';
-    $col1 = str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
-    $col2 = str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
-    $col3 = str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
-    $table .= "<table style='border:2px solid #" . $col1 . $col2 . $col3 . ";'>";
-    foreach ($array as $key => $value) {
-        $table .= "<tr>";
-        $table .= "<td>";
-        $table .= $key;
-        $table .= "</td>";
-        $table .= "<td>";
-        if (is_array($value)) {
-            $table .= snippet_array_table($value, ++$table_call);
-        } else {
-            $table .= $value;
-        }
-        $table .= "</td>";
-        $table .= "</tr>";
-    }
-    $table .= "</table>";
-    return $table;
-}
-echo snippet_array_table($return, 0); die();*/
-
-
 
 function nc_get_html_tags() {
     $options = get_option( 'nc_settings' );
