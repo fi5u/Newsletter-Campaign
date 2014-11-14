@@ -1,5 +1,8 @@
 <?php
 
+$nc_plugin = NewsletterCampaign::get_instance();
+$nc_plugin_slug = $nc_plugin->get_plugin_slug();
+
 /**
  * Unsubscibe using the url params like:
  * [home_url]?unsubscribe=jeff@123.com&list=newbies&hash=77649117 (for a specific list)
@@ -196,12 +199,17 @@ class Newsletter_campaign_unsubscribe {
         // Go ahead and delete the user
         $deletion_results = $this->delete_user($list_checked_records, $list);
 
-        // Fetch the saved unsubscribe page
-        $unsubscribe_page = get_option('nc_settings')['nc_unsubscribe'];
-
         // If anything was successfully deleted proceed to send user to the unsubscribed page
         if (in_array('no', $deletion_results)) {
-            wp_redirect(get_permalink($unsubscribe_page));
+
+            // Fetch the saved unsubscribe page
+            $unsubscribe_page = get_option('nc_settings')['nc_unsubscribe'];
+
+            if (isset($unsubscribe_page)) {
+                wp_redirect(get_permalink($unsubscribe_page));
+            } else {
+                _e('You have been successfully unsubscribed.', $nc_plugin_slug);
+            }
             exit();
         }
     }

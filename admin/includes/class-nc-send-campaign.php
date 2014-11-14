@@ -464,7 +464,7 @@ class Newsletter_campaign_send_campaign {
             // The email has content - send the email
             if ($this->preview) {
                 // Just show one message as the preview
-                if ($i === 1) {
+                if ($i === 2) {
                     echo $converted_message;
                     $mail_success[2]++;
                 }
