@@ -150,6 +150,8 @@ class NewsletterCampaign {
         // TODO: Not currently used delete if not needed
         // Save a salt into the db for use in unsubscribe
         update_option( 'newsletter_campaign_salt', openssl_random_pseudo_bytes(16) );
+
+        $this->set_default_options();
 	}
 
 	/**
@@ -321,6 +323,23 @@ class NewsletterCampaign {
         include_once( 'includes/class-nc-post-types.php' );     // Register taxonomies and post types
         include_once( 'includes/class-nc-unsubscribe.php' );    // Handles the unsubscription process
         include_once( 'includes/class-nc-browser-view.php' );   // Handles the 'view in browser' functionality
+    }
+
+
+    /**
+     * Set the default options when plugin is initialised
+     */
+    private function set_default_options() {
+        if (get_option('nc_settings')) {
+            $options = get_option( 'nc_settings' );
+            if (!isset($options['nc_shortcode_divider'])) {
+                $options['nc_shortcode_divider'] = 'divider';
+            }
+        } else {
+            add_option('nc_settings');
+            $options = get_option( 'nc_settings' );
+            $options['nc_shortcode_divider'] = 'divider';
+        }
     }
 
 }
