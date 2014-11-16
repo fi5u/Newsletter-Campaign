@@ -1,4 +1,8 @@
 <?php
+
+$nc_plugin = NewsletterCampaign::get_instance();
+$nc_plugin_slug = $nc_plugin->get_plugin_slug();
+
 class Newsletter_campaign_options {
     public function __construct() {
         add_action( 'admin_init', array($this, 'settings_init') );
@@ -63,9 +67,11 @@ class Newsletter_campaign_options {
         $name = $args['name'];
         $options = get_option( 'nc_settings' );
         $wp_dropdown_args = array(
-            'selected'  => $options[$name],
-            'name'      => 'nc_settings[' . $name . ']',
-            'id'        => $name
+            'selected'          => $options[$name],
+            'name'              => 'nc_settings[' . $name . ']',
+            'id'                => $name,
+            'show_option_none'  => __('Default text', $nc_plugin_slug),
+            'show_option_value' => ''
         );
         wp_dropdown_pages($wp_dropdown_args);
     }
