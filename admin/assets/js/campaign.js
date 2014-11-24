@@ -36,36 +36,37 @@
 
     $(function () {
 
-        $('button[name="d24nc_metabox_d24nc_campaign_test-send-btn"]').click(function(event) {
+        $('button[name="newsletter_campaign_campaign_test-send-btn"]').click(function(event) {
             autosave(this, event, true);
         });
 
-        $('#d24nc_campaign_send_campaign').click(function(event) {
+        $('#nc_campaign_send_campaign').click(function(event) {
 
             // Has already been clicked once, therefore got to save the post and send campaign
-            if ($(this).hasClass('d24nc-campaign__send-ready')) {
+            if ($(this).hasClass('nc-campaign__send-ready')) {
                 return true;
             }
 
             // Add a class to identify the second click
-            $(this).addClass('d24nc-campaign__send-ready');
+            $(this).addClass('nc-campaign__send-ready');
 
             // Show the confirmation
-            $('.d24nc-metabox-confirmation').slideDown();
+            $('.nc-campaign__confirmation').slideDown();
 
             // Auto save data before proceeding
             autosave(this, event);
         });
 
 
-        $('#d24nc_campaign_send_campaign_cancel').click(function() {
+        $('#nc_campaign_send_campaign_cancel').click(function() {
 
             // Remove the class to ensure the campaign doesn't get sent
-            $('#d24nc_campaign_send_campaign').removeClass('d24nc-campaign__send-ready');
+            $('#nc_campaign_send_campaign').removeClass('nc-campaign__send-ready');
 
             // Hide the confirmation
-            $('.d24nc-campaign__confirmation').slideUp();
+            $('.nc-campaign__confirmation').slideUp();
         })
+
 
     });
 
